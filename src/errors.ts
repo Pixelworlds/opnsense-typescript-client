@@ -26,6 +26,7 @@ export class OPNsenseApiError extends Error implements ApiError {
    */
   static async fromResponse(response: Response, request?: any): Promise<OPNsenseApiError> {
     let data: any;
+
     const contentType = response.headers.get('content-type');
 
     try {
@@ -39,6 +40,7 @@ export class OPNsenseApiError extends Error implements ApiError {
     }
 
     const message = data?.message || data?.error || `HTTP ${response.status}: ${response.statusText}`;
+
     return new OPNsenseApiError(message, response.status, data, request);
   }
 
@@ -51,6 +53,7 @@ export class OPNsenseApiError extends Error implements ApiError {
     }
 
     const message = error?.message || 'An unknown error occurred';
+
     return new OPNsenseApiError(message, undefined, undefined, request);
   }
 }

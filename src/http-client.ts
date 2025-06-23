@@ -26,6 +26,7 @@ export class HttpClient {
 
     // Create base64 auth header
     const credentials = `${this.config.apiKey}:${this.config.apiSecret}`;
+
     this.authHeader = `Basic ${this.base64Encode(credentials)}`;
   }
 
@@ -89,7 +90,6 @@ export class HttpClient {
   private createAbortController(timeout?: number): AbortController {
     const controller = new AbortController();
     const timeoutMs = timeout ?? this.config.timeout;
-
     const timeoutId = setTimeout(() => {
       controller.abort();
     }, timeoutMs);
@@ -162,6 +162,7 @@ export class HttpClient {
 
       // Parse response
       let data: T;
+
       const contentType = response.headers.get('content-type');
 
       if (contentType?.includes('application/json')) {
@@ -179,6 +180,7 @@ export class HttpClient {
 
       // Convert headers to plain object
       const responseHeaders: Record<string, string> = {};
+
       response.headers.forEach((value, key) => {
         responseHeaders[key] = value;
       });
