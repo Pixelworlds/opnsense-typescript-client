@@ -1,4 +1,3 @@
-// Export all types from individual modules via re-export
 export * from './auth';
 export * from './common';
 export * from './core';
@@ -10,7 +9,6 @@ export * from './ipsec';
 export * from './keygen';
 export * from './openvpn';
 
-// Re-export key common types for convenience
 export type {
   ApiError,
   ApiResponse,
@@ -24,7 +22,6 @@ export type {
   User,
 } from './common';
 
-// Export namespaces for structured access to types
 export type { Auth } from './auth';
 export type { Core } from './core';
 export type { Diagnostics } from './diagnostics';

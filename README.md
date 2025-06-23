@@ -14,14 +14,61 @@ A comprehensive TypeScript client for interacting with the OPNsense API. This cl
 
 ## Installation
 
+Install the package from npm:
+
 ```bash
-npm install opnsense-typescript-client
+npm install @richard-stovall/opnsense-typescript-client
+```
+
+### Using npm
+```bash
+npm install @richard-stovall/opnsense-typescript-client
+```
+
+### Using yarn
+```bash
+yarn add @richard-stovall/opnsense-typescript-client
+```
+
+### Using pnpm
+```bash
+pnpm add @richard-stovall/opnsense-typescript-client
+```
+
+### Using bun
+```bash
+bun add @richard-stovall/opnsense-typescript-client
+```
+
+### TypeScript Support
+
+This package includes comprehensive TypeScript definitions. Import types for better development experience:
+
+```typescript
+import { 
+  OPNsenseClient, 
+  type OPNsenseConfig, 
+  type ApiResponse,
+  type Firewall,
+  type Core 
+} from '@richard-stovall/opnsense-typescript-client';
+
+// Configure with full type safety
+const config: OPNsenseConfig = {
+  baseUrl: 'https://192.168.1.1',
+  apiKey: 'your-api-key',
+  apiSecret: 'your-api-secret',
+  verifySsl: false
+};
+
+// Get typed responses
+const status: ApiResponse<Core.System.SystemStatus> = await client.system.getStatus();
 ```
 
 ## Quick Start
 
 ```typescript
-import { OPNsenseClient } from 'opnsense-typescript-client';
+import { OPNsenseClient } from '@richard-stovall/opnsense-typescript-client';
 
 // Initialize the client
 const client = new OPNsenseClient({
