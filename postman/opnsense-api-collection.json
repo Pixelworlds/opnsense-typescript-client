@@ -1,0 +1,1275 @@
+{
+  "info": {
+    "name": "OPNsense Complete API Collection",
+    "description": "Complete collection of all OPNsense Core API endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "auth": {
+    "type": "basic",
+    "basic": [
+      {
+        "key": "username",
+        "value": "{{opnsense_api_key}}",
+        "type": "string"
+      },
+      {
+        "key": "password",
+        "value": "{{opnsense_api_secret}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "opnsense_base_url",
+      "value": "https://10.0.1.1/api",
+      "type": "string",
+      "description": "OPNsense API base URL"
+    },
+    {
+      "key": "api_key",
+      "value": "your_api_key_here",
+      "type": "string",
+      "description": "OPNsense API key"
+    },
+    {
+      "key": "api_secret",
+      "value": "your_api_secret_here",
+      "type": "string",
+      "description": "OPNsense API secret"
+    }
+  ],
+  "item": [
+    {
+      "name": "Core Module",
+      "description": "Core system functionality",
+      "item": [
+        {
+          "name": "Backup",
+          "item": [
+            {
+              "name": "Get Backups",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/core/backup/backups/{{host}}",
+                "description": "Get list of backups for a host"
+              }
+            },
+            {
+              "name": "Delete Backup",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/backup/delete_backup/{{backup}}",
+                "description": "Delete a specific backup"
+              }
+            },
+            {
+              "name": "Backup Diff",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/backup/diff/{{host}}/{{backup1}}/{{backup2}}",
+                "description": "Compare two backups"
+              }
+            },
+            {
+              "name": "Download Backup",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/core/backup/download/{{host}}/{{backup}}",
+                "description": "Download a backup file"
+              }
+            },
+            {
+              "name": "Get Providers",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/core/backup/providers",
+                "description": "Get available backup providers"
+              }
+            },
+            {
+              "name": "Revert Backup",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/backup/revert_backup/{{backup}}",
+                "description": "Revert to a specific backup"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Dashboard",
+          "item": [
+            {
+              "name": "Get Dashboard",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/core/dashboard/get_dashboard",
+                "description": "Get dashboard configuration"
+              }
+            },
+            {
+              "name": "Get Picture",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/core/dashboard/picture",
+                "description": "Get dashboard picture"
+              }
+            },
+            {
+              "name": "Product Info Feed",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/core/dashboard/product_info_feed",
+                "description": "Get product information feed"
+              }
+            },
+            {
+              "name": "Restore Defaults",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/dashboard/restore_defaults",
+                "description": "Restore dashboard defaults"
+              }
+            },
+            {
+              "name": "Save Widgets",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/dashboard/save_widgets",
+                "description": "Save widget configuration"
+              }
+            }
+          ]
+        },
+        {
+          "name": "HA Sync",
+          "item": [
+            {
+              "name": "Get HA Sync",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/core/hasync/get"
+              }
+            },
+            {
+              "name": "Reconfigure HA Sync",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/hasync/reconfigure"
+              }
+            },
+            {
+              "name": "Set HA Sync",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/hasync/set"
+              }
+            }
+          ]
+        },
+        {
+          "name": "HA Sync Status",
+          "item": [
+            {
+              "name": "Remote Service Action",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/hasync_status/remote_service/{{action}}/{{service}}/{{service_id}}"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/hasync_status/restart/{{service}}/{{service_id}}"
+              }
+            },
+            {
+              "name": "Restart All Services",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/hasync_status/restart_all/{{service}}/{{service_id}}"
+              }
+            },
+            {
+              "name": "Get Services",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/core/hasync_status/services"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/hasync_status/start/{{service}}/{{service_id}}"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/hasync_status/stop/{{service}}/{{service_id}}"
+              }
+            },
+            {
+              "name": "Get Version",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/core/hasync_status/version"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Menu",
+          "item": [
+            {
+              "name": "Search Menu",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/menu/search"
+              }
+            },
+            {
+              "name": "Get Menu Tree",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/core/menu/tree"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service",
+          "item": [
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/service/restart/{{name}}/{{id}}",
+                "description": "Restart a service"
+              }
+            },
+            {
+              "name": "Search Services",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/service/search",
+                "description": "Search services"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/service/start/{{name}}/{{id}}",
+                "description": "Start a service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/service/stop/{{name}}/{{id}}",
+                "description": "Stop a service"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Snapshots",
+          "item": [
+            {
+              "name": "Activate Snapshot",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/snapshots/activate/{{uuid}}"
+              }
+            },
+            {
+              "name": "Add Snapshot",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/snapshots/add"
+              }
+            },
+            {
+              "name": "Delete Snapshot",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/snapshots/del/{{uuid}}"
+              }
+            },
+            {
+              "name": "Get Snapshot",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/core/snapshots/get/{{uuid}}"
+              }
+            },
+            {
+              "name": "Check Support",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/core/snapshots/is_supported"
+              }
+            },
+            {
+              "name": "Search Snapshots",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/snapshots/search"
+              }
+            },
+            {
+              "name": "Set Snapshot",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/snapshots/set/{{uuid}}"
+              }
+            }
+          ]
+        },
+        {
+          "name": "System",
+          "item": [
+            {
+              "name": "Dismiss Status",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/system/dismiss_status",
+                "description": "Dismiss system status messages"
+              }
+            },
+            {
+              "name": "Halt System",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/system/halt",
+                "description": "Halt the system"
+              }
+            },
+            {
+              "name": "Reboot System",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/system/reboot",
+                "description": "Reboot the system"
+              }
+            },
+            {
+              "name": "Get System Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/core/system/status",
+                "description": "Get system status"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Tunables",
+          "item": [
+            {
+              "name": "Add Tunable Item",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/tunables/add_item"
+              }
+            },
+            {
+              "name": "Delete Tunable Item",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/tunables/del_item/{{uuid}}"
+              }
+            },
+            {
+              "name": "Get Tunables",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/core/tunables/get"
+              }
+            },
+            {
+              "name": "Get Tunable Item",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/core/tunables/get_item/{{uuid}}"
+              }
+            },
+            {
+              "name": "Reconfigure Tunables",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/tunables/reconfigure"
+              }
+            },
+            {
+              "name": "Reset Tunables",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/tunables/reset"
+              }
+            },
+            {
+              "name": "Search Tunable Items",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/tunables/search_item"
+              }
+            },
+            {
+              "name": "Set Tunables",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/tunables/set"
+              }
+            },
+            {
+              "name": "Set Tunable Item",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/tunables/set_item/{{uuid}}"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Firmware Module",
+      "description": "Firmware and package management",
+      "item": [
+        {
+          "name": "Firmware Management",
+          "item": [
+            {
+              "name": "Audit Firmware",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/firmware/audit",
+                "description": "Audit firmware status"
+              }
+            },
+            {
+              "name": "Get Changelog",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/firmware/changelog/{{version}}",
+                "description": "Get firmware changelog"
+              }
+            },
+            {
+              "name": "Check Updates",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/firmware/check",
+                "description": "Check for firmware updates"
+              }
+            },
+            {
+              "name": "Get Connection",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/core/firmware/connection",
+                "description": "Get connection status"
+              }
+            },
+            {
+              "name": "Get Firmware Info",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/core/firmware/info",
+                "description": "Get firmware information"
+              }
+            },
+            {
+              "name": "Get Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/core/firmware/status",
+                "description": "Get firmware status"
+              }
+            },
+            {
+              "name": "Update Firmware",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/firmware/update",
+                "description": "Update firmware"
+              }
+            },
+            {
+              "name": "Upgrade Firmware",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/firmware/upgrade",
+                "description": "Upgrade firmware"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Package Management",
+          "item": [
+            {
+              "name": "Get Package Details",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/core/firmware/details/{{pkg_name}}",
+                "description": "Get package details"
+              }
+            },
+            {
+              "name": "Install Package",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/firmware/install/{{pkg_name}}",
+                "description": "Install a package"
+              }
+            },
+            {
+              "name": "Remove Package",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/firmware/remove/{{pkg_name}}",
+                "description": "Remove a package"
+              }
+            },
+            {
+              "name": "Lock Package",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/firmware/lock/{{pkg_name}}",
+                "description": "Lock a package"
+              }
+            },
+            {
+              "name": "Unlock Package",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/core/firmware/unlock/{{pkg_name}}",
+                "description": "Unlock a package"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Firewall Module",
+      "description": "Firewall configuration and management",
+      "item": [
+        {
+          "name": "Filter Rules",
+          "item": [
+            {
+              "name": "Add Rule",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/firewall/filter/add_rule",
+                "description": "Add a new firewall rule"
+              }
+            },
+            {
+              "name": "Delete Rule",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/firewall/filter/del_rule/{{uuid}}",
+                "description": "Delete a firewall rule"
+              }
+            },
+            {
+              "name": "Get Rule",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/firewall/filter/get_rule/{{uuid}}",
+                "description": "Get a specific rule"
+              }
+            },
+            {
+              "name": "Search Rules",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/firewall/filter/search_rule",
+                "description": "Search firewall rules"
+              }
+            },
+            {
+              "name": "Set Rule",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/firewall/filter/set_rule/{{uuid}}",
+                "description": "Update a firewall rule"
+              }
+            },
+            {
+              "name": "Toggle Rule",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/firewall/filter/toggle_rule/{{uuid}}/{{enabled}}",
+                "description": "Enable/disable a rule"
+              }
+            },
+            {
+              "name": "Get Interface List",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/firewall/filter/get_interface_list",
+                "description": "Get available interfaces"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Alias Management",
+          "item": [
+            {
+              "name": "Add Alias",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/firewall/alias/add_item",
+                "description": "Add a new alias"
+              }
+            },
+            {
+              "name": "Delete Alias",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/firewall/alias/del_item/{{uuid}}",
+                "description": "Delete an alias"
+              }
+            },
+            {
+              "name": "Get Alias",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/firewall/alias/get_item/{{uuid}}",
+                "description": "Get specific alias"
+              }
+            },
+            {
+              "name": "Search Aliases",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/firewall/alias/search_item",
+                "description": "Search aliases"
+              }
+            },
+            {
+              "name": "Set Alias",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/firewall/alias/set_item/{{uuid}}",
+                "description": "Update an alias"
+              }
+            },
+            {
+              "name": "Reconfigure Aliases",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/firewall/alias/reconfigure",
+                "description": "Apply alias changes"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Alias Utilities",
+          "item": [
+            {
+              "name": "Add to Alias",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/firewall/alias_util/add/{{alias}}",
+                "description": "Add entry to alias"
+              }
+            },
+            {
+              "name": "Delete from Alias",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/firewall/alias_util/delete/{{alias}}",
+                "description": "Delete entry from alias"
+              }
+            },
+            {
+              "name": "List Alias Entries",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/firewall/alias_util/list/{{alias}}",
+                "description": "List alias entries"
+              }
+            },
+            {
+              "name": "Get All Aliases",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/firewall/alias_util/aliases",
+                "description": "Get all aliases"
+              }
+            },
+            {
+              "name": "Flush Alias",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/firewall/alias_util/flush/{{alias}}",
+                "description": "Flush alias entries"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Diagnostics Module",
+      "description": "System diagnostics and monitoring",
+      "item": [
+        {
+          "name": "System Information",
+          "item": [
+            {
+              "name": "Get Activity",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/diagnostics/activity/get_activity",
+                "description": "Get system activity"
+              }
+            },
+            {
+              "name": "Get CPU Type",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/diagnostics/cpu_usage/get_cpu_type",
+                "description": "Get CPU type information"
+              }
+            },
+            {
+              "name": "CPU Usage Stream",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/diagnostics/cpu_usage/stream",
+                "description": "Stream CPU usage data"
+              }
+            },
+            {
+              "name": "System Memory",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/diagnostics/system/memory",
+                "description": "Get memory information"
+              }
+            },
+            {
+              "name": "System Information",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/diagnostics/system/system_information",
+                "description": "Get system information"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Firewall Diagnostics",
+          "item": [
+            {
+              "name": "Get Firewall Log",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/diagnostics/firewall/log",
+                "description": "Get firewall logs"
+              }
+            },
+            {
+              "name": "Get PF States",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/diagnostics/firewall/pf_states",
+                "description": "Get packet filter states"
+              }
+            },
+            {
+              "name": "Query States",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/diagnostics/firewall/query_states",
+                "description": "Query firewall states"
+              }
+            },
+            {
+              "name": "Flush States",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/diagnostics/firewall/flush_states",
+                "description": "Flush firewall states"
+              }
+            },
+            {
+              "name": "Get Statistics",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/diagnostics/firewall/stats",
+                "description": "Get firewall statistics"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Interface Diagnostics",
+          "item": [
+            {
+              "name": "Get ARP Table",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/diagnostics/interface/get_arp",
+                "description": "Get ARP table"
+              }
+            },
+            {
+              "name": "Get Routes",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/diagnostics/interface/get_routes",
+                "description": "Get routing table"
+              }
+            },
+            {
+              "name": "Get Interface Statistics",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/diagnostics/interface/get_interface_statistics",
+                "description": "Get interface statistics"
+              }
+            },
+            {
+              "name": "Flush ARP",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/diagnostics/interface/flush_arp",
+                "description": "Flush ARP table"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Network Tools",
+          "item": [
+            {
+              "name": "Ping - Get Config",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/diagnostics/ping/get",
+                "description": "Get ping configuration"
+              }
+            },
+            {
+              "name": "Ping - Set Config",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/diagnostics/ping/set",
+                "description": "Set ping configuration"
+              }
+            },
+            {
+              "name": "Ping - Start Job",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/diagnostics/ping/start/{{jobid}}",
+                "description": "Start ping job"
+              }
+            },
+            {
+              "name": "Traceroute - Get Config",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/diagnostics/traceroute/get",
+                "description": "Get traceroute configuration"
+              }
+            },
+            {
+              "name": "Traceroute - Set Config",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/diagnostics/traceroute/set",
+                "description": "Set traceroute configuration"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Interfaces Module",
+      "description": "Network interface management",
+      "item": [
+        {
+          "name": "Overview",
+          "item": [
+            {
+              "name": "Get Interface Info",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/interfaces/overview/get_interface/{{if}}",
+                "description": "Get interface information"
+              }
+            },
+            {
+              "name": "Get Interfaces Info",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/interfaces/overview/interfaces_info/{{details}}",
+                "description": "Get all interfaces information"
+              }
+            },
+            {
+              "name": "Reload Interface",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/interfaces/overview/reload_interface/{{identifier}}",
+                "description": "Reload interface"
+              }
+            }
+          ]
+        },
+        {
+          "name": "VLAN Settings",
+          "item": [
+            {
+              "name": "Add VLAN",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/interfaces/vlan_settings/add_item",
+                "description": "Add VLAN interface"
+              }
+            },
+            {
+              "name": "Delete VLAN",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/interfaces/vlan_settings/del_item/{{uuid}}",
+                "description": "Delete VLAN interface"
+              }
+            },
+            {
+              "name": "Get VLAN",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/interfaces/vlan_settings/get_item/{{uuid}}",
+                "description": "Get VLAN configuration"
+              }
+            },
+            {
+              "name": "Search VLANs",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/interfaces/vlan_settings/search_item",
+                "description": "Search VLAN interfaces"
+              }
+            },
+            {
+              "name": "Set VLAN",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/interfaces/vlan_settings/set_item/{{uuid}}",
+                "description": "Update VLAN configuration"
+              }
+            },
+            {
+              "name": "Reconfigure VLANs",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/interfaces/vlan_settings/reconfigure",
+                "description": "Apply VLAN changes"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "OpenVPN Module",
+      "description": "OpenVPN server and client management",
+      "item": [
+        {
+          "name": "Instances",
+          "item": [
+            {
+              "name": "Add Instance",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/openvpn/instances/add",
+                "description": "Add OpenVPN instance"
+              }
+            },
+            {
+              "name": "Delete Instance",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/openvpn/instances/del/{{uuid}}",
+                "description": "Delete OpenVPN instance"
+              }
+            },
+            {
+              "name": "Get Instance",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/openvpn/instances/get/{{uuid}}",
+                "description": "Get OpenVPN instance"
+              }
+            },
+            {
+              "name": "Search Instances",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/openvpn/instances/search",
+                "description": "Search OpenVPN instances"
+              }
+            },
+            {
+              "name": "Toggle Instance",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/openvpn/instances/toggle/{{uuid}}/{{enabled}}",
+                "description": "Enable/disable instance"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service",
+          "item": [
+            {
+              "name": "Reconfigure",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/openvpn/service/reconfigure",
+                "description": "Reconfigure OpenVPN service"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/openvpn/service/start_service/{{id}}",
+                "description": "Start OpenVPN service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/openvpn/service/stop_service/{{id}}",
+                "description": "Stop OpenVPN service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/openvpn/service/restart_service/{{id}}",
+                "description": "Restart OpenVPN service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "IPsec Module",
+      "description": "IPsec VPN configuration",
+      "item": [
+        {
+          "name": "Connections",
+          "item": [
+            {
+              "name": "Add Connection",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/ipsec/connections/add_connection",
+                "description": "Add IPsec connection"
+              }
+            },
+            {
+              "name": "Delete Connection",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/ipsec/connections/del_connection/{{uuid}}",
+                "description": "Delete IPsec connection"
+              }
+            },
+            {
+              "name": "Get Connection",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/ipsec/connections/get_connection/{{uuid}}",
+                "description": "Get IPsec connection"
+              }
+            },
+            {
+              "name": "Search Connections",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/ipsec/connections/search_connection",
+                "description": "Search IPsec connections"
+              }
+            },
+            {
+              "name": "Toggle Connection",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/ipsec/connections/toggle_connection/{{uuid}}/{{enabled}}",
+                "description": "Enable/disable connection"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service",
+          "item": [
+            {
+              "name": "Start IPsec",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/ipsec/service/start",
+                "description": "Start IPsec service"
+              }
+            },
+            {
+              "name": "Stop IPsec",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/ipsec/service/stop",
+                "description": "Stop IPsec service"
+              }
+            },
+            {
+              "name": "Restart IPsec",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/ipsec/service/restart",
+                "description": "Restart IPsec service"
+              }
+            },
+            {
+              "name": "Get Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/ipsec/service/status",
+                "description": "Get IPsec service status"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Auth Module",
+      "description": "Authentication and user management",
+      "item": [
+        {
+          "name": "User Management",
+          "item": [
+            {
+              "name": "Add User",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/auth/user/add",
+                "description": "Add new user"
+              }
+            },
+            {
+              "name": "Delete User",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/auth/user/del/{{uuid}}",
+                "description": "Delete user"
+              }
+            },
+            {
+              "name": "Get User",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/auth/user/get/{{uuid}}",
+                "description": "Get user information"
+              }
+            },
+            {
+              "name": "Search Users",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/auth/user/search",
+                "description": "Search users"
+              }
+            },
+            {
+              "name": "Set User",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/auth/user/set/{{uuid}}",
+                "description": "Update user"
+              }
+            },
+            {
+              "name": "Add API Key",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/auth/user/add_api_key/{{username}}",
+                "description": "Add API key for user"
+              }
+            },
+            {
+              "name": "Delete API Key",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/auth/user/del_api_key/{{id}}",
+                "description": "Delete API key"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Group Management",
+          "item": [
+            {
+              "name": "Add Group",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/auth/group/add",
+                "description": "Add new group"
+              }
+            },
+            {
+              "name": "Delete Group",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/auth/group/del/{{uuid}}",
+                "description": "Delete group"
+              }
+            },
+            {
+              "name": "Get Group",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/auth/group/get/{{uuid}}",
+                "description": "Get group information"
+              }
+            },
+            {
+              "name": "Search Groups",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/auth/group/search",
+                "description": "Search groups"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

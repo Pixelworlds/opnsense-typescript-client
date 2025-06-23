@@ -1,0 +1,5449 @@
+{
+  "info": {
+    "name": "OPNsense Plugins API Collection",
+    "description": "Complete collection of OPNsense Plugin API endpoints including WireGuard, Nginx, HAProxy, Caddy, and more",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "auth": {
+    "type": "basic",
+    "basic": [
+      {
+        "key": "username",
+        "value": "{{opnsense_api_key}}",
+        "type": "string"
+      },
+      {
+        "key": "password",
+        "value": "{{opnsense_api_secret}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "opnsense_base_url",
+      "value": "https://10.0.1.1/api",
+      "type": "string",
+      "description": "OPNsense API base URL"
+    },
+    {
+      "key": "opnsense_api_key",
+      "value": "your_api_key_here",
+      "type": "string",
+      "description": "OPNsense API key"
+    },
+    {
+      "key": "opnsense_api_secret",
+      "value": "your_api_secret_here",
+      "type": "string",
+      "description": "OPNsense API secret"
+    }
+  ],
+  "item": [
+    {
+      "name": "WireGuard Plugin",
+      "description": "WireGuard VPN plugin API endpoints",
+      "item": [
+        {
+          "name": "General Settings",
+          "item": [
+            {
+              "name": "Get General Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/wireguard/general/get",
+                "description": "Get general WireGuard settings"
+              }
+            },
+            {
+              "name": "Set General Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/wireguard/general/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"general\": {\n    \"enabled\": \"1\"\n  }\n}"
+                },
+                "description": "Set general WireGuard settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Server Management",
+          "item": [
+            {
+              "name": "Search Servers",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/wireguard/server/searchServer",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"current\": 1,\n  \"rowCount\": 7,\n  \"sort\": {},\n  \"searchPhrase\": \"\"\n}"
+                },
+                "description": "Search WireGuard servers"
+              }
+            },
+            {
+              "name": "Get Server",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/wireguard/server/getServer/{{server_uuid}}",
+                "description": "Get specific server details"
+              }
+            },
+            {
+              "name": "Add Server",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/wireguard/server/addServer",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"enabled\": \"1\",\n  \"name\": \"WireGuard Server\",\n  \"pubkey\": \"generated_public_key\",\n  \"privkey\": \"generated_private_key\",\n  \"port\": \"51820\",\n  \"tunneladdress\": \"10.0.10.1/24\"\n}"
+                },
+                "description": "Add a new WireGuard server"
+              }
+            },
+            {
+              "name": "Update Server",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/wireguard/server/setServer/{{server_uuid}}",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"enabled\": \"1\",\n  \"name\": \"WireGuard Server\",\n  \"pubkey\": \"public_key\",\n  \"privkey\": \"private_key\",\n  \"port\": \"51820\",\n  \"tunneladdress\": \"10.0.10.1/24\"\n}"
+                },
+                "description": "Update specific server"
+              }
+            },
+            {
+              "name": "Delete Server",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/wireguard/server/delServer/{{server_uuid}}",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                },
+                "description": "Delete a WireGuard server"
+              }
+            },
+            {
+              "name": "Toggle Server",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/wireguard/server/toggleServer/{{server_uuid}}",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                },
+                "description": "Enable/disable server"
+              }
+            },
+            {
+              "name": "Generate Key Pair",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/wireguard/server/key_pair",
+                "description": "Generate a new key pair"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Client Management",
+          "item": [
+            {
+              "name": "Search Clients",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/wireguard/client/searchClient",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"current\": 1,\n  \"rowCount\": 7,\n  \"sort\": {},\n  \"searchPhrase\": \"\"\n}"
+                },
+                "description": "Search WireGuard clients"
+              }
+            },
+            {
+              "name": "Get Client",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/wireguard/client/getClient/{{client_uuid}}",
+                "description": "Get specific client details"
+              }
+            },
+            {
+              "name": "Add Client",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/wireguard/client/addClient",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"enabled\": \"1\",\n  \"name\": \"Client\",\n  \"pubkey\": \"client_public_key\",\n  \"tunneladdress\": \"10.0.10.2/32\",\n  \"serverport\": \"51820\",\n  \"servers\": \"server_uuid\"\n}"
+                },
+                "description": "Add a new WireGuard client"
+              }
+            },
+            {
+              "name": "Update Client",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/wireguard/client/setClient/{{client_uuid}}",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"enabled\": \"1\",\n  \"name\": \"Client\",\n  \"pubkey\": \"client_public_key\",\n  \"tunneladdress\": \"10.0.10.2/32\",\n  \"serverport\": \"51820\",\n  \"servers\": \"server_uuid\"\n}"
+                },
+                "description": "Update specific client"
+              }
+            },
+            {
+              "name": "Delete Client",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/wireguard/client/delClient/{{client_uuid}}",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                },
+                "description": "Delete a WireGuard client"
+              }
+            },
+            {
+              "name": "Toggle Client",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/wireguard/client/toggleClient/{{client_uuid}}",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                },
+                "description": "Enable/disable client"
+              }
+            },
+            {
+              "name": "List Servers",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/wireguard/client/list_servers",
+                "description": "List available servers"
+              }
+            },
+            {
+              "name": "Get Server Info",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/wireguard/client/get_server_info/{{server_uuid}}",
+                "description": "Get server info for client"
+              }
+            },
+            {
+              "name": "Add Client Builder",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/wireguard/client/addClientBuilder",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"enabled\": \"1\",\n  \"name\": \"Test\",\n  \"pubkey\": \"client_public_key\",\n  \"tunneladdress\": \"10.0.10.2/32\",\n  \"server\": \"server_uuid\"\n}"
+                },
+                "description": "Add client using configuration builder"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Control",
+          "item": [
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/wireguard/service/reconfigure",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                },
+                "description": "Reconfigure WireGuard service"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/wireguard/service/start",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                },
+                "description": "Start WireGuard service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/wireguard/service/stop",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                },
+                "description": "Stop WireGuard service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/wireguard/service/restart",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                },
+                "description": "Restart WireGuard service"
+              }
+            },
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/wireguard/service/status",
+                "description": "Get WireGuard service status"
+              }
+            },
+            {
+              "name": "Show Service Status",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/wireguard/service/show",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"current\": 1,\n  \"rowCount\": 7,\n  \"sort\": {},\n  \"searchPhrase\": \"\"\n}"
+                },
+                "description": "Show WireGuard service status"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Nginx Plugin",
+      "description": "Nginx web server and reverse proxy API endpoints",
+      "item": [
+        {
+          "name": "Service Control",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/nginx/service/status",
+                "description": "Get Nginx service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/nginx/service/start",
+                "description": "Start Nginx service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/nginx/service/stop",
+                "description": "Stop Nginx service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/nginx/service/restart",
+                "description": "Restart Nginx service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/nginx/service/reconfigure",
+                "description": "Reconfigure Nginx service"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Settings",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/nginx/settings/get",
+                "description": "Get Nginx configuration"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/nginx/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Set Nginx configuration"
+              }
+            },
+            {
+              "name": "Search HTTP Servers",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/nginx/settings/searchhttpserver",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"current\": 1,\n  \"rowCount\": 25,\n  \"sort\": {},\n  \"searchPhrase\": \"\"\n}"
+                },
+                "description": "Search HTTP servers"
+              }
+            },
+            {
+              "name": "Add HTTP Server",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/nginx/settings/addhttpserver",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Add new HTTP server"
+              }
+            },
+            {
+              "name": "Get HTTP Server",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/nginx/settings/gethttpserver/{{server_uuid}}",
+                "description": "Get specific HTTP server"
+              }
+            },
+            {
+              "name": "Update HTTP Server",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/nginx/settings/sethttpserver/{{server_uuid}}",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update HTTP server"
+              }
+            },
+            {
+              "name": "Delete HTTP Server",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/nginx/settings/delhttpserver/{{server_uuid}}",
+                "description": "Delete HTTP server"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Logs",
+          "item": [
+            {
+              "name": "Get Access Logs",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/nginx/logs/accesses",
+                "description": "Get Nginx access logs"
+              }
+            },
+            {
+              "name": "Get Error Logs",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/nginx/logs/errors",
+                "description": "Get Nginx error logs"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "HAProxy Plugin",
+      "description": "HAProxy load balancer API endpoints",
+      "item": [
+        {
+          "name": "Service Control",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/haproxy/service/status",
+                "description": "Get HAProxy service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/haproxy/service/start",
+                "description": "Start HAProxy service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/haproxy/service/stop",
+                "description": "Stop HAProxy service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/haproxy/service/restart",
+                "description": "Restart HAProxy service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/haproxy/service/reconfigure",
+                "description": "Reconfigure HAProxy service"
+              }
+            },
+            {
+              "name": "Config Test",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/haproxy/service/configtest",
+                "description": "Test HAProxy configuration"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Settings",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/haproxy/settings/get",
+                "description": "Get HAProxy configuration"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/haproxy/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Set HAProxy configuration"
+              }
+            },
+            {
+              "name": "Search Backends",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/haproxy/settings/search_backends",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"current\": 1,\n  \"rowCount\": 25,\n  \"sort\": {},\n  \"searchPhrase\": \"\"\n}"
+                },
+                "description": "Search HAProxy backends"
+              }
+            },
+            {
+              "name": "Add Backend",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/haproxy/settings/add_backend",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Add new HAProxy backend"
+              }
+            },
+            {
+              "name": "Search Frontends",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/haproxy/settings/search_frontends",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"current\": 1,\n  \"rowCount\": 25,\n  \"sort\": {},\n  \"searchPhrase\": \"\"\n}"
+                },
+                "description": "Search HAProxy frontends"
+              }
+            },
+            {
+              "name": "Add Frontend",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/haproxy/settings/add_frontend",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Add new HAProxy frontend"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Statistics",
+          "item": [
+            {
+              "name": "Get Statistics",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/haproxy/statistics/info",
+                "description": "Get HAProxy statistics"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "BIND Plugin",
+      "description": "BIND DNS server API endpoints",
+      "item": [
+        {
+          "name": "Service Control",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/bind/service/status",
+                "description": "Get BIND service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/bind/service/start",
+                "description": "Start BIND service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/bind/service/stop",
+                "description": "Stop BIND service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/bind/service/restart",
+                "description": "Restart BIND service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/bind/service/reconfigure",
+                "description": "Reconfigure BIND service"
+              }
+            }
+          ]
+        },
+        {
+          "name": "General Settings",
+          "item": [
+            {
+              "name": "Get General Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/bind/general/get",
+                "description": "Get BIND general settings"
+              }
+            },
+            {
+              "name": "Set General Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/bind/general/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Set BIND general settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Domain Management",
+          "item": [
+            {
+              "name": "Get Domains",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/bind/domain/get",
+                "description": "Get domain configuration"
+              }
+            },
+            {
+              "name": "Search Primary Domains",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/bind/domain/search_primary_domain",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"current\": 1,\n  \"rowCount\": 25,\n  \"sort\": {},\n  \"searchPhrase\": \"\"\n}"
+                },
+                "description": "Search primary domains"
+              }
+            },
+            {
+              "name": "Add Primary Domain",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/bind/domain/add_primary_domain",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Add new primary domain"
+              }
+            },
+            {
+              "name": "Get Domain",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/bind/domain/get_domain/{{domain_uuid}}",
+                "description": "Get specific domain details"
+              }
+            },
+            {
+              "name": "Update Domain",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/bind/domain/set_domain/{{domain_uuid}}",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update domain"
+              }
+            },
+            {
+              "name": "Delete Domain",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/bind/domain/del_domain/{{domain_uuid}}",
+                "description": "Delete domain"
+              }
+            }
+          ]
+        },
+        {
+          "name": "DNS Records",
+          "item": [
+            {
+              "name": "Search Records",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/bind/record/search_record",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"current\": 1,\n  \"rowCount\": 25,\n  \"sort\": {},\n  \"searchPhrase\": \"\"\n}"
+                },
+                "description": "Search DNS records"
+              }
+            },
+            {
+              "name": "Add Record",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/bind/record/add_record",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Add new DNS record"
+              }
+            },
+            {
+              "name": "Get Record",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/bind/record/get_record/{{record_uuid}}",
+                "description": "Get specific DNS record"
+              }
+            },
+            {
+              "name": "Update Record",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/bind/record/set_record/{{record_uuid}}",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update DNS record"
+              }
+            },
+            {
+              "name": "Delete Record",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/bind/record/del_record/{{record_uuid}}",
+                "description": "Delete DNS record"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Caddy Plugin",
+      "description": "Caddy web server and reverse proxy API endpoints",
+      "item": [
+        {
+          "name": "Service Control",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/caddy/service/status",
+                "description": "Get Caddy service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/caddy/service/start",
+                "description": "Start Caddy service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/caddy/service/stop",
+                "description": "Stop Caddy service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/caddy/service/restart",
+                "description": "Restart Caddy service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/caddy/service/reconfigure",
+                "description": "Reconfigure Caddy service"
+              }
+            },
+            {
+              "name": "Validate Config",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/caddy/service/validate",
+                "description": "Validate Caddy configuration"
+              }
+            }
+          ]
+        },
+        {
+          "name": "General Settings",
+          "item": [
+            {
+              "name": "Get General Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/caddy/general/get",
+                "description": "Get Caddy general settings"
+              }
+            },
+            {
+              "name": "Set General Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/caddy/general/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Set Caddy general settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Reverse Proxy",
+          "item": [
+            {
+              "name": "Search Reverse Proxies",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/caddy/reverse_proxy/search_reverse_proxy",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"current\": 1,\n  \"rowCount\": 25,\n  \"sort\": {},\n  \"searchPhrase\": \"\"\n}"
+                },
+                "description": "Search reverse proxies"
+              }
+            },
+            {
+              "name": "Add Reverse Proxy",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/caddy/reverse_proxy/add_reverse_proxy",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Add new reverse proxy"
+              }
+            },
+            {
+              "name": "Get Reverse Proxy",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/caddy/reverse_proxy/get_reverse_proxy/{{proxy_uuid}}",
+                "description": "Get specific reverse proxy"
+              }
+            },
+            {
+              "name": "Update Reverse Proxy",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/caddy/reverse_proxy/set_reverse_proxy/{{proxy_uuid}}",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update reverse proxy"
+              }
+            },
+            {
+              "name": "Delete Reverse Proxy",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/caddy/reverse_proxy/del_reverse_proxy/{{proxy_uuid}}",
+                "description": "Delete reverse proxy"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Diagnostics",
+          "item": [
+            {
+              "name": "Get Caddyfile",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/caddy/diagnostics/caddyfile",
+                "description": "Get generated Caddyfile"
+              }
+            },
+            {
+              "name": "Get Config",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/caddy/diagnostics/config",
+                "description": "Get Caddy configuration"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "APCupsd Plugin",
+      "description": "APC UPS daemon API endpoints",
+      "item": [
+        {
+          "name": "Service Control",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/apcupsd/service/status",
+                "description": "Get APCupsd service status"
+              }
+            },
+            {
+              "name": "Get UPS Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/apcupsd/service/get_ups_status",
+                "description": "Get UPS status information"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/apcupsd/service/start",
+                "description": "Start APCupsd service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/apcupsd/service/stop",
+                "description": "Stop APCupsd service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/apcupsd/service/restart",
+                "description": "Restart APCupsd service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/apcupsd/service/reconfigure",
+                "description": "Reconfigure APCupsd service"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Settings",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/apcupsd/settings/get",
+                "description": "Get APCupsd configuration"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/apcupsd/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Set APCupsd configuration"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Netdata Plugin",
+      "description": "Real-time performance monitoring API endpoints",
+      "item": [
+        {
+          "name": "Service Control",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/netdata/service/status",
+                "description": "Get Netdata service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/netdata/service/start",
+                "description": "Start Netdata service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/netdata/service/stop",
+                "description": "Stop Netdata service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/netdata/service/restart",
+                "description": "Restart Netdata service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/netdata/service/reconfigure",
+                "description": "Reconfigure Netdata service"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Settings",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/netdata/general/get",
+                "description": "Get Netdata configuration"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/netdata/general/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Set Netdata configuration"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "NetSNMP Plugin",
+      "description": "SNMP agent API endpoints",
+      "item": [
+        {
+          "name": "Service Control",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/netsnmp/service/status",
+                "description": "Get NetSNMP service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/netsnmp/service/start",
+                "description": "Start NetSNMP service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/netsnmp/service/stop",
+                "description": "Stop NetSNMP service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/netsnmp/service/restart",
+                "description": "Restart NetSNMP service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/netsnmp/service/reconfigure",
+                "description": "Reconfigure NetSNMP service"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Settings",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/netsnmp/general/get",
+                "description": "Get NetSNMP configuration"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/netsnmp/general/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Set NetSNMP configuration"
+              }
+            }
+          ]
+        },
+        {
+          "name": "User Management",
+          "item": [
+            {
+              "name": "Search Users",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/netsnmp/user/search_user",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"current\": 1,\n  \"rowCount\": 25,\n  \"sort\": {},\n  \"searchPhrase\": \"\"\n}"
+                },
+                "description": "Search SNMP users"
+              }
+            },
+            {
+              "name": "Add User",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/netsnmp/user/add_user",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Add new SNMP user"
+              }
+            },
+            {
+              "name": "Get User",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/netsnmp/user/get_user/{{user_uuid}}",
+                "description": "Get specific SNMP user"
+              }
+            },
+            {
+              "name": "Update User",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/netsnmp/user/set_user/{{user_uuid}}",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update SNMP user"
+              }
+            },
+            {
+              "name": "Delete User",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/netsnmp/user/del_user/{{user_uuid}}",
+                "description": "Delete SNMP user"
+              }
+            },
+            {
+              "name": "Toggle User",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/netsnmp/user/toggle_user/{{user_uuid}}",
+                "description": "Enable/disable SNMP user"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Chrony Plugin",
+      "description": "NTP service API endpoints",
+      "item": [
+        {
+          "name": "Service Control",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/chrony/service/status",
+                "description": "Get Chrony service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/chrony/service/start",
+                "description": "Start Chrony service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/chrony/service/stop",
+                "description": "Stop Chrony service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/chrony/service/restart",
+                "description": "Restart Chrony service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/chrony/service/reconfigure",
+                "description": "Reconfigure Chrony service"
+              }
+            },
+            {
+              "name": "Get Chrony Tracking",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/chrony/service/chronytracking",
+                "description": "Get Chrony tracking information"
+              }
+            },
+            {
+              "name": "Get Chrony Sources",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/chrony/service/chronysources",
+                "description": "Get Chrony sources information"
+              }
+            },
+            {
+              "name": "Get Chrony Source Stats",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/chrony/service/chronysourcestats",
+                "description": "Get Chrony source statistics"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Settings",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/chrony/general/get",
+                "description": "Get Chrony configuration"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/chrony/general/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Set Chrony configuration"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "CrowdSec Plugin",
+      "description": "Security engine API endpoints",
+      "item": [
+        {
+          "name": "Service Control",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/crowdsec/service/status",
+                "description": "Get CrowdSec service status"
+              }
+            },
+            {
+              "name": "Reload Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/crowdsec/service/reload",
+                "description": "Reload CrowdSec service"
+              }
+            },
+            {
+              "name": "Get Debug Info",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/crowdsec/service/debug",
+                "description": "Get CrowdSec debug information"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Settings",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/crowdsec/general/get",
+                "description": "Get CrowdSec configuration"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/crowdsec/general/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Set CrowdSec configuration"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Alerts",
+          "item": [
+            {
+              "name": "Get Alerts",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/crowdsec/alerts/get",
+                "description": "Get CrowdSec alerts"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Decisions",
+          "item": [
+            {
+              "name": "Get Decisions",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/crowdsec/decisions/get",
+                "description": "Get CrowdSec decisions"
+              }
+            },
+            {
+              "name": "Delete Decision",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/crowdsec/decisions/delete/{{decision_id}}",
+                "description": "Delete specific decision"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Machines",
+          "item": [
+            {
+              "name": "Get Machines",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/crowdsec/machines/get",
+                "description": "Get CrowdSec machines"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Bouncers",
+          "item": [
+            {
+              "name": "Get Bouncers",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/crowdsec/bouncers/get",
+                "description": "Get CrowdSec bouncers"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "FreeRADIUS Plugin",
+      "description": "RADIUS server API endpoints",
+      "item": [
+        {
+          "name": "Service Control",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/freeradius/service/status",
+                "description": "Get FreeRADIUS service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/freeradius/service/start",
+                "description": "Start FreeRADIUS service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/freeradius/service/stop",
+                "description": "Stop FreeRADIUS service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/freeradius/service/restart",
+                "description": "Restart FreeRADIUS service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/freeradius/service/reconfigure",
+                "description": "Reconfigure FreeRADIUS service"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Settings",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/freeradius/general/get",
+                "description": "Get FreeRADIUS configuration"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/freeradius/general/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Set FreeRADIUS configuration"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ClamAV Plugin",
+      "description": "Antivirus engine API endpoints",
+      "item": [
+        {
+          "name": "Service Control",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/clamav/service/status",
+                "description": "Get ClamAV service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/clamav/service/start",
+                "description": "Start ClamAV service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/clamav/service/stop",
+                "description": "Stop ClamAV service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/clamav/service/restart",
+                "description": "Restart ClamAV service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/clamav/service/reconfigure",
+                "description": "Reconfigure ClamAV service"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Settings",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/clamav/general/get",
+                "description": "Get ClamAV configuration"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/clamav/general/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Set ClamAV configuration"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "C-ICAP Plugin",
+      "description": "ICAP server API endpoints",
+      "item": [
+        {
+          "name": "Service Control",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/cicap/service/status",
+                "description": "Get C-ICAP service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/cicap/service/start",
+                "description": "Start C-ICAP service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/cicap/service/stop",
+                "description": "Stop C-ICAP service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/cicap/service/restart",
+                "description": "Restart C-ICAP service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/cicap/service/reconfigure",
+                "description": "Reconfigure C-ICAP service"
+              }
+            },
+            {
+              "name": "Check ClamAV",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/cicap/service/checkclamav",
+                "description": "Check ClamAV integration"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Settings",
+          "item": [
+            {
+              "name": "Get General Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/cicap/general/get",
+                "description": "Get C-ICAP general configuration"
+              }
+            },
+            {
+              "name": "Set General Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/cicap/general/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Set C-ICAP general configuration"
+              }
+            },
+            {
+              "name": "Get Antivirus Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/cicap/antivirus/get",
+                "description": "Get C-ICAP antivirus configuration"
+              }
+            },
+            {
+              "name": "Set Antivirus Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/cicap/antivirus/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Set C-ICAP antivirus configuration"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Collectd Plugin",
+      "description": "System statistics collection API endpoints",
+      "item": [
+        {
+          "name": "Service Control",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/collectd/service/status",
+                "description": "Get Collectd service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/collectd/service/start",
+                "description": "Start Collectd service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/collectd/service/stop",
+                "description": "Stop Collectd service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/collectd/service/restart",
+                "description": "Restart Collectd service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/collectd/service/reconfigure",
+                "description": "Reconfigure Collectd service"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Settings",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/collectd/general/get",
+                "description": "Get Collectd configuration"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/collectd/general/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Set Collectd configuration"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DMIdecode Plugin",
+      "description": "Hardware information API endpoints",
+      "item": [
+        {
+          "name": "Service Control",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/dmidecode/service/status",
+                "description": "Get DMIdecode service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/dmidecode/service/start",
+                "description": "Start DMIdecode service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/dmidecode/service/stop",
+                "description": "Stop DMIdecode service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/dmidecode/service/restart",
+                "description": "Restart DMIdecode service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/dmidecode/service/reconfigure",
+                "description": "Reconfigure DMIdecode service"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Settings",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/dmidecode/general/get",
+                "description": "Get DMIdecode configuration"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/dmidecode/general/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Set DMIdecode configuration"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Hwprobe Plugin",
+      "description": "Hardware probe API endpoints",
+      "item": [
+        {
+          "name": "Service Control",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/hwprobe/service/status",
+                "description": "Get Hwprobe service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/hwprobe/service/start",
+                "description": "Start Hwprobe service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/hwprobe/service/stop",
+                "description": "Stop Hwprobe service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/hwprobe/service/restart",
+                "description": "Restart Hwprobe service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/hwprobe/service/reconfigure",
+                "description": "Reconfigure Hwprobe service"
+              }
+            },
+            {
+              "name": "Get Report",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/hwprobe/service/report",
+                "description": "Get hardware probe report"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Settings",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/hwprobe/general/get",
+                "description": "Get Hwprobe configuration"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/hwprobe/general/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Set Hwprobe configuration"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "HelloWorld Plugin",
+      "description": "Simple example plugin for demonstration purposes",
+      "item": [
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Reload Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/helloworld/service/reload",
+                "description": "Reload the HelloWorld service"
+              }
+            },
+            {
+              "name": "Test Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/helloworld/service/test",
+                "description": "Test the HelloWorld service"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Settings Management",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/helloworld/settings/get",
+                "description": "Retrieve HelloWorld settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/helloworld/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update HelloWorld settings"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Iperf Plugin",
+      "description": "Network performance testing tool for bandwidth measurement",
+      "item": [
+        {
+          "name": "Instance Management",
+          "item": [
+            {
+              "name": "Get Instance",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/iperf/instance/get",
+                "description": "Retrieve iperf instance configuration"
+              }
+            },
+            {
+              "name": "Query Instance",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/iperf/instance/query",
+                "description": "Query iperf instance status"
+              }
+            },
+            {
+              "name": "Set Instance",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/iperf/instance/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update iperf instance configuration"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Control",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/iperf/service/status",
+                "description": "Get iperf service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/iperf/service/start",
+                "description": "Start the iperf service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/iperf/service/stop",
+                "description": "Stop the iperf service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/iperf/service/restart",
+                "description": "Restart the iperf service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "LLDP Plugin",
+      "description": "Link Layer Discovery Protocol for device identification and capability advertisement",
+      "item": [
+        {
+          "name": "General Settings",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/lldpd/general/get",
+                "description": "Retrieve LLDP general configuration"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/lldpd/general/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update LLDP general configuration"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/lldpd/service/status",
+                "description": "Get LLDP service status"
+              }
+            },
+            {
+              "name": "Get Neighbors",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/lldpd/service/neighbor",
+                "description": "Get discovered neighbor information"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/lldpd/service/start",
+                "description": "Start LLDP service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/lldpd/service/stop",
+                "description": "Stop LLDP service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/lldpd/service/restart",
+                "description": "Restart LLDP service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/lldpd/service/reconfigure",
+                "description": "Reconfigure LLDP service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Maltrail Plugin",
+      "description": "Malicious traffic detection and prevention system",
+      "item": [
+        {
+          "name": "General Configuration",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/maltrail/general/get",
+                "description": "Retrieve general Maltrail settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/maltrail/general/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update general Maltrail settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sensor Configuration",
+          "item": [
+            {
+              "name": "Get Sensor Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/maltrail/sensor/get",
+                "description": "Retrieve sensor configuration"
+              }
+            },
+            {
+              "name": "Set Sensor Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/maltrail/sensor/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update sensor configuration"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Server Configuration",
+          "item": [
+            {
+              "name": "Get Server Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/maltrail/server/get",
+                "description": "Retrieve server configuration"
+              }
+            },
+            {
+              "name": "Set Server Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/maltrail/server/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update server configuration"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Server Service Management",
+          "item": [
+            {
+              "name": "Get Server Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/maltrail/serverservice/status",
+                "description": "Get Maltrail server status"
+              }
+            },
+            {
+              "name": "Start Server",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/maltrail/serverservice/start",
+                "description": "Start Maltrail server"
+              }
+            },
+            {
+              "name": "Stop Server",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/maltrail/serverservice/stop",
+                "description": "Stop Maltrail server"
+              }
+            },
+            {
+              "name": "Restart Server",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/maltrail/serverservice/restart",
+                "description": "Restart Maltrail server"
+              }
+            },
+            {
+              "name": "Reconfigure Server",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/maltrail/serverservice/reconfigure",
+                "description": "Reconfigure Maltrail server"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sensor Service Management",
+          "item": [
+            {
+              "name": "Get Sensor Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/maltrail/service/status",
+                "description": "Get Maltrail sensor status"
+              }
+            },
+            {
+              "name": "Start Sensor",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/maltrail/service/start",
+                "description": "Start Maltrail sensor"
+              }
+            },
+            {
+              "name": "Stop Sensor",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/maltrail/service/stop",
+                "description": "Stop Maltrail sensor"
+              }
+            },
+            {
+              "name": "Restart Sensor",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/maltrail/service/restart",
+                "description": "Restart Maltrail sensor"
+              }
+            },
+            {
+              "name": "Reconfigure Sensor",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/maltrail/service/reconfigure",
+                "description": "Reconfigure Maltrail sensor"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Telegraf Plugin",
+      "description": "Agent for collecting and sending metrics to InfluxDB and other time series databases",
+      "item": [
+        {
+          "name": "General Configuration",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/telegraf/general/get",
+                "description": "Retrieve Telegraf general settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/telegraf/general/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update Telegraf general settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Input Configuration",
+          "item": [
+            {
+              "name": "Get Input Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/telegraf/input/get",
+                "description": "Retrieve Telegraf input settings"
+              }
+            },
+            {
+              "name": "Set Input Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/telegraf/input/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update Telegraf input settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Output Configuration",
+          "item": [
+            {
+              "name": "Get Output Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/telegraf/output/get",
+                "description": "Retrieve Telegraf output settings"
+              }
+            },
+            {
+              "name": "Set Output Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/telegraf/output/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update Telegraf output settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Key Management",
+          "item": [
+            {
+              "name": "Search Keys",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/telegraf/key/search_key",
+                "description": "Search Telegraf keys"
+              }
+            },
+            {
+              "name": "Add Key",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/telegraf/key/add_key",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"key\": {\n    \"name\": \"api_key\",\n    \"value\": \"secret_token\",\n    \"description\": \"API metrics key\"\n  }\n}"
+                },
+                "description": "Add a new Telegraf key"
+              }
+            },
+            {
+              "name": "Get Key",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/telegraf/key/get_key/{{key_uuid}}",
+                "description": "Get specific Telegraf key by UUID"
+              }
+            },
+            {
+              "name": "Update Key",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/telegraf/key/set_key/{{key_uuid}}",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update specific Telegraf key"
+              }
+            },
+            {
+              "name": "Delete Key",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/telegraf/key/del_key/{{key_uuid}}",
+                "description": "Delete Telegraf key by UUID"
+              }
+            },
+            {
+              "name": "Toggle Key",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/telegraf/key/toggle_key/{{key_uuid}}",
+                "description": "Enable/disable Telegraf key"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/telegraf/service/status",
+                "description": "Get Telegraf service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/telegraf/service/start",
+                "description": "Start Telegraf service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/telegraf/service/stop",
+                "description": "Stop Telegraf service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/telegraf/service/restart",
+                "description": "Restart Telegraf service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/telegraf/service/reconfigure",
+                "description": "Reconfigure Telegraf service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ntopng Plugin",
+      "description": "Network traffic monitoring and analysis tool",
+      "item": [
+        {
+          "name": "General Configuration",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/ntopng/general/get",
+                "description": "Retrieve Ntopng configuration"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/ntopng/general/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update Ntopng configuration"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/ntopng/service/status",
+                "description": "Get Ntopng service status"
+              }
+            },
+            {
+              "name": "Check Redis",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/ntopng/service/checkredis",
+                "description": "Check Redis connectivity for Ntopng"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/ntopng/service/start",
+                "description": "Start Ntopng service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/ntopng/service/stop",
+                "description": "Stop Ntopng service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/ntopng/service/restart",
+                "description": "Restart Ntopng service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/ntopng/service/reconfigure",
+                "description": "Reconfigure Ntopng service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Node Exporter Plugin",
+      "description": "Prometheus Node Exporter for system metrics collection",
+      "item": [
+        {
+          "name": "General Configuration",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/nodeexporter/general/get",
+                "description": "Retrieve Node Exporter configuration"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/nodeexporter/general/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update Node Exporter configuration"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/nodeexporter/service/status",
+                "description": "Get Node Exporter service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/nodeexporter/service/start",
+                "description": "Start Node Exporter service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/nodeexporter/service/stop",
+                "description": "Stop Node Exporter service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/nodeexporter/service/restart",
+                "description": "Restart Node Exporter service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/nodeexporter/service/reconfigure",
+                "description": "Reconfigure Node Exporter service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Redis Plugin",
+      "description": "Redis in-memory data structure store for caching and data management",
+      "item": [
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/redis/service/status",
+                "description": "Get Redis service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/redis/service/start",
+                "description": "Start Redis service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/redis/service/stop",
+                "description": "Stop Redis service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/redis/service/restart",
+                "description": "Restart Redis service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/redis/service/reconfigure",
+                "description": "Reconfigure Redis service"
+              }
+            },
+            {
+              "name": "Reset Database",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/redis/service/resetdb",
+                "description": "Reset Redis database"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Settings Management",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/redis/settings/get",
+                "description": "Retrieve Redis settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/redis/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update Redis settings"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Rspamd Plugin",
+      "description": "Advanced spam filtering system with machine learning capabilities",
+      "item": [
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/rspamd/service/status",
+                "description": "Get Rspamd service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/rspamd/service/start",
+                "description": "Start Rspamd service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/rspamd/service/stop",
+                "description": "Stop Rspamd service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/rspamd/service/restart",
+                "description": "Restart Rspamd service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/rspamd/service/reconfigure",
+                "description": "Reconfigure Rspamd service"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Settings Management",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/rspamd/settings/get",
+                "description": "Retrieve Rspamd settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/rspamd/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update Rspamd settings"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Smart Plugin",
+      "description": "S.M.A.R.T. disk monitoring and health analysis tool",
+      "item": [
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Disk Info",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/smart/service/info",
+                "description": "Get S.M.A.R.T. disk information"
+              }
+            },
+            {
+              "name": "List Disks",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/smart/service/list/{{details}}",
+                "description": "List disks with optional detailed information"
+              }
+            },
+            {
+              "name": "Get Logs",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/smart/service/logs",
+                "description": "Retrieve S.M.A.R.T. logs"
+              }
+            },
+            {
+              "name": "Run Test",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/smart/service/test",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Start S.M.A.R.T. disk test"
+              }
+            },
+            {
+              "name": "Abort Operation",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/smart/service/abort",
+                "description": "Abort running S.M.A.R.T. operation"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Tailscale Plugin",
+      "description": "Mesh VPN based on WireGuard for secure networking",
+      "item": [
+        {
+          "name": "Authentication",
+          "item": [
+            {
+              "name": "Get Authentication Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/tailscale/authentication/get",
+                "description": "Retrieve Tailscale authentication settings"
+              }
+            },
+            {
+              "name": "Set Authentication Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tailscale/authentication/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update Tailscale authentication settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/tailscale/service/status",
+                "description": "Get Tailscale service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tailscale/service/start",
+                "description": "Start Tailscale service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tailscale/service/stop",
+                "description": "Stop Tailscale service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tailscale/service/restart",
+                "description": "Restart Tailscale service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tailscale/service/reconfigure",
+                "description": "Reconfigure Tailscale service"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Settings Management",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/tailscale/settings/get",
+                "description": "Retrieve Tailscale settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tailscale/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update Tailscale settings"
+              }
+            },
+            {
+              "name": "Reload Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tailscale/settings/reload",
+                "description": "Reload Tailscale settings"
+              }
+            },
+            {
+              "name": "Search Subnets",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/tailscale/settings/search_subnet",
+                "description": "Search subnet routes"
+              }
+            },
+            {
+              "name": "Add Subnet",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tailscale/settings/add_subnet",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"subnet\": {\n    \"network\": \"192.168.100.0/24\",\n    \"description\": \"Office network\"\n  }\n}"
+                },
+                "description": "Add a new subnet route"
+              }
+            },
+            {
+              "name": "Get Subnet",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/tailscale/settings/get_subnet/{{subnet_uuid}}",
+                "description": "Get specific subnet by UUID"
+              }
+            },
+            {
+              "name": "Update Subnet",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tailscale/settings/set_subnet/{{subnet_uuid}}",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update specific subnet route"
+              }
+            },
+            {
+              "name": "Delete Subnet",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tailscale/settings/del_subnet/{{subnet_uuid}}",
+                "description": "Delete subnet route by UUID"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Status Management",
+          "item": [
+            {
+              "name": "Get Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/tailscale/status/get",
+                "description": "Get Tailscale status information"
+              }
+            },
+            {
+              "name": "Get IP Info",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/tailscale/status/ip",
+                "description": "Get Tailscale IP information"
+              }
+            },
+            {
+              "name": "Get Network Info",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/tailscale/status/net",
+                "description": "Get Tailscale network information"
+              }
+            },
+            {
+              "name": "Get Detailed Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/tailscale/status/status",
+                "description": "Get detailed Tailscale status"
+              }
+            },
+            {
+              "name": "Set Status",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tailscale/status/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update Tailscale status settings"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Postfix Plugin",
+      "description": "Mail server plugin for email management and relay configuration",
+      "item": [
+        {
+          "name": "General Settings",
+          "item": [
+            {
+              "name": "Get General Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/postfix/general/get",
+                "description": "Retrieve Postfix general settings"
+              }
+            },
+            {
+              "name": "Set General Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/postfix/general/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update Postfix general settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/postfix/service/status",
+                "description": "Get Postfix service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/postfix/service/start",
+                "description": "Start Postfix service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/postfix/service/stop",
+                "description": "Stop Postfix service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/postfix/service/restart",
+                "description": "Restart Postfix service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/postfix/service/reconfigure",
+                "description": "Reconfigure Postfix service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Proxy Plugin",
+      "description": "Forward proxy server for web filtering and caching",
+      "item": [
+        {
+          "name": "General Settings",
+          "item": [
+            {
+              "name": "Get General Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/proxy/general/get",
+                "description": "Retrieve proxy general settings"
+              }
+            },
+            {
+              "name": "Set General Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/proxy/general/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update proxy general settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/proxy/service/status",
+                "description": "Get proxy service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/proxy/service/start",
+                "description": "Start proxy service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/proxy/service/stop",
+                "description": "Stop proxy service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/proxy/service/restart",
+                "description": "Restart proxy service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/proxy/service/reconfigure",
+                "description": "Reconfigure proxy service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Tor Plugin",
+      "description": "Tor anonymity network for privacy and hidden services",
+      "item": [
+        {
+          "name": "General Settings",
+          "item": [
+            {
+              "name": "Get General Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/tor/general/get",
+                "description": "Retrieve Tor general settings"
+              }
+            },
+            {
+              "name": "Set General Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tor/general/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update Tor general settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/tor/service/status",
+                "description": "Get Tor service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tor/service/start",
+                "description": "Start Tor service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tor/service/stop",
+                "description": "Stop Tor service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tor/service/restart",
+                "description": "Restart Tor service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tor/service/reconfigure",
+                "description": "Reconfigure Tor service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Relayd Plugin",
+      "description": "Load balancing daemon for high availability services",
+      "item": [
+        {
+          "name": "Settings Management",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/relayd/settings/get",
+                "description": "Retrieve Relayd settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/relayd/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update Relayd settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/relayd/service/status",
+                "description": "Get Relayd service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/relayd/service/start",
+                "description": "Start Relayd service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/relayd/service/stop",
+                "description": "Stop Relayd service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/relayd/service/restart",
+                "description": "Restart Relayd service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/relayd/service/reconfigure",
+                "description": "Reconfigure Relayd service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "NUT Plugin",
+      "description": "Network UPS Tools for UPS monitoring and management",
+      "item": [
+        {
+          "name": "Settings Management",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/nut/settings/get",
+                "description": "Retrieve NUT settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/nut/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update NUT settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/nut/service/status",
+                "description": "Get NUT service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/nut/service/start",
+                "description": "Start NUT service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/nut/service/stop",
+                "description": "Stop NUT service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/nut/service/restart",
+                "description": "Restart NUT service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/nut/service/reconfigure",
+                "description": "Reconfigure NUT service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "OpenConnect Plugin",
+      "description": "OpenConnect VPN server for SSL VPN connections",
+      "item": [
+        {
+          "name": "Settings Management",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/openconnect/settings/get",
+                "description": "Retrieve OpenConnect settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/openconnect/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update OpenConnect settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/openconnect/service/status",
+                "description": "Get OpenConnect service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/openconnect/service/start",
+                "description": "Start OpenConnect service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/openconnect/service/stop",
+                "description": "Stop OpenConnect service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/openconnect/service/restart",
+                "description": "Restart OpenConnect service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/openconnect/service/reconfigure",
+                "description": "Reconfigure OpenConnect service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Shadowsocks Plugin",
+      "description": "Secure socks5 proxy for network traffic tunneling",
+      "item": [
+        {
+          "name": "Settings Management",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/shadowsocks/settings/get",
+                "description": "Retrieve Shadowsocks settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/shadowsocks/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update Shadowsocks settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/shadowsocks/service/status",
+                "description": "Get Shadowsocks service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/shadowsocks/service/start",
+                "description": "Start Shadowsocks service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/shadowsocks/service/stop",
+                "description": "Stop Shadowsocks service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/shadowsocks/service/restart",
+                "description": "Restart Shadowsocks service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/shadowsocks/service/reconfigure",
+                "description": "Reconfigure Shadowsocks service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "SoftEther Plugin",
+      "description": "Multi-protocol VPN software for flexible VPN solutions",
+      "item": [
+        {
+          "name": "Settings Management",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/softether/settings/get",
+                "description": "Retrieve SoftEther settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/softether/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update SoftEther settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/softether/service/status",
+                "description": "Get SoftEther service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/softether/service/start",
+                "description": "Start SoftEther service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/softether/service/stop",
+                "description": "Stop SoftEther service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/softether/service/restart",
+                "description": "Restart SoftEther service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/softether/service/reconfigure",
+                "description": "Reconfigure SoftEther service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Stunnel Plugin",
+      "description": "SSL/TLS tunneling proxy for securing TCP connections",
+      "item": [
+        {
+          "name": "Settings Management",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/stunnel/settings/get",
+                "description": "Retrieve Stunnel settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/stunnel/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update Stunnel settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/stunnel/service/status",
+                "description": "Get Stunnel service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/stunnel/service/start",
+                "description": "Start Stunnel service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/stunnel/service/stop",
+                "description": "Stop Stunnel service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/stunnel/service/restart",
+                "description": "Restart Stunnel service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/stunnel/service/reconfigure",
+                "description": "Reconfigure Stunnel service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Tayga Plugin",
+      "description": "NAT64 gateway for IPv4/IPv6 translation services",
+      "item": [
+        {
+          "name": "Settings Management",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/tayga/settings/get",
+                "description": "Retrieve Tayga settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tayga/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update Tayga settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/tayga/service/status",
+                "description": "Get Tayga service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tayga/service/start",
+                "description": "Start Tayga service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tayga/service/stop",
+                "description": "Stop Tayga service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tayga/service/restart",
+                "description": "Restart Tayga service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tayga/service/reconfigure",
+                "description": "Reconfigure Tayga service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "TFTP Plugin",
+      "description": "Trivial File Transfer Protocol server for network booting",
+      "item": [
+        {
+          "name": "Settings Management",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/tftp/settings/get",
+                "description": "Retrieve TFTP settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tftp/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update TFTP settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/tftp/service/status",
+                "description": "Get TFTP service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tftp/service/start",
+                "description": "Start TFTP service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tftp/service/stop",
+                "description": "Stop TFTP service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tftp/service/restart",
+                "description": "Restart TFTP service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tftp/service/reconfigure",
+                "description": "Reconfigure TFTP service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Tinc Plugin",
+      "description": "Mesh VPN daemon for secure peer-to-peer networking",
+      "item": [
+        {
+          "name": "Settings Management",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/tinc/settings/get",
+                "description": "Retrieve Tinc settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tinc/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update Tinc settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/tinc/service/status",
+                "description": "Get Tinc service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tinc/service/start",
+                "description": "Start Tinc service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tinc/service/stop",
+                "description": "Stop Tinc service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tinc/service/restart",
+                "description": "Restart Tinc service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/tinc/service/reconfigure",
+                "description": "Reconfigure Tinc service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Turn Server Plugin",
+      "description": "TURN/STUN server for NAT traversal in WebRTC applications",
+      "item": [
+        {
+          "name": "Settings Management",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/turnserver/settings/get",
+                "description": "Retrieve Turn Server settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/turnserver/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update Turn Server settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/turnserver/service/status",
+                "description": "Get Turn Server service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/turnserver/service/start",
+                "description": "Start Turn Server service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/turnserver/service/stop",
+                "description": "Stop Turn Server service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/turnserver/service/restart",
+                "description": "Restart Turn Server service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/turnserver/service/reconfigure",
+                "description": "Reconfigure Turn Server service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "UDP Broadcast Relay Plugin",
+      "description": "UDP broadcast packet relay across network segments",
+      "item": [
+        {
+          "name": "Settings Management",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/udpbroadcastrelay/settings/get",
+                "description": "Retrieve UDP Broadcast Relay settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/udpbroadcastrelay/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update UDP Broadcast Relay settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/udpbroadcastrelay/service/status",
+                "description": "Get UDP Broadcast Relay service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/udpbroadcastrelay/service/start",
+                "description": "Start UDP Broadcast Relay service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/udpbroadcastrelay/service/stop",
+                "description": "Stop UDP Broadcast Relay service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/udpbroadcastrelay/service/restart",
+                "description": "Restart UDP Broadcast Relay service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/udpbroadcastrelay/service/reconfigure",
+                "description": "Reconfigure UDP Broadcast Relay service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Vnstat Plugin",
+      "description": "Network traffic monitoring and statistics collection",
+      "item": [
+        {
+          "name": "Settings Management",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/vnstat/settings/get",
+                "description": "Retrieve Vnstat settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/vnstat/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update Vnstat settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/vnstat/service/status",
+                "description": "Get Vnstat service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/vnstat/service/start",
+                "description": "Start Vnstat service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/vnstat/service/stop",
+                "description": "Stop Vnstat service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/vnstat/service/restart",
+                "description": "Restart Vnstat service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/vnstat/service/reconfigure",
+                "description": "Reconfigure Vnstat service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Wazuh Agent Plugin",
+      "description": "Security monitoring and log analysis agent",
+      "item": [
+        {
+          "name": "Settings Management",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/wazuhagent/settings/get",
+                "description": "Retrieve Wazuh Agent settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/wazuhagent/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update Wazuh Agent settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/wazuhagent/service/status",
+                "description": "Get Wazuh Agent service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/wazuhagent/service/start",
+                "description": "Start Wazuh Agent service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/wazuhagent/service/stop",
+                "description": "Stop Wazuh Agent service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/wazuhagent/service/restart",
+                "description": "Restart Wazuh Agent service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/wazuhagent/service/reconfigure",
+                "description": "Reconfigure Wazuh Agent service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "WOL Plugin",
+      "description": "Wake-on-LAN service for remote device wake-up",
+      "item": [
+        {
+          "name": "Settings Management",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/wol/settings/get",
+                "description": "Retrieve WOL settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/wol/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update WOL settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Wake Device",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/wol/service/wake",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"mac\": \"00:11:22:33:44:55\",\n  \"interface\": \"lan\"\n}"
+                },
+                "description": "Send Wake-on-LAN packet to device"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ZeroTier Plugin",
+      "description": "Global area network for secure device connectivity",
+      "item": [
+        {
+          "name": "Networks Management",
+          "item": [
+            {
+              "name": "Search Networks",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/zerotier/network/search",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"current\": 1,\n  \"rowCount\": 7,\n  \"sort\": {},\n  \"searchPhrase\": \"\"\n}"
+                },
+                "description": "Search ZeroTier networks"
+              }
+            },
+            {
+              "name": "Add Network",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/zerotier/network/add",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"network\": {\n    \"enabled\": \"1\",\n    \"networkid\": \"1234567890abcdef\",\n    \"description\": \"My ZeroTier Network\"\n  }\n}"
+                },
+                "description": "Add a new ZeroTier network"
+              }
+            },
+            {
+              "name": "Get Network",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/zerotier/network/get/{{network_uuid}}",
+                "description": "Get specific ZeroTier network"
+              }
+            },
+            {
+              "name": "Update Network",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/zerotier/network/set/{{network_uuid}}",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update specific ZeroTier network"
+              }
+            },
+            {
+              "name": "Delete Network",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/zerotier/network/del/{{network_uuid}}",
+                "description": "Delete ZeroTier network by UUID"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/zerotier/service/status",
+                "description": "Get ZeroTier service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/zerotier/service/start",
+                "description": "Start ZeroTier service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/zerotier/service/stop",
+                "description": "Stop ZeroTier service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/zerotier/service/restart",
+                "description": "Restart ZeroTier service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/zerotier/service/reconfigure",
+                "description": "Reconfigure ZeroTier service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mDNS Repeater Plugin",
+      "description": "Multicast DNS repeater for cross-subnet service discovery",
+      "item": [
+        {
+          "name": "Settings Management",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/mdnsrepeater/settings/get",
+                "description": "Retrieve mDNS Repeater settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/mdnsrepeater/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update mDNS Repeater settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/mdnsrepeater/service/status",
+                "description": "Get mDNS Repeater service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/mdnsrepeater/service/start",
+                "description": "Start mDNS Repeater service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/mdnsrepeater/service/stop",
+                "description": "Stop mDNS Repeater service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/mdnsrepeater/service/restart",
+                "description": "Restart mDNS Repeater service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/mdnsrepeater/service/reconfigure",
+                "description": "Reconfigure mDNS Repeater service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Munin Node Plugin",
+      "description": "System monitoring agent for Munin monitoring system",
+      "item": [
+        {
+          "name": "Settings Management",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/muninnode/settings/get",
+                "description": "Retrieve Munin Node settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/muninnode/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update Munin Node settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/muninnode/service/status",
+                "description": "Get Munin Node service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/muninnode/service/start",
+                "description": "Start Munin Node service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/muninnode/service/stop",
+                "description": "Stop Munin Node service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/muninnode/service/restart",
+                "description": "Restart Munin Node service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/muninnode/service/reconfigure",
+                "description": "Reconfigure Munin Node service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "NRPE Plugin",
+      "description": "Nagios Remote Plugin Executor for monitoring integration",
+      "item": [
+        {
+          "name": "Settings Management",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/nrpe/settings/get",
+                "description": "Retrieve NRPE settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/nrpe/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update NRPE settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/nrpe/service/status",
+                "description": "Get NRPE service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/nrpe/service/start",
+                "description": "Start NRPE service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/nrpe/service/stop",
+                "description": "Stop NRPE service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/nrpe/service/restart",
+                "description": "Restart NRPE service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/nrpe/service/reconfigure",
+                "description": "Reconfigure NRPE service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "NDProxy Plugin",
+      "description": "IPv6 Neighbor Discovery proxy for network bridging",
+      "item": [
+        {
+          "name": "Settings Management",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/ndproxy/settings/get",
+                "description": "Retrieve NDProxy settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/ndproxy/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update NDProxy settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/ndproxy/service/status",
+                "description": "Get NDProxy service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/ndproxy/service/start",
+                "description": "Start NDProxy service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/ndproxy/service/stop",
+                "description": "Stop NDProxy service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/ndproxy/service/restart",
+                "description": "Restart NDProxy service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/ndproxy/service/reconfigure",
+                "description": "Reconfigure NDProxy service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "RadSecProxy Plugin",
+      "description": "RADIUS security proxy for secure RADIUS communication",
+      "item": [
+        {
+          "name": "Settings Management",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/radsecproxy/settings/get",
+                "description": "Retrieve RadSecProxy settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/radsecproxy/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update RadSecProxy settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/radsecproxy/service/status",
+                "description": "Get RadSecProxy service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/radsecproxy/service/start",
+                "description": "Start RadSecProxy service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/radsecproxy/service/stop",
+                "description": "Stop RadSecProxy service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/radsecproxy/service/restart",
+                "description": "Restart RadSecProxy service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/radsecproxy/service/reconfigure",
+                "description": "Reconfigure RadSecProxy service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "SipProxyd Plugin",
+      "description": "SIP proxy daemon for VoIP traffic management",
+      "item": [
+        {
+          "name": "Settings Management",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/siproxyd/settings/get",
+                "description": "Retrieve SipProxyd settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/siproxyd/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update SipProxyd settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/siproxyd/service/status",
+                "description": "Get SipProxyd service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/siproxyd/service/start",
+                "description": "Start SipProxyd service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/siproxyd/service/stop",
+                "description": "Stop SipProxyd service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/siproxyd/service/restart",
+                "description": "Restart SipProxyd service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/siproxyd/service/reconfigure",
+                "description": "Reconfigure SipProxyd service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "SSLH Plugin",
+      "description": "SSL/SSH multiplexer for sharing ports between services",
+      "item": [
+        {
+          "name": "Settings Management",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/sslh/settings/get",
+                "description": "Retrieve SSLH settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/sslh/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update SSLH settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/sslh/service/status",
+                "description": "Get SSLH service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/sslh/service/start",
+                "description": "Start SSLH service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/sslh/service/stop",
+                "description": "Stop SSLH service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/sslh/service/restart",
+                "description": "Restart SSLH service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/sslh/service/reconfigure",
+                "description": "Reconfigure SSLH service"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Qemu Guest Agent Plugin",
+      "description": "QEMU guest agent for virtualization management",
+      "item": [
+        {
+          "name": "Settings Management",
+          "item": [
+            {
+              "name": "Get Settings",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/qemuguestagent/settings/get",
+                "description": "Retrieve Qemu Guest Agent settings"
+              }
+            },
+            {
+              "name": "Set Settings",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/qemuguestagent/settings/set",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Update Qemu Guest Agent settings"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Service Management",
+          "item": [
+            {
+              "name": "Get Service Status",
+              "request": {
+                "method": "GET",
+                "url": "{{opnsense_base_url}}/qemuguestagent/service/status",
+                "description": "Get Qemu Guest Agent service status"
+              }
+            },
+            {
+              "name": "Start Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/qemuguestagent/service/start",
+                "description": "Start Qemu Guest Agent service"
+              }
+            },
+            {
+              "name": "Stop Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/qemuguestagent/service/stop",
+                "description": "Stop Qemu Guest Agent service"
+              }
+            },
+            {
+              "name": "Restart Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/qemuguestagent/service/restart",
+                "description": "Restart Qemu Guest Agent service"
+              }
+            },
+            {
+              "name": "Reconfigure Service",
+              "request": {
+                "method": "POST",
+                "url": "{{opnsense_base_url}}/qemuguestagent/service/reconfigure",
+                "description": "Reconfigure Qemu Guest Agent service"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
