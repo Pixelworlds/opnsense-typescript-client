@@ -7,7 +7,7 @@ export class IPsecModule extends BaseModule {
     return this.http.get('/api/ipsec/connections/is_enabled');
   }
 
-  async toggle(enabled?: boolean): Promise<ApiResponse<ApiResult>> {
+  async toggleService(enabled?: boolean): Promise<ApiResponse<ApiResult>> {
     const path =
       enabled !== undefined ? `/api/ipsec/connections/toggle/${enabled ? '1' : '0'}` : '/api/ipsec/connections/toggle';
     return this.http.post(path);

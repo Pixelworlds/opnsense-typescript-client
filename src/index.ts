@@ -6,8 +6,3 @@ export type { ApiError, ApiResponse, ApiResult, HttpMethod, OPNsenseConfig, Requ
 export { OPNsenseApiError, ValidationError } from './errors';
 
 export * from './modules';
-
-
-import { OPNsenseClient } from './client';
-
-export default OPNsenseClient;

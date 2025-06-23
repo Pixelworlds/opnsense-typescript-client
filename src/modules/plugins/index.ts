@@ -9,7 +9,7 @@ export { CollectdModule } from './collectd';
 export { CrowdsecModule } from './crowdsec';
 
 export { DechwModule } from './dechw';
-export { DiagnosticsModule } from './diagnostics';
+export { DiagnosticsModule as PluginDiagnosticsModule } from './diagnostics';
 export { DmidecodeModule } from './dmidecode';
 export { DnscryptproxyModule } from './dnscryptproxy';
 export { DyndnsModule } from './dyndns';

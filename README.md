@@ -1,6 +1,6 @@
-# OPNsense API TypeScript SDK
+# OPNsense TypeScript Client
 
-A comprehensive TypeScript SDK for interacting with the OPNsense API. This SDK provides a clean, type-safe interface for managing your OPNsense firewall through code, supporting both browser and Node.js environments.
+A comprehensive TypeScript client for interacting with the OPNsense API. This client provides a clean, type-safe interface for managing your OPNsense firewall through code, supporting both browser and Node.js environments.
 
 ## Features
 
@@ -15,13 +15,13 @@ A comprehensive TypeScript SDK for interacting with the OPNsense API. This SDK p
 ## Installation
 
 ```bash
-npm install opnsense-api-ts-sdk
+npm install opnsense-typescript-client
 ```
 
 ## Quick Start
 
 ```typescript
-import { OPNsenseClient } from 'opnsense-api-ts-sdk';
+import { OPNsenseClient } from 'opnsense-typescript-client';
 
 // Initialize the client
 const client = new OPNsenseClient({
@@ -312,7 +312,7 @@ if (await client.isPluginAvailable('haproxy')) {
 The SDK provides comprehensive error handling with custom error types:
 
 ```typescript
-import { OPNsenseApiError, ValidationError } from 'opnsense-api-ts-sdk';
+import { OPNsenseApiError, ValidationError } from 'opnsense-typescript-client';
 
 try {
   const status = await client.system.getStatus();
@@ -358,7 +358,7 @@ import type {
   SystemStatus,
   ApiResponse,
   SearchParams 
-} from 'opnsense-api-ts-sdk';
+} from 'opnsense-typescript-client';
 
 // Type-safe rule creation
 const rule: FirewallRule = {
@@ -443,7 +443,7 @@ Contributions are welcome! The refactored architecture makes it easy to add new 
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-repo/opnsense-api-ts-sdk.git
+git clone https://github.com/your-repo/opnsense-typescript-client.git
 
 # Install dependencies
 npm install
@@ -464,7 +464,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Support
 
-- [Issue Tracker](https://github.com/your-repo/opnsense-api-ts-sdk/issues)
+- [Issue Tracker](https://github.com/your-repo/opnsense-typescript-client/issues)
 - [OPNsense API Documentation](https://docs.opnsense.org/development/api.html)
 - [OPNsense Community](https://forum.opnsense.org/)
 

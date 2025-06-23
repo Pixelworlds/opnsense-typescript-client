@@ -3,7 +3,11 @@ import { BaseModule } from '../base';
 import type { ApiResponse } from '../../types';
 
 export class ServiceModule extends BaseModule {
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
+  override async search(path: string, searchParams: Record<string, any> = {}): Promise<ApiResponse<any>> {
+    return super.search(path, searchParams);
+  }
+
+  async searchServices(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
     return this.search('/api/core/service/search', params);
   }
 
