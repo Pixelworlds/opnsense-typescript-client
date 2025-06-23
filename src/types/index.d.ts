@@ -1,3 +1,4 @@
+// Export all types from individual modules via re-export
 export * from './auth';
 export * from './common';
 export * from './core';
@@ -6,9 +7,10 @@ export * from './firewall';
 export * from './firmware';
 export * from './interfaces';
 export * from './ipsec';
-export * from './openvpn';
 export * from './keygen';
+export * from './openvpn';
 
+// Re-export key common types for convenience
 export type {
   ApiError,
   ApiResponse,
@@ -16,21 +18,18 @@ export type {
   Certificate,
   Group,
   HttpMethod,
-  InterfaceInfo,
   OPNsenseConfig,
   RequestOptions,
   SearchParams,
   User,
 } from './common';
 
-export type { ServiceStatus, SystemStatus } from './core';
-
-export type { FirewallAlias, FirewallRule } from './firewall';
-
-export type { VpnConnection } from './openvpn';
-
-export type {
-  WireguardKeypair,
-  WireguardPresharedKey,
-  WireguardKeys
-} from './keygen';
+// Export namespaces for structured access to types
+export type { Auth } from './auth';
+export type { Core } from './core';
+export type { Diagnostics } from './diagnostics';
+export type { Firewall } from './firewall';
+export type { Firmware } from './firmware';
+export type { Interfaces } from './interfaces';
+export type { IPsec } from './ipsec';
+export type { OpenVPN } from './openvpn';
