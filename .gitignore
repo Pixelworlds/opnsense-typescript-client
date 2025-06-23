@@ -1,0 +1,40 @@
+# dependencies (bun install)
+node_modules/
+
+# output
+out
+dist/
+*.tgz
+
+# code coverage
+coverage/
+*.lcov
+
+# logs
+logs
+*.log
+report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
+
+# dotenv environment variable files
+.env
+.env.local
+.env.production
+.env.test
+
+# caches
+.eslintcache
+.cache/
+*.tsbuildinfo
+
+# IntelliJ based IDEs
+.idea
+
+# Finder (MacOS) folder config
+.DS_Store
+.cursor
+CLAUDE.md
+bun.lock
+
+# Additional exclusions
+.nyc_output/
+.parcel-cache/
