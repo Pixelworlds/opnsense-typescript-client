@@ -81,10 +81,12 @@ const client = new OPNsenseClient({
 
 // Core modules are always available
 const status = await client.system.getStatus();
+
 console.log('System uptime:', status.data.uptime);
 
 // Plugin modules require the plugin to be installed
 const hasWireGuard = await client.isPluginAvailable('wireGuard');
+
 if (hasWireGuard) {
   const wgStatus = await client.plugins.wireGuard.getStatus();
   console.log('WireGuard status:', wgStatus.data);
