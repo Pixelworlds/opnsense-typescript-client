@@ -4,6 +4,8 @@ export * from './core';
 
 export * from './plugins';
 
+export * from './utility';
+
 export {
   SystemModule,
   FirmwareModule,
@@ -15,6 +17,10 @@ export {
   AuthModule,
   TrustModule
 } from './core';
+
+export {
+  KeygenModule
+} from './utility';
 
 export {
   WireGuardModule,

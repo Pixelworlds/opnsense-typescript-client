@@ -491,3 +491,43 @@ See [CHANGELOG.md](CHANGELOG.md) for a list of changes and version history.
 - Complete refactored architecture with individual files
 
 This refactored architecture ensures better maintainability, clearer organization, and easier extension while providing comprehensive coverage of both core and plugin functionality.
+
+## Utilities
+
+### Wireguard Key Generation
+
+The SDK includes a command-line utility for generating Wireguard keys locally without requiring network connectivity to OPNsense:
+
+```bash
+# Generate a keypair (public and private keys)
+bun src/utils/keygen.ts keypair
+
+# Generate a preshared key
+bun src/utils/keygen.ts preshared
+
+# Generate all keys (keypair + preshared key)
+bun src/utils/keygen.ts keys
+
+# Validate a Base64-encoded Wireguard key
+echo "KwSMLdpVKmjtJ/EsL3aAm3d7VA3mzpB5yHlnXnVwBWw=" | bun src/utils/keygen.ts validate
+# or
+bun src/utils/keygen.ts validate "KwSMLdpVKmjtJ/EsL3aAm3d7VA3mzpB5yHlnXnVwBWw="
+
+# Show help
+bun src/utils/keygen.ts help
+```
+
+**Key Features:**
+- Uses Curve25519 elliptic curve cryptography
+- Generates cryptographically secure random keys using Node.js `crypto.randomBytes()`
+- Produces standard Wireguard-compatible Base64-encoded keys
+- Works completely offline without requiring OPNsense connectivity
+- Validates key format and structure
+
+**Example Output:**
+```json
+{
+  "publicKey": "KwSMLdpVKmjtJ/EsL3aAm3d7VA3mzpB5yHlnXnVwBWw=",
+  "privateKey": "YHkJNduyK7YPxTeHbaYLdGaMwJFKdDGdW2UKGFy1H28="
+}
+```

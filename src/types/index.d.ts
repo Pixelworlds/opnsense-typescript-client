@@ -7,6 +7,7 @@ export * from './firmware';
 export * from './interfaces';
 export * from './ipsec';
 export * from './openvpn';
+export * from './keygen';
 
 export type {
   ApiError,
@@ -27,3 +28,9 @@ export type { ServiceStatus, SystemStatus } from './core';
 export type { FirewallAlias, FirewallRule } from './firewall';
 
 export type { VpnConnection } from './openvpn';
+
+export type {
+  WireguardKeypair,
+  WireguardPresharedKey,
+  WireguardKeys
+} from './keygen';
