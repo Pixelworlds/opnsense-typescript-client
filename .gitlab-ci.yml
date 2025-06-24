@@ -4,34 +4,37 @@ stages:
   - package
 
 variables:
-  BUN_VERSION: "1.1.25"
-  CACHE_KEY: "${CI_COMMIT_REF_SLUG}-node-modules"
+  NODE_VERSION: "18"
+  CACHE_KEY: "${CI_COMMIT_REF_SLUG}-yarn-cache"
 
-.bun_template: &bun_template
-  image: oven/bun:${BUN_VERSION}-alpine
+.yarn_template: &yarn_template
+  image: node:${NODE_VERSION}-alpine
   cache:
     key: $CACHE_KEY
     paths:
+      - .yarn/cache/
       - node_modules/
   before_script:
-    - bun install --frozen-lockfile
+    - corepack enable
+    - corepack prepare yarn@4.0.2 --activate
+    - yarn install --immutable
 
 # Test stage
 lint:
-  <<: *bun_template
+  <<: *yarn_template
   stage: test
   script:
-    - bun run lint
+    - yarn lint
   rules:
     - if: $CI_PIPELINE_SOURCE == "push"
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 test:
-  <<: *bun_template
+  <<: *yarn_template
   stage: test
   script:
-    - bun run test
-    - bun run test:coverage
+    - yarn test
+    - yarn test:coverage
   coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
   artifacts:
     paths:
@@ -42,20 +45,20 @@ test:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 type_check:
-  <<: *bun_template
+  <<: *yarn_template
   stage: test
   script:
-    - bun run type-check
+    - yarn type-check
   rules:
     - if: $CI_PIPELINE_SOURCE == "push"
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 # Build stage
 build:
-  <<: *bun_template
+  <<: *yarn_template
   stage: build
   script:
-    - bun run build
+    - yarn build
   artifacts:
     paths:
       - dist/
@@ -65,14 +68,14 @@ build:
     - if: $CI_PIPELINE_SOURCE == "push"
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
-# Package stage - uses Node.js image with npm
+# Package stage
 package:
-  image: node:18-alpine
+  <<: *yarn_template
   stage: package
   dependencies:
     - build
   script:
-    - npm pack
+    - yarn pack
   artifacts:
     paths:
       - "*.tgz"
@@ -83,10 +86,10 @@ package:
 
 # Security and quality checks
 security_scan:
-  <<: *bun_template
+  <<: *yarn_template
   stage: test
   script:
-    - bun audit
+    - yarn audit
   allow_failure: true
   rules:
     - if: $CI_PIPELINE_SOURCE == "push"
@@ -94,13 +97,13 @@ security_scan:
 
 # Deploy to npm (only on tags)
 deploy_npm:
-  <<: *bun_template
+  <<: *yarn_template
   stage: package
   dependencies:
     - build
   script:
     - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
-    - bun publish
+    - yarn npm publish
   rules:
     - if: $CI_COMMIT_TAG
       when: manual
