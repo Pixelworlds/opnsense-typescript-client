@@ -1,7 +1,9 @@
 import { HttpClient } from './http-client';
 import {
-    AuthModule, BackupModule, CaptivePortalModule, CronModule, DiagnosticsModule, FirewallModule, FirmwareModule,
-    InterfacesModule, IPsecModule, MonitModule, OpenVPNModule, ServiceModule, SystemModule, TrustModule
+    AuthModule, BackupModule, CaptivePortalModule, CoreModule, CronModule, Dhcpv4Module, Dhcpv6Module, DhcrelayModule,
+    DiagnosticsModule, DnsmasqModule, FirewallModule, FirmwareModule, IdsModule, InterfacesModule, IPsecModule,
+    KeaModule, MonitModule, OpenVPNModule, RoutesModule, RoutingModule, ServiceModule, SyslogModule, SystemModule,
+    TrafficshaperModule, TrustModule, UnboundModule, WireguardModule
 } from './modules/core';
 import {
     BindModule, CaddyModule, CrowdsecModule, HAProxyModule, NetdataModule, NetsnmpModule, NginxModule, WireGuardModule
@@ -33,6 +35,19 @@ export class OPNsenseClient {
   public readonly cron: CronModule;
   public readonly backup: BackupModule;
   public readonly monit: MonitModule;
+  public readonly core: CoreModule;
+  public readonly dhcpv4: Dhcpv4Module;
+  public readonly dhcpv6: Dhcpv6Module;
+  public readonly dhcrelay: DhcrelayModule;
+  public readonly dnsmasq: DnsmasqModule;
+  public readonly ids: IdsModule;
+  public readonly kea: KeaModule;
+  public readonly routes: RoutesModule;
+  public readonly routing: RoutingModule;
+  public readonly syslog: SyslogModule;
+  public readonly trafficshaper: TrafficshaperModule;
+  public readonly unbound: UnboundModule;
+  public readonly wireguard: WireguardModule;
 
   // Plugin modules (require plugin installation)
   public readonly plugins: {
@@ -64,6 +79,19 @@ export class OPNsenseClient {
     this.cron = new CronModule(this.http);
     this.backup = new BackupModule(this.http);
     this.monit = new MonitModule(this.http);
+    this.core = new CoreModule(this.http);
+    this.dhcpv4 = new Dhcpv4Module(this.http);
+    this.dhcpv6 = new Dhcpv6Module(this.http);
+    this.dhcrelay = new DhcrelayModule(this.http);
+    this.dnsmasq = new DnsmasqModule(this.http);
+    this.ids = new IdsModule(this.http);
+    this.kea = new KeaModule(this.http);
+    this.routes = new RoutesModule(this.http);
+    this.routing = new RoutingModule(this.http);
+    this.syslog = new SyslogModule(this.http);
+    this.trafficshaper = new TrafficshaperModule(this.http);
+    this.unbound = new UnboundModule(this.http);
+    this.wireguard = new WireguardModule(this.http);
 
     // Initialize plugin modules
     this.plugins = {
