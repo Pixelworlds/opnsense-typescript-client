@@ -65,9 +65,9 @@ build:
     - if: $CI_PIPELINE_SOURCE == "push"
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
-# Package stage
+# Package stage - uses Node.js image with npm
 package:
-  <<: *bun_template
+  image: node:18-alpine
   stage: package
   dependencies:
     - build
