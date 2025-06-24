@@ -21,9 +21,12 @@
     "build": "rollup -c",
     "dev": "rollup -c --watch",
     "clean": "rm -rf dist",
-    "prebuild": "bun run clean",
+    "prebuild": "npm run clean",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "type-check": "tsc --noEmit",
+    "test": "echo 'No tests specified yet' && exit 0",
+    "test:coverage": "echo 'No coverage tests specified yet' && exit 0"
   },
   "devDependencies": {
     "@types/bun": "latest",
@@ -37,7 +40,8 @@
     "globals": "^13.24.0",
     "rollup": "^4.9.4",
     "rollup-plugin-dts": "^6.1.0",
-    "tslib": "^2.6.2"
+    "tslib": "^2.6.2",
+    "typescript": "^5"
   },
   "peerDependencies": {
     "typescript": "^5"
