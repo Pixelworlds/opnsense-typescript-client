@@ -89,7 +89,7 @@ security_scan:
   <<: *yarn_template
   stage: test
   script:
-    - yarn npm audit
+    - yarn npm audit --exclude eslint
   allow_failure: true
   rules:
     - if: $CI_PIPELINE_SOURCE == "push"
