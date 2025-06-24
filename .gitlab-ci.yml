@@ -80,7 +80,6 @@ test:unit:
     - build
   script:
     - echo "Running unit tests..."
-    # Check if test script exists in package.json
     - |
       if bun run --silent test 2>/dev/null; then
         echo "Running existing test suite"
@@ -109,27 +108,7 @@ package:validate:
     - echo "Validating package structure..."
     - bun run build
     - echo "Checking package exports..."
-    - node -e "
-        const pkg = require('./package.json');
-        console.log('Package name:', pkg.name);
-        console.log('Version:', pkg.version);
-        console.log('Main:', pkg.main);
-        console.log('Module:', pkg.module);
-        console.log('Types:', pkg.types);
-        
-        // Validate files exist
-        const fs = require('fs');
-        const files = [pkg.main, pkg.module, pkg.types];
-        files.forEach(file => {
-          if (!fs.existsSync(file)) {
-            console.error('Missing file:', file);
-            process.exit(1);
-          }
-          console.log('✓', file, 'exists');
-        });
-        
-        console.log('Package validation passed');
-      "
+    - node -e "const pkg = require('./package.json'); console.log('Package name:', pkg.name); console.log('Version:', pkg.version); const fs = require('fs'); [pkg.main, pkg.module, pkg.types].forEach(file => { if (!fs.existsSync(file)) { console.error('Missing file:', file); process.exit(1); } console.log('✓', file, 'exists'); }); console.log('Package validation passed');"
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_COMMIT_TAG
@@ -151,7 +130,6 @@ publish:npm:
     - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/
   environment:
     name: production
-    url: https://www.npmjs.com/package/@richard-stovall/opnsense-typescript-client
 
 # Create GitLab package registry release
 publish:gitlab:
@@ -172,4 +150,31 @@ publish:gitlab:
     - if: $CI_COMMIT_TAG
   environment:
     name: registry
-    url: ${CI_PROJECT_URL}/-/packages
+
+# Performance check job
+performance:bundle_size:
+  stage: test
+  image: oven/bun:${BUN_VERSION}
+  <<: *setup_bun
+  dependencies:
+    - build
+  script:
+    - echo "Analyzing bundle size..."
+    - ls -lh dist/
+    - echo "ES Module size:" && wc -c < dist/index.js
+    - echo "CommonJS size:" && wc -c < dist/index.cjs
+    - echo "TypeScript declarations size:" && wc -c < dist/index.d.ts
+    - |
+      ES_SIZE=$(wc -c < dist/index.js)
+      CJS_SIZE=$(wc -c < dist/index.cjs)
+      MAX_SIZE=1048576
+      if [ "$ES_SIZE" -gt "$MAX_SIZE" ] || [ "$CJS_SIZE" -gt "$MAX_SIZE" ]; then
+        echo "Warning: Bundle size may be too large"
+        echo "ES Module: $ES_SIZE bytes"
+        echo "CommonJS: $CJS_SIZE bytes"
+      else
+        echo "Bundle size looks good"
+      fi
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
