@@ -89,6 +89,7 @@ security_scan:
   <<: *yarn_template
   stage: test
   script:
+    - yarn plugin import https://raw.githubusercontent.com/yarnpkg/berry/master/packages/plugin-audit/bin/%40yarnpkg/plugin-audit.js
     - yarn audit
   allow_failure: true
   rules:
