@@ -3,6 +3,7 @@
 
 # Define stages
 stages:
+  - test-runner
   - validate
   - build
   - test
@@ -13,6 +14,29 @@ stages:
 variables:
   NODE_VERSION: "20"
   BUN_VERSION: "1.1.25"
+
+# Simple runner test job - runs on every commit
+runner-test:
+  stage: test-runner
+  image: alpine:latest
+  script:
+    - echo "🧪 Testing GitLab Runner connectivity"
+    - echo "Runner ID: $CI_RUNNER_ID"
+    - echo "Runner Description: $CI_RUNNER_DESCRIPTION"
+    - echo "Runner Tags: $CI_RUNNER_TAGS"
+    - echo "Project: $CI_PROJECT_NAME"
+    - echo "Branch: $CI_COMMIT_REF_NAME"
+    - echo "Commit: $CI_COMMIT_SHA"
+    - echo "Pipeline: $CI_PIPELINE_ID"
+    - echo "Job: $CI_JOB_ID"
+    - echo "✅ Runner is working correctly!"
+    - date
+    - whoami
+    - pwd
+    - ls -la
+  # This job runs on every push - no restrictions
+  rules:
+    - when: always
 
 # Cache dependencies to speed up builds
 cache:
