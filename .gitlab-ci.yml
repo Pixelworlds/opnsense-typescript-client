@@ -66,9 +66,6 @@ build:
     paths:
       - dist/
     expire_in: 1 hour
-    reports:
-      # Generate build report
-      junit: dist/build-report.xml
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
@@ -90,24 +87,12 @@ test:unit:
         bun run test
       else
         echo "No test script found in package.json"
-        echo "Skipping tests for now"
-        # You can add basic smoke tests here
         echo "Performing basic validation of built files..."
         test -f dist/index.js || (echo "Missing ES module build" && exit 1)
         test -f dist/index.cjs || (echo "Missing CommonJS build" && exit 1)
         test -f dist/index.d.ts || (echo "Missing TypeScript declarations" && exit 1)
         echo "All required build artifacts present"
       fi
-  coverage: '/Lines\s*:\s*(\d+\.\d+)%/'
-  artifacts:
-    when: always
-    reports:
-      coverage_report:
-        coverage_format: cobertura
-        path: coverage/cobertura-coverage.xml
-    paths:
-      - coverage/
-    expire_in: 1 week
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
@@ -188,75 +173,3 @@ publish:gitlab:
   environment:
     name: registry
     url: ${CI_PROJECT_URL}/-/packages
-
-# Security scanning (if available)
-security:dependency_scan:
-  stage: validate
-  image: oven/bun:${BUN_VERSION}
-  <<: *setup_bun
-  script:
-    - echo "Running dependency security scan..."
-    - bunx audit
-  allow_failure: true
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-
-# Generate documentation (if docs script exists)
-docs:generate:
-  stage: package
-  image: oven/bun:${BUN_VERSION}
-  <<: *setup_bun
-  dependencies:
-    - build
-  script:
-    - echo "Generating documentation..."
-    - |
-      if bun run --silent docs 2>/dev/null; then
-        echo "Generating documentation with existing docs script"
-        bun run docs
-      else
-        echo "No docs script found, generating basic README info"
-        echo "# Build Information" > build-info.md
-        echo "Built on: $(date)" >> build-info.md
-        echo "Commit: ${CI_COMMIT_SHA}" >> build-info.md
-        echo "Branch: ${CI_COMMIT_BRANCH}" >> build-info.md
-      fi
-  artifacts:
-    paths:
-      - docs/
-      - "*.md"
-    expire_in: 1 week
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-    - if: $CI_COMMIT_TAG
-
-# Performance check job
-performance:bundle_size:
-  stage: test
-  image: oven/bun:${BUN_VERSION}
-  <<: *setup_bun
-  dependencies:
-    - build
-  script:
-    - echo "Analyzing bundle size..."
-    - ls -lh dist/
-    - echo "ES Module size:" && wc -c < dist/index.js
-    - echo "CommonJS size:" && wc -c < dist/index.cjs
-    - echo "TypeScript declarations size:" && wc -c < dist/index.d.ts
-    - |
-      # Check if bundle size is reasonable (under 1MB for TypeScript SDK)
-      ES_SIZE=$(wc -c < dist/index.js)
-      CJS_SIZE=$(wc -c < dist/index.cjs)
-      MAX_SIZE=1048576  # 1MB
-      
-      if [ "$ES_SIZE" -gt "$MAX_SIZE" ] || [ "$CJS_SIZE" -gt "$MAX_SIZE" ]; then
-        echo "Warning: Bundle size may be too large"
-        echo "ES Module: $ES_SIZE bytes"
-        echo "CommonJS: $CJS_SIZE bytes"
-      else
-        echo "Bundle size looks good"
-      fi
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
