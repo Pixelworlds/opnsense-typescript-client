@@ -1,0 +1,23 @@
+# GitLab Runner Test File
+# This file is used to test if the GitLab Runner is working properly
+
+test_runner:
+  image: alpine:latest
+  script:
+    - echo "🧪 Testing GitLab Runner connectivity"
+    - echo "Runner ID: $CI_RUNNER_ID"
+    - echo "Runner Description: $CI_RUNNER_DESCRIPTION"
+    - echo "Runner Tags: $CI_RUNNER_TAGS"
+    - echo "Project: $CI_PROJECT_NAME"
+    - echo "Branch: $CI_COMMIT_REF_NAME"
+    - echo "Commit: $CI_COMMIT_SHA"
+    - echo "Pipeline: $CI_PIPELINE_ID"
+    - echo "Job: $CI_JOB_ID"
+    - echo "✅ Runner is working correctly!"
+    - date
+    - whoami
+    - pwd
+    - ls -la
+  rules:
+    - if: $CI_COMMIT_MESSAGE =~ /test.runner/
+    - when: manual
