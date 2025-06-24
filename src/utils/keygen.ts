@@ -1,6 +1,7 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 
 import { randomBytes } from 'crypto';
+import { fileURLToPath } from 'url';
 
 import type {
   Curve25519Point,
@@ -403,7 +404,10 @@ const main = async (): Promise<void> => {
   }
 };
 
-if (import.meta.main) {
+const __filename = fileURLToPath(import.meta.url);
+const isMainModule = process.argv[1] === __filename;
+
+if (isMainModule) {
   await main();
 }
 
