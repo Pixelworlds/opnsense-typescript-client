@@ -1,6 +1,6 @@
 {
   "name": "@richard-stovall/opnsense-typescript-client",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "TypeScript client for OPNsense API",
   "type": "module",
   "main": "./dist/index.cjs",
