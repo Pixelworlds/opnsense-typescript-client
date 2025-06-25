@@ -102,7 +102,7 @@ export class NginxModule extends BaseModule {
     query?: string
   ): Promise<ApiResponse<any>> {
     let path = '/api/nginx/logs/accesses';
-    const pathParams = [uuid, fileno, page, perPage, query].filter(p => p !== undefined);
+    const pathParams = [uuid, fileno, page, perPage, query].filter((p) => p !== undefined);
     if (pathParams.length > 0) {
       path += '/' + pathParams.join('/');
     }
@@ -117,7 +117,7 @@ export class NginxModule extends BaseModule {
     query?: string
   ): Promise<ApiResponse<any>> {
     let path = '/api/nginx/logs/errors';
-    const pathParams = [uuid, fileno, page, perPage, query].filter(p => p !== undefined);
+    const pathParams = [uuid, fileno, page, perPage, query].filter((p) => p !== undefined);
     if (pathParams.length > 0) {
       path += '/' + pathParams.join('/');
     }

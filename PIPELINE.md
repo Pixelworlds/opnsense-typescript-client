@@ -1,221 +1,259 @@
-# Complete GitLab CI/CD Pipeline Setup Guide
+# GitLab CI/CD Pipeline for OPNsense TypeScript Client
 
 ## Overview
 
-I've created a comprehensive GitLab CI/CD pipeline for your OPNsense TypeScript SDK project. This pipeline will automatically:
+This project uses a comprehensive GitLab CI/CD pipeline that ensures code quality, builds the TypeScript library, validates outputs, and publishes to both npm and GitLab package registries.
 
-1. **Validate** code quality and TypeScript types
-2. **Build** the TypeScript project using Rollup
-3. **Test** the built artifacts
-4. **Package** and validate the distribution
-5. **Publish** to npm and GitLab package registries
+## Pipeline Stages
 
-## Pipeline Features
-
-### 🔍 **Validation Stage**
-- **ESLint checks**: Ensures code quality and consistency
-- **TypeScript type checking**: Validates types without building
-- **Dependency security scanning**: Checks for vulnerabilities
+### 🔍 **Validate Stage**
+- **lint**: ESLint code quality checks
+- **type_check**: TypeScript type validation
+- **security_scan**: npm audit for security vulnerabilities
 
 ### 🔨 **Build Stage**
-- **Rollup compilation**: Builds ES modules, CommonJS, and TypeScript declarations
-- **Artifact caching**: Stores build outputs for subsequent stages
-- **Multi-format output**: Supports both `import` and `require` usage
+- **build**: Compiles TypeScript using Rollup to generate ES modules, CommonJS, and type declarations
 
 ### 🧪 **Test Stage**
-- **Unit tests**: Runs existing test suite if available
-- **Build validation**: Ensures all required files are generated
-- **Bundle size analysis**: Monitors output size and performance
+- **test_build_artifacts**: Validates that all required build outputs exist and are loadable
+- **test_typescript_declarations**: Tests that TypeScript declarations work correctly
+- **bundle_analysis**: Analyzes and reports bundle sizes
 
 ### 📦 **Package Stage**
-- **Structure validation**: Verifies package.json exports
-- **File existence checks**: Ensures all referenced files exist
-- **Documentation generation**: Creates build reports
+- **validate_package**: Validates package.json structure and exports
+- **package_tarball**: Creates npm package tarball
 
-### 🚀 **Publish Stage**
-- **npm registry**: Public publishing on version tags
-- **GitLab registry**: Internal publishing for development
-- **Environment-specific**: Different behavior for branches vs tags
+### 🚀 **Deploy Stage**
+- **deploy_npm**: Publishes to npm registry (manual, on tags only)
+- **deploy_gitlab_registry**: Publishes to GitLab package registry
 
-## Manual Setup Steps
+## Pipeline Configuration
 
-Since I couldn't directly create the file in your repository, here's how to set it up manually:
+### Node.js Version
+- **Runtime**: Node.js 20 (Alpine Linux)
+- **Package Manager**: Yarn 4.0.2 with Corepack
 
-### Step 1: Create the Pipeline File
+### Caching Strategy
+- **Cache Key**: `${CI_COMMIT_REF_SLUG}-yarn-cache`
+- **Cached Paths**: `.yarn/cache/`, `node_modules/`
+- **Policy**: pull-push for optimal performance
 
-1. **Navigate to your project**: `loworbit/opnsense-typescript-sdk`
-2. **Create new file**: `.gitlab-ci.yml` in the root directory
-3. **Copy the content** from the first artifact above
+### Artifacts
+- **Build outputs**: `dist/` directory (1 week retention)
+- **Package tarball**: `*.tgz` files (1 week retention)
+- **Bundle analysis**: `bundle-size-report.json` (30 days retention)
 
-### Step 2: Configure CI/CD Variables
+## Setup Instructions
 
-Go to **Project Settings > CI/CD > Variables** and add:
+### 1. GitLab CI/CD Variables
 
-| Variable | Value | Type | Protected | Masked |
-|----------|-------|------|-----------|---------|
-| `NPM_TOKEN` | Your npm auth token | Variable | ✅ | ✅ |
+Configure these variables in **Project Settings > CI/CD > Variables**:
 
-**To get NPM_TOKEN:**
-1. Go to [npmjs.com](https://www.npmjs.com) → Account Settings → Access Tokens
-2. Create a new **Automation** token
+| Variable | Description | Type | Protected | Masked |
+|----------|-------------|------|-----------|---------|
+| `NPM_TOKEN` | npm registry authentication token | Variable | ✅ | ✅ |
+
+**To obtain NPM_TOKEN:**
+1. Go to [npmjs.com](https://www.npmjs.com) → Profile → Access Tokens
+2. Generate new token with **Automation** permissions
 3. Copy the token value
 
-### Step 3: Test the Pipeline
+### 2. Repository Configuration
 
-1. **Push to master branch** to trigger the pipeline
-2. **Check pipeline status** in GitLab UI
-3. **Review job logs** for any issues
-
-### Step 4: Publishing Workflow
-
-To publish a new version:
-
-```bash
-# Update version
-bun version patch  # or minor, major
-
-# Create and push tag
-git tag v0.1.3
-git push origin v0.1.3
-
-# Pipeline will automatically publish to npm
-```
+Ensure your repository has:
+- Valid `package.json` with correct exports
+- `tsconfig.build.json` for build configuration
+- `rollup.config.js` for bundling
+- ESLint configuration
 
 ## Pipeline Execution Matrix
 
-| Trigger | Validate | Build | Test | Package | Publish |
+| Trigger | Validate | Build | Test | Package | Deploy |
 |---------|----------|-------|------|---------|---------|
-| Push to master | ✅ | ✅ | ✅ | ✅ | GitLab only |
+| Push to master/main | ✅ | ✅ | ✅ | ✅ | GitLab Registry |
 | Merge request | ✅ | ✅ | ✅ | ❌ | ❌ |
-| Version tag | ✅ | ✅ | ✅ | ✅ | npm + GitLab |
+| Version tag (v*.*.*) | ✅ | ✅ | ✅ | ✅ | npm + GitLab |
 
-## Job Descriptions
+## Job Details
 
-### `validate:lint`
-- **Purpose**: Code quality enforcement
-- **Tools**: ESLint with your existing config
-- **Failure**: Blocks pipeline if linting errors found
+### Validation Jobs
 
-### `validate:typecheck`
-- **Purpose**: TypeScript type validation
-- **Tools**: TypeScript compiler (`tsc --noEmit`)
-- **Failure**: Blocks pipeline if type errors found
+#### `lint`
+- **Purpose**: Code quality enforcement using ESLint
+- **Failure**: Blocks pipeline progression
+- **Configuration**: Uses project's ESLint config
 
-### `build`
-- **Purpose**: Compile TypeScript to JavaScript
-- **Tools**: Rollup with your existing config
-- **Output**: `dist/` folder with ES modules, CommonJS, and types
-- **Artifacts**: Cached for 1 hour
+#### `type_check`
+- **Purpose**: TypeScript type validation without compilation
+- **Command**: `yarn type-check` (runs `tsc --noEmit`)
+- **Failure**: Blocks pipeline progression
 
-### `test:unit`
-- **Purpose**: Validate build output
-- **Behavior**: 
-  - Runs `bun test` if test script exists
-  - Otherwise validates that all build files exist
-- **Dependencies**: Requires `build` job to complete
+#### `security_scan`
+- **Purpose**: Dependency vulnerability scanning
+- **Command**: `yarn npm audit --all --recursive --environment production`
+- **Failure**: Allowed to fail (warning only)
 
-### `package:validate`
-- **Purpose**: Ensure package is ready for publishing
-- **Checks**: 
-  - All package.json exports exist
-  - File structure is correct
-  - Version information is valid
+### Build Jobs
 
-### `publish:npm`
-- **Purpose**: Publish to public npm registry
-- **Trigger**: Only on version tags (`v*.*.*`)
-- **Requirements**: NPM_TOKEN variable must be set
+#### `build`
+- **Purpose**: Compile TypeScript to JavaScript bundles
+- **Tools**: Rollup with TypeScript plugin
+- **Outputs**: 
+  - `dist/index.js` (ES modules)
+  - `dist/index.cjs` (CommonJS)
+  - `dist/index.d.ts` (TypeScript declarations)
+- **Artifacts**: Cached for downstream jobs
 
-### `publish:gitlab`
-- **Purpose**: Publish to GitLab package registry
-- **Trigger**: Master branch pushes and tags
-- **Authentication**: Uses GitLab CI token automatically
+### Test Jobs
 
-### `performance:bundle_size`
-- **Purpose**: Monitor bundle size
+#### `test_build_artifacts`
+- **Purpose**: Validate build outputs exist and are functional
+- **Checks**:
+  - All required files exist and are non-empty
+  - CJS module can be required
+  - ESM module can be imported
+- **Dependencies**: Requires successful build
+
+#### `test_typescript_declarations`
+- **Purpose**: Validate TypeScript declarations work correctly
+- **Method**: Creates test TypeScript file that imports the library
+- **Validation**: Compiles test file with strict TypeScript settings
+
+#### `bundle_analysis`
+- **Purpose**: Monitor bundle size and performance
+- **Reports**: File sizes for each output format
 - **Alerts**: Warns if bundles exceed 1MB
-- **Reports**: Shows size of each output format
+- **Artifacts**: Size report JSON for tracking over time
+
+### Package Jobs
+
+#### `validate_package`
+- **Purpose**: Ensure package is ready for publishing
+- **Checks**:
+  - package.json exports point to existing files
+  - All entry points are valid
+  - Package structure is correct
+- **Simulation**: Runs `yarn pack --dry-run`
+
+#### `package_tarball`
+- **Purpose**: Create distributable package
+- **Output**: `.tgz` file ready for publishing
+- **Triggers**: Only on master/main branches and tags
+
+### Deploy Jobs
+
+#### `deploy_npm`
+- **Purpose**: Publish to public npm registry
+- **Trigger**: Manual action on version tags only
+- **Authentication**: Requires NPM_TOKEN variable
+- **Safety**: Checks if version already exists before publishing
+- **Access**: Public package publication
+
+#### `deploy_gitlab_registry`
+- **Purpose**: Publish to GitLab package registry
+- **Trigger**: Automatic on master/main pushes and tags
+- **Authentication**: Uses GitLab CI job token
+- **Scope**: Scoped to project namespace
+
+## Publishing Workflow
+
+### Development Releases
+1. Push to `master` or `main` branch
+2. Pipeline automatically publishes to GitLab registry
+3. Install with: `npm install @your-namespace/opnsense-typescript-client`
+
+### Production Releases
+1. Update version: `yarn version patch|minor|major`
+2. Create and push tag: `git tag v1.0.0 && git push origin v1.0.0`
+3. Pipeline runs all stages
+4. Manually trigger npm deployment in GitLab UI
+5. Package available on npm: `npm install @richard-stovall/opnsense-typescript-client`
+
+## Local Development
+
+Test pipeline steps locally before pushing:
+
+```bash
+# Install dependencies
+yarn install
+
+# Run validation steps
+yarn lint
+yarn type-check
+
+# Run build
+yarn build
+
+# Verify build outputs
+ls -la dist/
+node -e "console.log(require('./dist/index.cjs'))"
+node -e "import('./dist/index.js').then(console.log)"
+
+# Test package
+yarn pack --dry-run
+```
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **Pipeline fails on lint stage**
-   ```bash
-   # Fix locally first
-   bun run lint:fix
-   git add .
-   git commit -m "Fix linting issues"
-   git push
-   ```
-
-2. **TypeScript compilation errors**
-   ```bash
-   # Check types locally
-   bunx tsc --noEmit
-   # Fix errors and push
-   ```
-
-3. **NPM publish fails**
-   - Verify NPM_TOKEN is set correctly
-   - Check if version already exists on npm
-   - Ensure you have publish permissions
-
-4. **Build artifacts missing**
-   - Check rollup.config.js is correct
-   - Verify package.json build script works locally
-   - Review build job logs
-
-### Local Testing
-
-Before pushing, test the pipeline steps locally:
-
+#### Lint Failures
 ```bash
-# Install dependencies
-bun install
-
-# Run linting
-bun run lint
-
-# Run type checking
-bunx tsc --noEmit
-
-# Run build
-bun run build
-
-# Verify artifacts
-ls -la dist/
+# Fix automatically
+yarn lint:fix
+git add .
+git commit -m "Fix linting issues"
 ```
 
-## Benefits of This Pipeline
+#### TypeScript Errors
+```bash
+# Check types locally
+yarn type-check
+# Fix errors in source code
+```
 
-1. **Automated Quality Gates**: Prevents bad code from reaching production
-2. **Consistent Builds**: Same environment every time
-3. **Automated Publishing**: No manual steps for releases
-4. **Multi-registry Support**: Both npm and GitLab registries
-5. **Performance Monitoring**: Tracks bundle size over time
-6. **Security Scanning**: Identifies vulnerable dependencies
-7. **Parallel Execution**: Faster feedback on changes
+#### Build Failures
+- Verify `rollup.config.js` is correct
+- Check `tsconfig.build.json` configuration
+- Ensure all imports are resolvable
 
-## Advanced Features
+#### npm Publish Failures
+- Verify NPM_TOKEN is set and valid
+- Check if version already exists: `npm view @richard-stovall/opnsense-typescript-client versions --json`
+- Ensure you have publish permissions
 
-### Conditional Execution
-- Different jobs run based on branch/tag/MR context
-- Saves CI minutes by skipping unnecessary jobs
+#### GitLab Registry Issues
+- Verify project has package registry enabled
+- Check CI job token permissions
+- Ensure proper scoping in package name
 
-### Artifact Management
-- Build outputs cached between stages
-- Automatic cleanup after 1 hour
-- Efficient pipeline execution
+### Performance Optimization
 
-### Environment Segregation
-- Development builds go to GitLab registry
-- Production releases go to npm
-- Protected variables for sensitive data
+The pipeline includes several optimizations:
 
-### Monitoring & Reporting
-- Bundle size tracking
-- Build status indicators
-- Environment-specific deployments
+1. **Yarn Cache**: Persistent dependency caching across jobs
+2. **Artifact Reuse**: Build outputs shared between jobs
+3. **Parallel Execution**: Independent jobs run simultaneously
+4. **Conditional Execution**: Jobs only run when necessary
 
-This pipeline provides a professional-grade CI/CD setup that will scale with your project and ensure consistent, reliable builds and deployments.
+### Security Considerations
+
+1. **Token Security**: NPM_TOKEN is masked and protected
+2. **Scope Isolation**: GitLab registry uses project-specific scoping
+3. **Audit Scanning**: Regular dependency vulnerability checks
+4. **Manual Deployment**: Production npm releases require manual approval
+
+## Pipeline Monitoring
+
+### Metrics Tracked
+- Build success/failure rates
+- Bundle size over time
+- Pipeline execution duration
+- Dependency vulnerabilities
+
+### Alerts
+- Bundle size warnings (>1MB)
+- Security vulnerability notifications
+- Build failure notifications
+
+This pipeline ensures high code quality, reliable builds, and secure publishing while providing comprehensive feedback and monitoring capabilities.
