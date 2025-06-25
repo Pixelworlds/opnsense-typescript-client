@@ -488,6 +488,35 @@ Contributions are welcome! The refactored architecture makes it easy to add new 
 2. Extend the `BaseModule` class
 3. Add to `src/modules/plugins/index.ts`
 
+## Testing
+
+This project includes comprehensive testing utilities in the `testing/` folder:
+
+### Quick Validation
+```bash
+# Test basic client functionality
+bun testing/test-client.ts
+
+# Validate all module implementations
+bun testing/module-validator.ts
+
+# Demonstrate complete coverage
+bun testing/demo-test.ts
+```
+
+### Live API Testing
+```bash
+# Set your OPNsense credentials
+export OPNSENSE_URL="https://your-opnsense.local"
+export OPNSENSE_API_KEY="your-api-key"
+export OPNSENSE_API_SECRET="your-api-secret"
+
+# Test against live instance
+bun testing/comprehensive-test.ts
+```
+
+See [`testing/README.md`](testing/README.md) for complete testing documentation.
+
 ### Development Setup
 
 ```bash
