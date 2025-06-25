@@ -1,123 +1,92 @@
-export namespace OpenVPN {
-  export interface BaseResponse {
-    result: string;
-    status: string;
-  }
+import type {
+      ApiResponse,
+      ApiResult,
+      SearchResult,
+      BaseRecord,
+      ServiceStatus,
+      ServiceControl,
+      ConfigTest,
+      CrudOperations,
+      ServiceOperations,
+      SettingsOperations
+    } from './common';
 
-  export interface ErrorResponse {
-    result: string;
-    status: string;
-    message?: string;
-  }
+// Controller interfaces
+export interface OpenvpnClient_overwritesController {
+  /** Execute add for openvpn client_overwrites */
+  add(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute del for openvpn client_overwrites */
+  del(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Get get for openvpn client_overwrites */
+  get(uuid: string): Promise<ApiResponse<any>>;
+  /** Execute set for openvpn client_overwrites */
+  set(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute toggle for openvpn client_overwrites */
+  toggle(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+}
+export interface OpenvpnExportController {
+  /** Get accounts for openvpn export */
+  accounts(): Promise<ApiResponse<any>>;
+  /** Execute download for openvpn export */
+  download(): Promise<ApiResponse<ApiResult>>;
+  /** Get providers for openvpn export */
+  providers(): Promise<ApiResponse<any>>;
+  /** Execute store presets for openvpn export */
+  storePresets(): Promise<ApiResponse<ApiResult>>;
+  /** Get templates for openvpn export */
+  templates(): Promise<ApiResponse<any>>;
+  /** Execute validate presets for openvpn export */
+  validatePresets(): Promise<ApiResponse<ApiResult>>;
+}
+export interface OpenvpnInstancesController {
+  /** Execute add for openvpn instances */
+  add(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute add static key for openvpn instances */
+  addStaticKey(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute del for openvpn instances */
+  del(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute del static key for openvpn instances */
+  delStaticKey(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Get gen key for openvpn instances */
+  genKey(): Promise<ApiResponse<any>>;
+  /** Get get for openvpn instances */
+  get(uuid: string): Promise<ApiResponse<any>>;
+  /** Get get static key for openvpn instances */
+  getStaticKey(uuid: string): Promise<ApiResponse<any>>;
+  /** Execute set for openvpn instances */
+  set(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute set static key for openvpn instances */
+  setStaticKey(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute toggle for openvpn instances */
+  toggle(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+}
+export interface OpenvpnServiceController {
+  /** Execute kill session for openvpn service */
+  killSession(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute reconfigure for openvpn service */
+  reconfigure(): Promise<ApiResponse<ServiceControl>>;
+  /** Execute restart service for openvpn service */
+  restartService(): Promise<ApiResponse<ApiResult>>;
+  /** Get search routes for openvpn service */
+  searchRoutes(): Promise<ApiResponse<SearchResult>>;
+  /** Get search sessions for openvpn service */
+  searchSessions(): Promise<ApiResponse<SearchResult>>;
+  /** Execute start service for openvpn service */
+  startService(): Promise<ApiResponse<ApiResult>>;
+  /** Execute stop service for openvpn service */
+  stopService(): Promise<ApiResponse<ApiResult>>;
+}
 
-  export namespace Instances {
-    export type InstanceType = 'server' | 'client';
-    export type Protocol = 'udp' | 'tcp';
-    export type DeviceType = 'tun' | 'tap';
-    export type AuthMode = 'local' | 'radius' | 'ldap';
-    export type CipherType = 'AES-256-CBC' | 'AES-128-CBC' | 'BF-CBC' | 'DES-EDE3-CBC';
-    export type HashType = 'SHA1' | 'SHA256' | 'SHA512' | 'MD5';
+// Main module interface
+export interface OpenvpnModule {
+  client_overwrites: OpenvpnClient_overwritesController;
+  export: OpenvpnExportController;
+  instances: OpenvpnInstancesController;
+  service: OpenvpnServiceController;
+}
 
-    export interface Instance {
-      uuid?: string;
-      enabled: boolean;
-      role: InstanceType;
-      description: string;
-      port: number;
-      bind: string;
-      protocol: Protocol;
-      device_type: DeviceType;
-      tunnel_network: string;
-      tunnel_networkv6: string;
-      redirect_gateway: boolean;
-      local_network: string;
-      local_networkv6: string;
-      remote_network: string;
-      remote_networkv6: string;
-      compression: boolean;
-      auth_mode: AuthMode;
-      cso_login_matching: boolean;
-      cert_depth: number;
-      strictusercn: boolean;
-      cipher: CipherType;
-      auth: HashType;
-      reneg_sec: number;
-      ca: string;
-      cert: string;
-      key: string;
-      dh: string;
-      ta: string;
-      ta_direction: number;
-      client_to_client: boolean;
-      duplicate_cn: boolean;
-      dynamic_ip: boolean;
-      push_route: string[];
-      custom_options: string;
-    }
-
-    export interface InstanceResponse extends BaseResponse {
-      instance: Instance;
-    }
-
-    export interface InstanceSearchRequest {
-      searchPhrase?: string;
-      current?: number;
-      rowCount?: number;
-      sort?: Record<string, string>;
-    }
-
-    export interface InstanceSearchResponse extends BaseResponse {
-      current: number;
-      rowCount: number;
-      total: number;
-      rows: Instance[];
-    }
-
-    export interface AddInstanceRequest {
-      instance: Partial<Instance>;
-    }
-
-    export interface SetInstanceRequest {
-      instance: Partial<Instance>;
-    }
-
-    export interface ToggleInstanceRequest {
-      enabled: boolean;
-    }
-  }
-
-  export namespace Service {
-    export interface ServiceStatus {
-      status: 'running' | 'stopped';
-      uptime?: string;
-      clients?: number;
-    }
-
-    export interface ServiceResponse extends BaseResponse {
-      service: ServiceStatus;
-    }
-
-    export interface ReconfigureResponse extends BaseResponse {
-      status: string;
-    }
-
-    export interface ServiceActionResponse extends BaseResponse {
-      action: string;
-      status: string;
-    }
-  }
-
-  export type ServiceAction = 'start' | 'stop' | 'restart';
-
-  export interface VpnConnection {
-    uuid?: string;
-    enabled?: boolean;
-    name: string;
-    type: 'server' | 'client';
-    protocol?: string;
-    local_address?: string;
-    remote_address?: string;
-    status?: 'connected' | 'disconnected' | 'connecting';
-    [key: string]: any;
-  }
+// Record interfaces
+export interface OpenvpnRecord extends BaseRecord {
+ 
+  [key: string]: any;
 }

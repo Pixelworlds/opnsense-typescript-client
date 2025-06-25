@@ -12,14 +12,14 @@ import type {
     } from './common';
 
 // Controller interfaces
-export interface DiagnosticsProofpoint_etController {
-  /** Get status for diagnostics proofpoint_et */
-  status(): Promise<ApiResponse<ServiceStatus>>;
+export interface DechwInfoController {
+  /** Get power status for dechw info */
+  powerStatus(): Promise<ApiResponse<any>>;
 }
 
 // Main module interface
-export interface DiagnosticsModule {
-  proofpoint_et: DiagnosticsProofpoint_etController;
+export interface DechwModule {
+  info: DechwInfoController;
 }
 
 // Record interfaces
