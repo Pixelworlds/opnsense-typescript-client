@@ -6,7 +6,7 @@
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "packageManager": "yarn@4.0.2",
+  "packageManager": "yarn@4.9.2",
   "exports": {
     ".": {
       "import": "./dist/index.js",
@@ -27,7 +27,8 @@
     "lint:fix": "eslint . --fix",
     "type-check": "tsc --noEmit",
     "test": "echo 'No tests specified yet' && exit 0",
-    "test:coverage": "echo 'No coverage tests specified yet' && exit 0"
+    "test:coverage": "echo 'No coverage tests specified yet' && exit 0",
+    "crawl:docs": "npx tsx crawler/docs.ts"
   },
   "devDependencies": {
     "@eslint/js": "^8.57.0",
@@ -37,6 +38,7 @@
     "@types/node": "^20.0.0",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
+    "crawlee": "^3.13.8",
     "eslint": "^8.57.0",
     "globals": "^13.24.0",
     "rollup": "^4.9.4",
@@ -46,5 +48,9 @@
   },
   "peerDependencies": {
     "typescript": "^5"
+  },
+  "dependencies": {
+    "kubectl-inbox-ts": "https://github.com/InboxHealth/ts-db-proxy-manager.git",
+    "playwright": "^1.53.1"
   }
 }

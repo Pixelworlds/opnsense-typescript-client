@@ -2,17 +2,22 @@ import { BaseModule } from '../base';
 
 import type { ApiResponse, ApiResult } from '../../types';
 
-export class SyslogModule extends BaseModule {
-  async getConfig(): Promise<ApiResponse<any>> {
+export class SyslogSettings {
+  constructor(private http: any) {}
+
+  async get(): Promise<ApiResponse<any>> {
     return this.http.get('/api/syslog/settings/get');
   }
 
-  async setConfig(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+  async set(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
     return this.http.post('/api/syslog/settings/set', config);
   }
 
   async searchDestinations(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/syslog/settings/search_destination', params);
+    if (Object.keys(params).length === 0) {
+      return this.http.get('/api/syslog/settings/search_destinations');
+    }
+    return this.http.post('/api/syslog/settings/search_destinations', params);
   }
 
   async addDestination(destination: Record<string, any>): Promise<ApiResponse<ApiResult>> {
@@ -24,7 +29,7 @@ export class SyslogModule extends BaseModule {
     return this.http.get(path);
   }
 
-  async updateDestination(uuid: string, destination: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+  async setDestination(uuid: string, destination: Record<string, any>): Promise<ApiResponse<ApiResult>> {
     return this.http.post(`/api/syslog/settings/set_destination/${uuid}`, destination);
   }
 
@@ -33,49 +38,169 @@ export class SyslogModule extends BaseModule {
   }
 
   async toggleDestination(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    return this.toggle('/api/syslog/settings/toggle_destination', uuid, enabled);
+    const path = enabled !== undefined 
+      ? `/api/syslog/settings/toggle_destination/${uuid}/${enabled ? '1' : '0'}`
+      : `/api/syslog/settings/toggle_destination/${uuid}`;
+    return this.http.post(path);
+  }
+}
+
+export class SyslogService {
+  constructor(private http: any) {}
+
+  async reconfigure(): Promise<ApiResponse<ApiResult>> {
+    return this.http.post('/api/syslog/service/reconfigure');
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('syslog-ng', 'start');
-  }
-
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('syslog-ng', 'stop');
+  async reset(): Promise<ApiResponse<ApiResult>> {
+    return this.http.post('/api/syslog/service/reset');
   }
 
   async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('syslog-ng', 'restart');
+    return this.http.post('/api/syslog/service/restart');
+  }
+
+  async start(): Promise<ApiResponse<ApiResult>> {
+    return this.http.post('/api/syslog/service/start');
+  }
+
+  async stats(): Promise<ApiResponse<any>> {
+    return this.http.get('/api/syslog/service/stats');
+  }
+
+  async status(): Promise<ApiResponse<any>> {
+    return this.http.get('/api/syslog/service/status');
+  }
+
+  async stop(): Promise<ApiResponse<ApiResult>> {
+    return this.http.post('/api/syslog/service/stop');
+  }
+}
+
+export class SyslogModule extends BaseModule {
+  public readonly settings: SyslogSettings;
+  public readonly service: SyslogService;
+
+  constructor(httpClient: any) {
+    super(httpClient);
+    this.settings = new SyslogSettings(this.http);
+    this.service = new SyslogService(this.http);
+  }
+
+  // Legacy methods for backward compatibility
+  async getConfig(): Promise<ApiResponse<any>> {
+    return this.settings.get();
+  }
+
+  async setConfig(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.settings.set(config);
+  }
+
+  async searchDestinations(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
+    return this.settings.searchDestinations(params);
+  }
+
+  async addDestination(destination: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.settings.addDestination(destination);
+  }
+
+  async getDestination(uuid?: string): Promise<ApiResponse<any>> {
+    return this.settings.getDestination(uuid);
+  }
+
+  async updateDestination(uuid: string, destination: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.settings.setDestination(uuid, destination);
+  }
+
+  async deleteDestination(uuid: string): Promise<ApiResponse<ApiResult>> {
+    return this.settings.deleteDestination(uuid);
+  }
+
+  async toggleDestination(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
+    return this.settings.toggleDestination(uuid, enabled);
+  }
+
+  async start(): Promise<ApiResponse<ApiResult>> {
+    return this.service.start();
+  }
+
+  async stop(): Promise<ApiResponse<ApiResult>> {
+    return this.service.stop();
+  }
+
+  async restart(): Promise<ApiResponse<ApiResult>> {
+    return this.service.restart();
   }
 
   async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('syslog-ng', 'reconfigure');
+    return this.service.reconfigure();
   }
 
   async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('syslog-ng', 'status');
+    return this.service.status();
   }
 
-  async getLogFiles(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/syslog/service/log_files');
+  async reset(): Promise<ApiResponse<ApiResult>> {
+    return this.service.reset();
   }
 
-  async getLogContent(filename: string, offset?: number, limit?: number): Promise<ApiResponse<any>> {
-    let path = `/api/syslog/service/log_content/${filename}`;
-    if (offset !== undefined || limit !== undefined) {
-      const params = new URLSearchParams();
-      if (offset !== undefined) params.append('offset', offset.toString());
-      if (limit !== undefined) params.append('limit', limit.toString());
-      path += `?${params.toString()}`;
-    }
-    return this.http.get(path);
+  async getStats(): Promise<ApiResponse<any>> {
+    return this.service.stats();
   }
 
-  async clearLog(filename: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/syslog/service/clear_log/${filename}`);
+  // New convenience methods
+  async getAllDestinations(): Promise<ApiResponse<any>> {
+    return this.settings.searchDestinations();
   }
 
-  async downloadLog(filename: string): Promise<ApiResponse<any>> {
-    return this.http.get(`/api/syslog/service/download_log/${filename}`);
+  async enableDestination(uuid: string): Promise<ApiResponse<ApiResult>> {
+    return this.settings.toggleDestination(uuid, true);
+  }
+
+  async disableDestination(uuid: string): Promise<ApiResponse<ApiResult>> {
+    return this.settings.toggleDestination(uuid, false);
+  }
+
+  async createDestination(
+    hostname: string,
+    port: number,
+    transport: string = 'udp4',
+    facility: string = 'kern',
+    level: string = 'info',
+    description?: string
+  ): Promise<ApiResponse<ApiResult>> {
+    const destination = {
+      enabled: '1',
+      hostname,
+      port: port.toString(),
+      transport,
+      facility,
+      level,
+      description: description || `Syslog destination ${hostname}:${port}`
+    };
+    return this.settings.addDestination(destination);
+  }
+
+  async getSyslogOverview(): Promise<{
+    config: any;
+    destinations: any;
+    status: any;
+    stats: any;
+    timestamp: string;
+  }> {
+    const [config, destinations, status, stats] = await Promise.allSettled([
+      this.getConfig(),
+      this.getAllDestinations(),
+      this.getStatus(),
+      this.getStats()
+    ]);
+
+    return {
+      config: config.status === 'fulfilled' ? config.value.data : null,
+      destinations: destinations.status === 'fulfilled' ? destinations.value.data : null,
+      status: status.status === 'fulfilled' ? status.value.data : null,
+      stats: stats.status === 'fulfilled' ? stats.value.data : null,
+      timestamp: new Date().toISOString()
+    };
   }
 }
