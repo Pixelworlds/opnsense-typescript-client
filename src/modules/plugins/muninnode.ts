@@ -1,41 +1,95 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class MuninnodeGeneral extends BaseModule {
+  /**
+   * Get get for muninnode general
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/muninnode/muninnode/general/get`);
+  }
 
+  /**
+   * Execute set for muninnode general
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/muninnode/muninnode/general/set`, data);
+  }
+}
+
+export class MuninnodeService extends BaseModule {
+  /**
+   * Execute reconfigure for muninnode service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/muninnode/muninnode/service/reconfigure`);
+  }
+
+  /**
+   * Execute restart for muninnode service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/muninnode/muninnode/service/restart`);
+  }
+
+  /**
+   * Execute start for muninnode service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/muninnode/muninnode/service/start`);
+  }
+
+  /**
+   * Get status for muninnode service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/muninnode/muninnode/service/status`);
+  }
+
+  /**
+   * Execute stop for muninnode service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/muninnode/muninnode/service/stop`);
+  }
+}
+
+// Main module class
 export class MuninnodeModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('munin-node', 'status');
+  public readonly general: MuninnodeGeneral;
+  public readonly service: MuninnodeService;
+
+  constructor(http: any) {
+    super(http);
+    this.general = new MuninnodeGeneral(http);
+    this.service = new MuninnodeService(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('munin-node', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/muninnode/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('munin-node', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/muninnode/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('munin-node', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/muninnode/service/stop');
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('munin-node', 'reconfigure');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/muninnode/service/restart');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/muninnode/general/get');
-  }
-
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/muninnode/general/set', config);
-  }
-
-  async getPlugins(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/muninnode/service/plugins');
-  }
-
-  async getConfig(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/muninnode/service/config');
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/muninnode/service/reconfigure');
   }
 }

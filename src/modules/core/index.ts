@@ -1,31 +1,27 @@
+// Auto-generated core module exports
 export { AuthModule } from './auth';
-export { CaptivePortalModule } from './captive-portal';
-export { CronModule } from './cron';
-export { DiagnosticsModule } from './diagnostics';
-export { FirewallModule } from './firewall';
-export { FirmwareModule } from './firmware';
-export { InterfacesModule } from './interfaces';
-export { IPsecModule } from './ipsec';
-export { MonitModule } from './monit';
-export { OpenVPNModule } from './openvpn';
-export { ServiceModule } from './service';
-export { SystemModule } from './system';
-export { TrustModule } from './trust';
-
+export { CaptiveportalModule } from './captiveportal';
 export { CoreModule } from './core';
+export { CronModule } from './cron';
 export { Dhcpv4Module } from './dhcpv4';
 export { Dhcpv6Module } from './dhcpv6';
 export { DhcrelayModule } from './dhcrelay';
+export { DiagnosticsModule } from './diagnostics';
 export { DnsmasqModule } from './dnsmasq';
+export { FirewallModule } from './firewall';
+export { FirmwareModule } from './firmware';
 export { IdsModule } from './ids';
+export { InterfacesModule } from './interfaces';
+export { IpsecModule } from './ipsec';
 export { KeaModule } from './kea';
+export { MonitModule } from './monit';
+export { OpenvpnModule } from './openvpn';
 export { RoutesModule } from './routes';
 export { RoutingModule } from './routing';
+export { ServiceModule } from './service';
 export { SyslogModule } from './syslog';
+export { SystemModule } from './system';
 export { TrafficshaperModule } from './trafficshaper';
+export { TrustModule } from './trust';
 export { UnboundModule } from './unbound';
 export { WireguardModule } from './wireguard';
-
-export type { FirewallAliases, FirewallAliasUtils, FirewallRules } from './firewall';
-
-export type { AuthGroups, AuthPrivileges, AuthUsers } from './auth';

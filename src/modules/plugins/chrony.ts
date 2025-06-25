@@ -1,57 +1,123 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class ChronyGeneral extends BaseModule {
+  /**
+   * Get get for chrony general
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/chrony/chrony/general/get`);
+  }
 
+  /**
+   * Execute set for chrony general
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/chrony/chrony/general/set`, data);
+  }
+}
+
+export class ChronyService extends BaseModule {
+  /**
+   * Get chronyauthdata for chrony service
+   */
+  async chronyauthdata(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/chrony/chrony/service/chronyauthdata`);
+  }
+
+  /**
+   * Get chronysources for chrony service
+   */
+  async chronysources(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/chrony/chrony/service/chronysources`);
+  }
+
+  /**
+   * Get chronysourcestats for chrony service
+   */
+  async chronysourcestats(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/chrony/chrony/service/chronysourcestats`);
+  }
+
+  /**
+   * Get chronytracking for chrony service
+   */
+  async chronytracking(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/chrony/chrony/service/chronytracking`);
+  }
+
+  /**
+   * Execute reconfigure for chrony service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/chrony/chrony/service/reconfigure`);
+  }
+
+  /**
+   * Execute restart for chrony service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/chrony/chrony/service/restart`);
+  }
+
+  /**
+   * Execute start for chrony service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/chrony/chrony/service/start`);
+  }
+
+  /**
+   * Get status for chrony service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/chrony/chrony/service/status`);
+  }
+
+  /**
+   * Execute stop for chrony service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/chrony/chrony/service/stop`);
+  }
+}
+
+// Main module class
 export class ChronyModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('chrony', 'status');
+  public readonly general: ChronyGeneral;
+  public readonly service: ChronyService;
+
+  constructor(http: any) {
+    super(http);
+    this.general = new ChronyGeneral(http);
+    this.service = new ChronyService(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('chrony', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/chrony/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('chrony', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/chrony/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('chrony', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/chrony/service/stop');
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('chrony', 'reconfigure');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/chrony/service/restart');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/chrony/general/get');
-  }
-
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/chrony/general/set', config);
-  }
-
-  async getSources(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/chrony/service/sources');
-  }
-
-  async getSourcesStats(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/chrony/service/sourcestats');
-  }
-
-  async getTracking(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/chrony/service/tracking');
-  }
-
-  async getActivity(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/chrony/service/activity');
-  }
-
-  async getClients(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/chrony/service/clients');
-  }
-
-  async getServerStats(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/chrony/service/serverstats');
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/chrony/service/reconfigure');
   }
 }

@@ -1,62 +1,148 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class DyndnsAccounts extends BaseModule {
+  /**
+   * Execute add item for dyndns accounts
+   */
+  async addItem(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/dyndns/dyndns/accounts/add_item`, data);
+  }
 
+  /**
+   * Execute del item for dyndns accounts
+   */
+  async delItem(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/dyndns/dyndns/accounts/del_item/${uuid}`, data);
+  }
+
+  /**
+   * Get get for dyndns accounts
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/dyndns/dyndns/accounts/get`);
+  }
+
+  /**
+   * Get get item for dyndns accounts
+   */
+  async getItem(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/dyndns/dyndns/accounts/get_item/${uuid}`);
+  }
+
+  /**
+   * Execute set for dyndns accounts
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/dyndns/dyndns/accounts/set`, data);
+  }
+
+  /**
+   * Execute set item for dyndns accounts
+   */
+  async setItem(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/dyndns/dyndns/accounts/set_item/${uuid}`, data);
+  }
+
+  /**
+   * Execute toggle item for dyndns accounts
+   */
+  async toggleItem(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/dyndns/dyndns/accounts/toggle_item/${uuid}/${enabled}`, data);
+  }
+}
+
+export class DyndnsService extends BaseModule {
+  /**
+   * Execute reconfigure for dyndns service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/dyndns/dyndns/service/reconfigure`);
+  }
+
+  /**
+   * Execute restart for dyndns service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/dyndns/dyndns/service/restart`);
+  }
+
+  /**
+   * Execute start for dyndns service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/dyndns/dyndns/service/start`);
+  }
+
+  /**
+   * Get status for dyndns service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/dyndns/dyndns/service/status`);
+  }
+
+  /**
+   * Execute stop for dyndns service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/dyndns/dyndns/service/stop`);
+  }
+}
+
+export class DyndnsSettings extends BaseModule {
+  /**
+   * Get get for dyndns settings
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/dyndns/dyndns/settings/get`);
+  }
+
+  /**
+   * Execute set for dyndns settings
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/dyndns/dyndns/settings/set`, data);
+  }
+}
+
+// Main module class
 export class DyndnsModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('dyndns', 'status');
+  public readonly accounts: DyndnsAccounts;
+  public readonly service: DyndnsService;
+  public readonly settings: DyndnsSettings;
+
+  constructor(http: any) {
+    super(http);
+    this.accounts = new DyndnsAccounts(http);
+    this.service = new DyndnsService(http);
+    this.settings = new DyndnsSettings(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('dyndns', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/dyndns/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('dyndns', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/dyndns/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('dyndns', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/dyndns/service/stop');
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('dyndns', 'reconfigure');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/dyndns/service/restart');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/dyndns/general/get');
-  }
-
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/dyndns/general/set', config);
-  }
-
-  async searchAccounts(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/dyndns/settings/search_account', params);
-  }
-
-  async addAccount(account: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/dyndns/settings/add_account', account);
-  }
-
-  async getAccount(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/dyndns/settings/get_account/${uuid}` : '/api/dyndns/settings/get_account';
-    return this.http.get(path);
-  }
-
-  async updateAccount(uuid: string, account: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/dyndns/settings/set_account/${uuid}`, account);
-  }
-
-  async deleteAccount(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/dyndns/settings/del_account/${uuid}`);
-  }
-
-  async toggleAccount(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    return this.toggle('/api/dyndns/settings/toggle_account', uuid, enabled);
-  }
-
-  async forceUpdate(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/dyndns/service/force_update/${uuid}`);
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/dyndns/service/reconfigure');
   }
 }

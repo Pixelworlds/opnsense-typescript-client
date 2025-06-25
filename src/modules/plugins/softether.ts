@@ -1,99 +1,95 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class SoftetherGeneral extends BaseModule {
+  /**
+   * Get get for softether general
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/softether/softether/general/get`);
+  }
 
+  /**
+   * Execute set for softether general
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/softether/softether/general/set`, data);
+  }
+}
+
+export class SoftetherService extends BaseModule {
+  /**
+   * Execute reconfigure for softether service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/softether/softether/service/reconfigure`);
+  }
+
+  /**
+   * Execute restart for softether service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/softether/softether/service/restart`);
+  }
+
+  /**
+   * Execute start for softether service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/softether/softether/service/start`);
+  }
+
+  /**
+   * Get status for softether service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/softether/softether/service/status`);
+  }
+
+  /**
+   * Execute stop for softether service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/softether/softether/service/stop`);
+  }
+}
+
+// Main module class
 export class SoftetherModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('softether', 'status');
+  public readonly general: SoftetherGeneral;
+  public readonly service: SoftetherService;
+
+  constructor(http: any) {
+    super(http);
+    this.general = new SoftetherGeneral(http);
+    this.service = new SoftetherService(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('softether', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/softether/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('softether', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/softether/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('softether', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/softether/service/stop');
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('softether', 'reconfigure');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/softether/service/restart');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/softether/general/get');
-  }
-
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/softether/general/set', config);
-  }
-
-  async searchHubs(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/softether/settings/search_hub', params);
-  }
-
-  async addHub(hub: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/softether/settings/add_hub', hub);
-  }
-
-  async getHub(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/softether/settings/get_hub/${uuid}` : '/api/softether/settings/get_hub';
-    return this.http.get(path);
-  }
-
-  async updateHub(uuid: string, hub: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/softether/settings/set_hub/${uuid}`, hub);
-  }
-
-  async deleteHub(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/softether/settings/del_hub/${uuid}`);
-  }
-
-  async toggleHub(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    return this.toggle('/api/softether/settings/toggle_hub', uuid, enabled);
-  }
-
-  async searchUsers(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/softether/settings/search_user', params);
-  }
-
-  async addUser(user: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/softether/settings/add_user', user);
-  }
-
-  async getUser(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/softether/settings/get_user/${uuid}` : '/api/softether/settings/get_user';
-    return this.http.get(path);
-  }
-
-  async updateUser(uuid: string, user: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/softether/settings/set_user/${uuid}`, user);
-  }
-
-  async deleteUser(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/softether/settings/del_user/${uuid}`);
-  }
-
-  async toggleUser(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    return this.toggle('/api/softether/settings/toggle_user', uuid, enabled);
-  }
-
-  async getSessions(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/softether/service/sessions');
-  }
-
-  async getConnections(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/softether/service/connections');
-  }
-
-  async getStatistics(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/softether/service/statistics');
-  }
-
-  async disconnectSession(sessionId: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/softether/service/disconnect/${sessionId}`);
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/softether/service/reconfigure');
   }
 }

@@ -1,49 +1,102 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class NtopngGeneral extends BaseModule {
+  /**
+   * Get get for ntopng general
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ntopng/ntopng/general/get`);
+  }
 
+  /**
+   * Execute set for ntopng general
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ntopng/ntopng/general/set`, data);
+  }
+}
+
+export class NtopngService extends BaseModule {
+  /**
+   * Get checkredis for ntopng service
+   */
+  async checkredis(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ntopng/ntopng/service/checkredis`);
+  }
+
+  /**
+   * Execute reconfigure for ntopng service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/ntopng/ntopng/service/reconfigure`);
+  }
+
+  /**
+   * Execute restart for ntopng service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/ntopng/ntopng/service/restart`);
+  }
+
+  /**
+   * Execute start for ntopng service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/ntopng/ntopng/service/start`);
+  }
+
+  /**
+   * Get status for ntopng service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/ntopng/ntopng/service/status`);
+  }
+
+  /**
+   * Execute stop for ntopng service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/ntopng/ntopng/service/stop`);
+  }
+}
+
+// Main module class
 export class NtopngModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('ntopng', 'status');
+  public readonly general: NtopngGeneral;
+  public readonly service: NtopngService;
+
+  constructor(http: any) {
+    super(http);
+    this.general = new NtopngGeneral(http);
+    this.service = new NtopngService(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('ntopng', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/ntopng/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('ntopng', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/ntopng/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('ntopng', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/ntopng/service/stop');
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('ntopng', 'reconfigure');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/ntopng/service/restart');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/ntopng/general/get');
-  }
-
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ntopng/general/set', config);
-  }
-
-  async getInterfaces(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/ntopng/service/interfaces');
-  }
-
-  async getFlows(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/ntopng/service/flows');
-  }
-
-  async getHosts(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/ntopng/service/hosts');
-  }
-
-  async getStatistics(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/ntopng/service/statistics');
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/ntopng/service/reconfigure');
   }
 }

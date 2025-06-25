@@ -1,69 +1,102 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class RedisService extends BaseModule {
+  /**
+   * Execute reconfigure for redis service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/redis/redis/service/reconfigure`);
+  }
 
+  /**
+   * Get resetdb for redis service
+   */
+  async resetdb(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/redis/redis/service/resetdb`);
+  }
+
+  /**
+   * Execute restart for redis service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/redis/redis/service/restart`);
+  }
+
+  /**
+   * Execute start for redis service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/redis/redis/service/start`);
+  }
+
+  /**
+   * Get status for redis service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/redis/redis/service/status`);
+  }
+
+  /**
+   * Execute stop for redis service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/redis/redis/service/stop`);
+  }
+}
+
+export class RedisSettings extends BaseModule {
+  /**
+   * Get get for redis settings
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/redis/redis/settings/get`);
+  }
+
+  /**
+   * Execute set for redis settings
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/redis/redis/settings/set`, data);
+  }
+}
+
+// Main module class
 export class RedisModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('redis', 'status');
+  public readonly service: RedisService;
+  public readonly settings: RedisSettings;
+
+  constructor(http: any) {
+    super(http);
+    this.service = new RedisService(http);
+    this.settings = new RedisSettings(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('redis', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/redis/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('redis', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/redis/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('redis', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/redis/service/stop');
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('redis', 'reconfigure');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/redis/service/restart');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/redis/general/get');
-  }
-
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/redis/general/set', config);
-  }
-
-  async getInfo(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/redis/service/info');
-  }
-
-  async getStatistics(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/redis/service/statistics');
-  }
-
-  async getMemoryUsage(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/redis/service/memory');
-  }
-
-  async getClients(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/redis/service/clients');
-  }
-
-  async flushDatabase(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/redis/service/flush_db');
-  }
-
-  async flushAll(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/redis/service/flush_all');
-  }
-
-  async saveDatabase(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/redis/service/save');
-  }
-
-  async getConfig(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/redis/service/config');
-  }
-
-  async setConfigValue(parameter: string, value: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/redis/service/config_set', { parameter, value });
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/redis/service/reconfigure');
   }
 }

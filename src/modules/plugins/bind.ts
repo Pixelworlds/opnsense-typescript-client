@@ -1,162 +1,314 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class BindAcl extends BaseModule {
+  /**
+   * Execute add acl for bind acl
+   */
+  async addAcl(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/bind/bind/acl/add_acl`, data);
+  }
 
+  /**
+   * Execute del acl for bind acl
+   */
+  async delAcl(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/bind/bind/acl/del_acl/${uuid}`, data);
+  }
+
+  /**
+   * Get get for bind acl
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/bind/bind/acl/get`);
+  }
+
+  /**
+   * Get get acl for bind acl
+   */
+  async getAcl(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/bind/bind/acl/get_acl/${uuid}`);
+  }
+
+  /**
+   * Execute set for bind acl
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/bind/bind/acl/set`, data);
+  }
+
+  /**
+   * Execute set acl for bind acl
+   */
+  async setAcl(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/bind/bind/acl/set_acl/${uuid}`, data);
+  }
+
+  /**
+   * Execute toggle acl for bind acl
+   */
+  async toggleAcl(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/bind/bind/acl/toggle_acl/${uuid}`, data);
+  }
+}
+
+export class BindDnsbl extends BaseModule {
+  /**
+   * Get get for bind dnsbl
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/bind/bind/dnsbl/get`);
+  }
+
+  /**
+   * Execute set for bind dnsbl
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/bind/bind/dnsbl/set`, data);
+  }
+}
+
+export class BindDomain extends BaseModule {
+  /**
+   * Execute add primary domain for bind domain
+   */
+  async addPrimaryDomain(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/bind/bind/domain/add_primary_domain/${uuid}`, data);
+  }
+
+  /**
+   * Execute add secondary domain for bind domain
+   */
+  async addSecondaryDomain(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/bind/bind/domain/add_secondary_domain/${uuid}`, data);
+  }
+
+  /**
+   * Execute del domain for bind domain
+   */
+  async delDomain(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/bind/bind/domain/del_domain/${uuid}`, data);
+  }
+
+  /**
+   * Get get for bind domain
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/bind/bind/domain/get`);
+  }
+
+  /**
+   * Get get domain for bind domain
+   */
+  async getDomain(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/bind/bind/domain/get_domain/${uuid}`);
+  }
+
+  /**
+   * Get search master domain for bind domain
+   */
+  async searchMasterDomain(): Promise<ApiResponse<SearchResult>> {
+    return this.http.get(`/api/bind/bind/domain/search_master_domain`);
+  }
+
+  /**
+   * Get search slave domain for bind domain
+   */
+  async searchSlaveDomain(): Promise<ApiResponse<SearchResult>> {
+    return this.http.get(`/api/bind/bind/domain/search_slave_domain`);
+  }
+
+  /**
+   * Execute set for bind domain
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/bind/bind/domain/set`, data);
+  }
+
+  /**
+   * Execute set domain for bind domain
+   */
+  async setDomain(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/bind/bind/domain/set_domain/${uuid}`, data);
+  }
+
+  /**
+   * Execute toggle domain for bind domain
+   */
+  async toggleDomain(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/bind/bind/domain/toggle_domain/${uuid}`, data);
+  }
+}
+
+export class BindGeneral extends BaseModule {
+  /**
+   * Get get for bind general
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/bind/bind/general/get`);
+  }
+
+  /**
+   * Execute set for bind general
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/bind/bind/general/set`, data);
+  }
+
+  /**
+   * Get zoneshow for bind general
+   */
+  async zoneshow(zonename: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/bind/bind/general/zoneshow/${zonename}`);
+  }
+
+  /**
+   * Get zonetest for bind general
+   */
+  async zonetest(zonename: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/bind/bind/general/zonetest/${zonename}`);
+  }
+}
+
+export class BindRecord extends BaseModule {
+  /**
+   * Execute add record for bind record
+   */
+  async addRecord(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/bind/bind/record/add_record`, data);
+  }
+
+  /**
+   * Execute del record for bind record
+   */
+  async delRecord(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/bind/bind/record/del_record/${uuid}`, data);
+  }
+
+  /**
+   * Get get for bind record
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/bind/bind/record/get`);
+  }
+
+  /**
+   * Get get record for bind record
+   */
+  async getRecord(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/bind/bind/record/get_record/${uuid}`);
+  }
+
+  /**
+   * Execute set for bind record
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/bind/bind/record/set`, data);
+  }
+
+  /**
+   * Execute set record for bind record
+   */
+  async setRecord(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/bind/bind/record/set_record/${uuid}`, data);
+  }
+
+  /**
+   * Execute toggle record for bind record
+   */
+  async toggleRecord(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/bind/bind/record/toggle_record/${uuid}`, data);
+  }
+}
+
+export class BindService extends BaseModule {
+  /**
+   * Get dnsbl for bind service
+   */
+  async dnsbl(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/bind/bind/service/dnsbl`);
+  }
+
+  /**
+   * Execute reconfigure for bind service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/bind/bind/service/reconfigure`);
+  }
+
+  /**
+   * Execute restart for bind service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/bind/bind/service/restart`);
+  }
+
+  /**
+   * Execute start for bind service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/bind/bind/service/start`);
+  }
+
+  /**
+   * Get status for bind service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/bind/bind/service/status`);
+  }
+
+  /**
+   * Execute stop for bind service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/bind/bind/service/stop`);
+  }
+}
+
+// Main module class
 export class BindModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('bind', 'status');
+  public readonly acl: BindAcl;
+  public readonly dnsbl: BindDnsbl;
+  public readonly domain: BindDomain;
+  public readonly general: BindGeneral;
+  public readonly record: BindRecord;
+  public readonly service: BindService;
+
+  constructor(http: any) {
+    super(http);
+    this.acl = new BindAcl(http);
+    this.dnsbl = new BindDnsbl(http);
+    this.domain = new BindDomain(http);
+    this.general = new BindGeneral(http);
+    this.record = new BindRecord(http);
+    this.service = new BindService(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('bind', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/bind/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('bind', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/bind/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('bind', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/bind/service/stop');
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('bind', 'reconfigure');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/bind/service/restart');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/bind/general/get');
-  }
-
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/bind/general/set', config);
-  }
-
-  async getDomains(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/bind/domain/get');
-  }
-
-  async setDomains(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/bind/domain/set', config);
-  }
-
-  async searchPrimaryDomains(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/bind/domain/search_primary_domain', params);
-  }
-
-  async searchSecondaryDomains(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/bind/domain/search_secondary_domain', params);
-  }
-
-  async addPrimaryDomain(domain: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/bind/domain/add_primary_domain', domain);
-  }
-
-  async addSecondaryDomain(domain: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/bind/domain/add_secondary_domain', domain);
-  }
-
-  async getDomain(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/bind/domain/get_domain/${uuid}` : '/api/bind/domain/get_domain';
-    return this.http.get(path);
-  }
-
-  async updateDomain(uuid: string, domain: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/bind/domain/set_domain/${uuid}`, domain);
-  }
-
-  async deleteDomain(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/bind/domain/del_domain/${uuid}`);
-  }
-
-  async toggleDomain(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/bind/domain/toggle_domain/${uuid}`);
-  }
-
-  async getRecords(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/bind/record/get');
-  }
-
-  async setRecords(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/bind/record/set', config);
-  }
-
-  async searchRecords(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/bind/record/search_record', params);
-  }
-
-  async addRecord(record: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/bind/record/add_record', record);
-  }
-
-  async getRecord(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/bind/record/get_record/${uuid}` : '/api/bind/record/get_record';
-    return this.http.get(path);
-  }
-
-  async updateRecord(uuid: string, record: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/bind/record/set_record/${uuid}`, record);
-  }
-
-  async deleteRecord(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/bind/record/del_record/${uuid}`);
-  }
-
-  async toggleRecord(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/bind/record/toggle_record/${uuid}`);
-  }
-
-  async zoneShow(zonename?: string): Promise<ApiResponse<any>> {
-    const path = zonename ? `/api/bind/general/zoneshow/${zonename}` : '/api/bind/general/zoneshow';
-    return this.http.get(path);
-  }
-
-  async zoneTest(zonename?: string): Promise<ApiResponse<any>> {
-    const path = zonename ? `/api/bind/general/zonetest/${zonename}` : '/api/bind/general/zonetest';
-    return this.http.get(path);
-  }
-
-  async getDnsbl(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/bind/dnsbl/get');
-  }
-
-  async setDnsbl(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/bind/dnsbl/set', config);
-  }
-
-  async updateDnsbl(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/bind/service/dnsbl');
-  }
-
-  async getAcl(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/bind/acl/get');
-  }
-
-  async setAcl(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/bind/acl/set', config);
-  }
-
-  async searchAcl(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/bind/acl/search_acl', params);
-  }
-
-  async addAcl(acl: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/bind/acl/add_acl', acl);
-  }
-
-  async getAclItem(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/bind/acl/get_acl/${uuid}` : '/api/bind/acl/get_acl';
-    return this.http.get(path);
-  }
-
-  async updateAclItem(uuid: string, acl: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/bind/acl/set_acl/${uuid}`, acl);
-  }
-
-  async deleteAcl(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/bind/acl/del_acl/${uuid}`);
-  }
-
-  async toggleAcl(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/bind/acl/toggle_acl/${uuid}`);
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/bind/service/reconfigure');
   }
 }

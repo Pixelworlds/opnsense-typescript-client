@@ -1,53 +1,49 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class DiagnosticsProofpointEt extends BaseModule {
+  /**
+   * Get status for diagnostics proofpoint_et
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/diagnostics/diagnostics/proofpoint_et/status`);
+  }
+}
 
+// Main module class
 export class DiagnosticsModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('diagnostics', 'status');
+  public readonly proofpointEt: DiagnosticsProofpointEt;
+
+  constructor(http: any) {
+    super(http);
+    this.proofpointEt = new DiagnosticsProofpointEt(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('diagnostics', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/diagnostics/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('diagnostics', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/diagnostics/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('diagnostics', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/diagnostics/service/stop');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/general/get');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/diagnostics/service/restart');
   }
 
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/diagnostics/general/set', config);
-  }
-
-  async runDiagnostic(type: string): Promise<ApiResponse<any>> {
-    return this.http.post(`/api/diagnostics/service/run/${type}`);
-  }
-
-  async getResults(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/service/results');
-  }
-
-  async getSystemHealth(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/system/health');
-  }
-
-  async getNetworkInfo(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/network/info');
-  }
-
-  async ping(host: string): Promise<ApiResponse<any>> {
-    return this.http.post('/api/diagnostics/network/ping', { host });
-  }
-
-  async traceroute(host: string): Promise<ApiResponse<any>> {
-    return this.http.post('/api/diagnostics/network/traceroute', { host });
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/diagnostics/service/reconfigure');
   }
 }

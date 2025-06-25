@@ -1,25 +1,49 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class DmidecodeService extends BaseModule {
+  /**
+   * Get get for dmidecode service
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/dmidecode/dmidecode/service/get`);
+  }
+}
 
+// Main module class
 export class DmidecodeModule extends BaseModule {
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/dmidecode/general/get');
+  public readonly service: DmidecodeService;
+
+  constructor(http: any) {
+    super(http);
+    this.service = new DmidecodeService(http);
   }
 
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/dmidecode/general/set', config);
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/dmidecode/service/status');
   }
 
-  async getHardwareInfo(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/dmidecode/service/info');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/dmidecode/service/start');
   }
 
-  async getBiosInfo(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/dmidecode/service/bios');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/dmidecode/service/stop');
   }
 
-  async getSystemInfo(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/dmidecode/service/system');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/dmidecode/service/restart');
+  }
+
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/dmidecode/service/reconfigure');
   }
 }

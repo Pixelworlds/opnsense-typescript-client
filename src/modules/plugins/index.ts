@@ -1,82 +1,65 @@
-export { AcmeclientModule } from './acmeclient';
-export { ApcupsdModule } from './apcupsd';
-export { BindModule } from './bind';
-export { CaddyModule } from './caddy';
-export { ChronyModule } from './chrony';
-export { CicapModule } from './cicap';
-export { ClamavModule } from './clamav';
-export { CollectdModule } from './collectd';
-export { CrowdsecModule } from './crowdsec';
-
-export { DechwModule } from './dechw';
-export { DiagnosticsModule as PluginDiagnosticsModule } from './diagnostics';
-export { DmidecodeModule } from './dmidecode';
-export { DnscryptproxyModule } from './dnscryptproxy';
-export { DyndnsModule } from './dyndns';
-
-export { FreeradiusModule } from './freeradius';
+// Auto-generated plugin module exports
 export { FtpproxyModule } from './ftpproxy';
-
-export { GridexampleModule } from './gridexample';
-export { HAProxyModule } from './haproxy';
-export { HelloworldModule } from './helloworld';
-export { HwprobeModule } from './hwprobe';
-
-export { IperfModule } from './iperf';
-
-export { LldpdModule } from './lldpd';
-
-export { MaltrailModule } from './maltrail';
-export { MdnsrepeaterModule } from './mdnsrepeater';
-export { MuninnodeModule } from './muninnode';
-
-export { NdproxyModule } from './ndproxy';
-export { NetdataModule } from './netdata';
-export { NetsnmpModule } from './netsnmp';
-export { NginxModule } from './nginx';
-export { NodeexporterModule } from './nodeexporter';
-export { NrpeModule } from './nrpe';
-export { NtopngModule } from './ntopng';
-export { NutModule } from './nut';
-
-export { OpenconnectModule } from './openconnect';
-
-export { PostfixModule } from './postfix';
-export { ProxyModule } from './proxy';
-export { ProxyssoModule } from './proxysso';
-export { PuppetagentModule } from './puppetagent';
-
-export { QemuguestagentModule } from './qemuguestagent';
-export { QuaggaModule } from './quagga';
-
-export { RadsecproxyModule } from './radsecproxy';
-export { RedisModule } from './redis';
-export { RelaydModule } from './relayd';
-export { RspamdModule } from './rspamd';
-
-export { ShadowsocksModule } from './shadowsocks';
-export { SiproxydModule } from './siproxyd';
-export { SmartModule } from './smart';
-export { SoftetherModule } from './softether';
-export { SslhModule } from './sslh';
-export { StunnelModule } from './stunnel';
-
-export { TailscaleModule } from './tailscale';
 export { TaygaModule } from './tayga';
-export { TelegrafModule } from './telegraf';
-export { TftpModule } from './tftp';
-export { TincModule } from './tinc';
-export { TorModule } from './tor';
-export { TurnserverModule } from './turnserver';
-
+export { NdproxyModule } from './ndproxy';
+export { ApcupsdModule } from './apcupsd';
+export { CrowdsecModule } from './crowdsec';
+export { CaddyModule } from './caddy';
 export { UdpbroadcastrelayModule } from './udpbroadcastrelay';
-
+export { NutModule } from './nut';
+export { HwprobeModule } from './hwprobe';
+export { AcmeclientModule } from './acmeclient';
+export { TincModule } from './tinc';
 export { VnstatModule } from './vnstat';
-
-export { WazuhagentModule } from './wazuhagent';
-export { WireGuardModule } from './wireguard';
-export { WolModule } from './wol';
-
-export { ZabbixagentModule } from './zabbixagent';
-export { ZabbixproxyModule } from './zabbixproxy';
+export { CollectdModule } from './collectd';
+export { LldpdModule } from './lldpd';
+export { BindModule } from './bind';
+export { GridexampleModule } from './gridexample';
+export { NetdataModule } from './netdata';
+export { TorModule } from './tor';
+export { CicapModule } from './cicap';
+export { NrpeModule } from './nrpe';
+export { PostfixModule } from './postfix';
+export { HaproxyModule } from './haproxy';
 export { ZerotierModule } from './zerotier';
+export { ChronyModule } from './chrony';
+export { DechwModule } from './dechw';
+export { NtopngModule } from './ntopng';
+export { DyndnsModule } from './dyndns';
+export { PuppetagentModule } from './puppetagent';
+export { WazuhagentModule } from './wazuhagent';
+export { TailscaleModule } from './tailscale';
+export { FreeradiusModule } from './freeradius';
+export { HelloworldModule } from './helloworld';
+export { ClamavModule } from './clamav';
+export { ProxyModule } from './proxy';
+export { RadsecproxyModule } from './radsecproxy';
+export { ShadowsocksModule } from './shadowsocks';
+export { DnscryptproxyModule } from './dnscryptproxy';
+export { SmartModule } from './smart';
+export { NetsnmpModule } from './netsnmp';
+export { MdnsrepeaterModule } from './mdnsrepeater';
+export { ProxyssoModule } from './proxysso';
+export { SiproxdModule } from './siproxd';
+export { QemuguestagentModule } from './qemuguestagent';
+export { DmidecodeModule } from './dmidecode';
+export { StunnelModule } from './stunnel';
+export { MuninnodeModule } from './muninnode';
+export { MaltrailModule } from './maltrail';
+export { RspamdModule } from './rspamd';
+export { RelaydModule } from './relayd';
+export { NodeexporterModule } from './nodeexporter';
+export { NginxModule } from './nginx';
+export { IperfModule } from './iperf';
+export { SoftetherModule } from './softether';
+export { TurnserverModule } from './turnserver';
+export { TftpModule } from './tftp';
+export { OpenconnectModule } from './openconnect';
+export { RedisModule } from './redis';
+export { ZabbixagentModule } from './zabbixagent';
+export { DiagnosticsModule } from './diagnostics';
+export { QuaggaModule } from './quagga';
+export { SslhModule } from './sslh';
+export { WolModule } from './wol';
+export { ZabbixproxyModule } from './zabbixproxy';
+export { TelegrafModule } from './telegraf';

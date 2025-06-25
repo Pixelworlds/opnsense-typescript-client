@@ -1,78 +1,130 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class StunnelService extends BaseModule {
+  /**
+   * Execute reconfigure for stunnel service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/stunnel/stunnel/service/reconfigure`);
+  }
 
+  /**
+   * Execute restart for stunnel service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/stunnel/stunnel/service/restart`);
+  }
+
+  /**
+   * Execute start for stunnel service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/stunnel/stunnel/service/start`);
+  }
+
+  /**
+   * Get status for stunnel service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/stunnel/stunnel/service/status`);
+  }
+
+  /**
+   * Execute stop for stunnel service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/stunnel/stunnel/service/stop`);
+  }
+}
+
+export class StunnelServices extends BaseModule {
+  /**
+   * Execute add item for stunnel services
+   */
+  async addItem(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/stunnel/stunnel/services/add_item`, data);
+  }
+
+  /**
+   * Execute del item for stunnel services
+   */
+  async delItem(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/stunnel/stunnel/services/del_item/${uuid}`, data);
+  }
+
+  /**
+   * Get get for stunnel services
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/stunnel/stunnel/services/get`);
+  }
+
+  /**
+   * Get get item for stunnel services
+   */
+  async getItem(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/stunnel/stunnel/services/get_item/${uuid}`);
+  }
+
+  /**
+   * Execute set for stunnel services
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/stunnel/stunnel/services/set`, data);
+  }
+
+  /**
+   * Execute set item for stunnel services
+   */
+  async setItem(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/stunnel/stunnel/services/set_item/${uuid}`, data);
+  }
+
+  /**
+   * Execute toggle item for stunnel services
+   */
+  async toggleItem(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/stunnel/stunnel/services/toggle_item/${uuid}/${enabled}`, data);
+  }
+}
+
+// Main module class
 export class StunnelModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('stunnel', 'status');
+  public readonly service: StunnelService;
+  public readonly services: StunnelServices;
+
+  constructor(http: any) {
+    super(http);
+    this.service = new StunnelService(http);
+    this.services = new StunnelServices(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('stunnel', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/stunnel/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('stunnel', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/stunnel/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('stunnel', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/stunnel/service/stop');
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('stunnel', 'reconfigure');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/stunnel/service/restart');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/stunnel/general/get');
-  }
-
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/stunnel/general/set', config);
-  }
-
-  async searchServices(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/stunnel/settings/search_service', params);
-  }
-
-  async addService(service: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/stunnel/settings/add_service', service);
-  }
-
-  async getService(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/stunnel/settings/get_service/${uuid}` : '/api/stunnel/settings/get_service';
-    return this.http.get(path);
-  }
-
-  async updateService(uuid: string, service: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/stunnel/settings/set_service/${uuid}`, service);
-  }
-
-  async deleteService(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/stunnel/settings/del_service/${uuid}`);
-  }
-
-  async toggleService(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    return this.toggle('/api/stunnel/settings/toggle_service', uuid, enabled);
-  }
-
-  async getCertificates(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/stunnel/service/certificates');
-  }
-
-  async generateCertificate(params: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/stunnel/service/generate_cert', params);
-  }
-
-  async getConnections(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/stunnel/service/connections');
-  }
-
-  async getStatistics(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/stunnel/service/statistics');
-  }
-
-  async getLogs(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/stunnel/service/logs');
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/stunnel/service/reconfigure');
   }
 }

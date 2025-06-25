@@ -1,82 +1,95 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class TurnserverService extends BaseModule {
+  /**
+   * Execute reconfigure for turnserver service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/turnserver/turnserver/service/reconfigure`);
+  }
 
+  /**
+   * Execute restart for turnserver service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/turnserver/turnserver/service/restart`);
+  }
+
+  /**
+   * Execute start for turnserver service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/turnserver/turnserver/service/start`);
+  }
+
+  /**
+   * Get status for turnserver service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/turnserver/turnserver/service/status`);
+  }
+
+  /**
+   * Execute stop for turnserver service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/turnserver/turnserver/service/stop`);
+  }
+}
+
+export class TurnserverSettings extends BaseModule {
+  /**
+   * Get get for turnserver settings
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/turnserver/turnserver/settings/get`);
+  }
+
+  /**
+   * Execute set for turnserver settings
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/turnserver/turnserver/settings/set`, data);
+  }
+}
+
+// Main module class
 export class TurnserverModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('turnserver', 'status');
+  public readonly service: TurnserverService;
+  public readonly settings: TurnserverSettings;
+
+  constructor(http: any) {
+    super(http);
+    this.service = new TurnserverService(http);
+    this.settings = new TurnserverSettings(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('turnserver', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/turnserver/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('turnserver', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/turnserver/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('turnserver', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/turnserver/service/stop');
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('turnserver', 'reconfigure');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/turnserver/service/restart');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/turnserver/general/get');
-  }
-
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/turnserver/general/set', config);
-  }
-
-  async searchUsers(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/turnserver/settings/search_user', params);
-  }
-
-  async addUser(user: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/turnserver/settings/add_user', user);
-  }
-
-  async getUser(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/turnserver/settings/get_user/${uuid}` : '/api/turnserver/settings/get_user';
-    return this.http.get(path);
-  }
-
-  async updateUser(uuid: string, user: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/turnserver/settings/set_user/${uuid}`, user);
-  }
-
-  async deleteUser(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/turnserver/settings/del_user/${uuid}`);
-  }
-
-  async toggleUser(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    return this.toggle('/api/turnserver/settings/toggle_user', uuid, enabled);
-  }
-
-  async getSessions(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/turnserver/service/sessions');
-  }
-
-  async getConnections(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/turnserver/service/connections');
-  }
-
-  async disconnectSession(sessionId: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/turnserver/service/disconnect/${sessionId}`);
-  }
-
-  async getStatistics(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/turnserver/service/statistics');
-  }
-
-  async getServerInfo(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/turnserver/service/info');
-  }
-
-  async resetStatistics(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/turnserver/service/reset_stats');
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/turnserver/service/reconfigure');
   }
 }

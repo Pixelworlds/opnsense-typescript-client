@@ -1,70 +1,95 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class TaygaGeneral extends BaseModule {
+  /**
+   * Get get for tayga general
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/tayga/tayga/general/get`);
+  }
 
+  /**
+   * Execute set for tayga general
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/tayga/tayga/general/set`, data);
+  }
+}
+
+export class TaygaService extends BaseModule {
+  /**
+   * Execute reconfigure for tayga service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/tayga/tayga/service/reconfigure`);
+  }
+
+  /**
+   * Execute restart for tayga service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/tayga/tayga/service/restart`);
+  }
+
+  /**
+   * Execute start for tayga service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/tayga/tayga/service/start`);
+  }
+
+  /**
+   * Get status for tayga service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/tayga/tayga/service/status`);
+  }
+
+  /**
+   * Execute stop for tayga service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/tayga/tayga/service/stop`);
+  }
+}
+
+// Main module class
 export class TaygaModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('tayga', 'status');
+  public readonly general: TaygaGeneral;
+  public readonly service: TaygaService;
+
+  constructor(http: any) {
+    super(http);
+    this.general = new TaygaGeneral(http);
+    this.service = new TaygaService(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('tayga', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/tayga/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('tayga', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/tayga/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('tayga', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/tayga/service/stop');
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('tayga', 'reconfigure');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/tayga/service/restart');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/tayga/general/get');
-  }
-
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/tayga/general/set', config);
-  }
-
-  async searchMappings(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/tayga/settings/search_mapping', params);
-  }
-
-  async addMapping(mapping: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/tayga/settings/add_mapping', mapping);
-  }
-
-  async getMapping(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/tayga/settings/get_mapping/${uuid}` : '/api/tayga/settings/get_mapping';
-    return this.http.get(path);
-  }
-
-  async updateMapping(uuid: string, mapping: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/tayga/settings/set_mapping/${uuid}`, mapping);
-  }
-
-  async deleteMapping(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/tayga/settings/del_mapping/${uuid}`);
-  }
-
-  async toggleMapping(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    return this.toggle('/api/tayga/settings/toggle_mapping', uuid, enabled);
-  }
-
-  async getStatistics(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/tayga/service/statistics');
-  }
-
-  async getTranslations(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/tayga/service/translations');
-  }
-
-  async clearTranslations(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/tayga/service/clear_translations');
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/tayga/service/reconfigure');
   }
 }

@@ -1,13 +1,91 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
-
-export class GridexampleModule extends BaseModule {
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/gridexample/general/get');
+// Controller classes
+export class GridexampleSettings extends BaseModule {
+  /**
+   * Execute add item for gridexample settings
+   */
+  async addItem(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/gridexample/gridexample/settings/add_item`, data);
   }
 
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/gridexample/general/set', config);
+  /**
+   * Execute del item for gridexample settings
+   */
+  async delItem(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/gridexample/gridexample/settings/del_item/${uuid}`, data);
+  }
+
+  /**
+   * Get get for gridexample settings
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/gridexample/gridexample/settings/get`);
+  }
+
+  /**
+   * Get get item for gridexample settings
+   */
+  async getItem(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/gridexample/gridexample/settings/get_item/${uuid}`);
+  }
+
+  /**
+   * Execute set for gridexample settings
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/gridexample/gridexample/settings/set`, data);
+  }
+
+  /**
+   * Execute set item for gridexample settings
+   */
+  async setItem(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/gridexample/gridexample/settings/set_item/${uuid}`, data);
+  }
+
+  /**
+   * Execute toggle item for gridexample settings
+   */
+  async toggleItem(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/gridexample/gridexample/settings/toggle_item/${uuid}/${enabled}`, data);
+  }
+}
+
+// Main module class
+export class GridexampleModule extends BaseModule {
+  public readonly settings: GridexampleSettings;
+
+  constructor(http: any) {
+    super(http);
+    this.settings = new GridexampleSettings(http);
+  }
+
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/gridexample/service/status');
+  }
+
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/gridexample/service/start');
+  }
+
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/gridexample/service/stop');
+  }
+
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/gridexample/service/restart');
+  }
+
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/gridexample/service/reconfigure');
   }
 }

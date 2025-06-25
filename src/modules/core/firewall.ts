@@ -1,494 +1,547 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
-
-export class FirewallAliasUtils {
-  constructor(private http: any) {}
-
-  async add(alias: string, data: { address: string }): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/alias_util/add/${alias}`, data);
+// Controller classes
+export class FirewallAlias extends BaseModule {
+  /**
+   * Execute add item for firewall alias
+   */
+  async addItem(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/alias/add_item`, data);
   }
 
-  async delete(alias: string, data: { address: string }): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/alias_util/delete/${alias}`, data);
+  /**
+   * Execute del item for firewall alias
+   */
+  async delItem(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/alias/del_item/${uuid}`, data);
   }
 
-  async list(alias: string): Promise<ApiResponse<any>> {
-    return this.http.get(`/api/firewall/alias_util/list/${alias}`);
+  /**
+   * Get get for firewall alias
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/firewall/firewall/alias/get`);
   }
 
-  async flush(alias: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/alias_util/flush/${alias}`);
+  /**
+   * Get get alias u u i d for firewall alias
+   */
+  async getAliasUUID(name: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/firewall/firewall/alias/get_alias_u_u_i_d/${name}`);
   }
 
-  async getAliases(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/firewall/alias_util/aliases');
+  /**
+   * Get get geo i p for firewall alias
+   */
+  async getGeoIP(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/firewall/firewall/alias/get_geo_i_p`);
   }
 
-  async findReferences(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/firewall/alias_util/find_references');
+  /**
+   * Get get item for firewall alias
+   */
+  async getItem(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/firewall/firewall/alias/get_item/${uuid}`);
   }
 
-  async updateBogons(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/firewall/alias_util/update_bogons');
-  }
-}
-
-export class FirewallRules {
-  constructor(private http: any) {}
-
-  async search(
-    params: {
-      current?: number;
-      rowCount?: number;
-      sort?: Record<string, any>;
-      searchPhrase?: string;
-    } = {}
-  ): Promise<ApiResponse<any>> {
-    const defaultParams = {
-      current: 1,
-      rowCount: 100,
-      sort: {},
-      searchPhrase: '',
-    };
-    return this.http.post('/api/firewall/filter/search_rule', { ...defaultParams, ...params });
-  }
-
-  async add(rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/firewall/filter/add_rule', rule);
-  }
-
-  async get(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/firewall/filter/get_rule/${uuid}` : '/api/firewall/filter/get_rule';
-    return this.http.get(path);
-  }
-
-  async update(uuid: string, rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/filter/set_rule/${uuid}`, rule);
-  }
-
-  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/filter/del_rule/${uuid}`);
-  }
-
-  async toggle(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    const path =
-      enabled !== undefined
-        ? `/api/firewall/filter/toggle_rule/${uuid}/${enabled ? '1' : '0'}`
-        : `/api/firewall/filter/toggle_rule/${uuid}`;
-    return this.http.post(path);
-  }
-
-  async moveBefore(selectedUuid: string, targetUuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/filter/move_rule_before/${selectedUuid}/${targetUuid}`);
-  }
-
-  async getInterfaceList(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/firewall/filter/get_interface_list');
-  }
-
-  async apply(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/firewall/filter/apply');
-  }
-
-  async savepoint(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/firewall/filter/savepoint');
-  }
-
-  async cancelRollback(rollbackRevision: number): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/filter/cancel_rollback/${rollbackRevision}`);
-  }
-}
-
-export class FirewallAliases {
-  constructor(private http: any) {}
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    const defaultParams = {
-      current: 1,
-      rowCount: 100,
-      sort: {},
-      searchPhrase: '',
-    };
-    return this.http.post('/api/firewall/alias/search_item', { ...defaultParams, ...params });
-  }
-
-  async add(alias: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/firewall/alias/add_item', alias);
-  }
-
-  async get(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/firewall/alias/get_item/${uuid}` : '/api/firewall/alias/get';
-    return this.http.get(path);
-  }
-
-  async update(uuid: string, alias: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/alias/set_item/${uuid}`, alias);
-  }
-
-  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/alias/del_item/${uuid}`);
-  }
-
-  async toggle(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    const path =
-      enabled !== undefined
-        ? `/api/firewall/alias/toggle_item/${uuid}/${enabled ? '1' : '0'}`
-        : `/api/firewall/alias/toggle_item/${uuid}`;
-    return this.http.post(path);
-  }
-
-  async export(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/firewall/alias/export');
-  }
-
-  async import(data: any): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/firewall/alias/import', data);
-  }
-
+  /**
+   * Get get table size for firewall alias
+   */
   async getTableSize(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/firewall/alias/get_table_size');
+    return this.http.get(`/api/firewall/firewall/alias/get_table_size`);
   }
 
-  async getUuidByName(name: string): Promise<ApiResponse<any>> {
-    return this.http.get(`/api/firewall/alias/get_alias_uuid/${name}`);
+  /**
+   * Execute import for firewall alias
+   */
+  async import(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/alias/import`, data);
   }
 
+  /**
+   * Get list categories for firewall alias
+   */
   async listCategories(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/firewall/alias/list_categories');
+    return this.http.get(`/api/firewall/firewall/alias/list_categories`);
   }
 
+  /**
+   * Get list countries for firewall alias
+   */
   async listCountries(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/firewall/alias/list_countries');
+    return this.http.get(`/api/firewall/firewall/alias/list_countries`);
   }
 
+  /**
+   * Get list network aliases for firewall alias
+   */
   async listNetworkAliases(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/firewall/alias/list_network_aliases');
+    return this.http.get(`/api/firewall/firewall/alias/list_network_aliases`);
   }
 
-  async getGeoip(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/firewall/alias/get_geoip');
+  /**
+   * Get list user groups for firewall alias
+   */
+  async listUserGroups(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/firewall/firewall/alias/list_user_groups`);
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/firewall/alias/reconfigure');
-  }
-}
-
-export class FirewallGroups {
-  constructor(private http: any) {}
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    const defaultParams = {
-      current: 1,
-      rowCount: 100,
-      sort: {},
-      searchPhrase: '',
-    };
-    return this.http.post('/api/firewall/group/search_item', { ...defaultParams, ...params });
+  /**
+   * Execute reconfigure for firewall alias
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/firewall/firewall/alias/reconfigure`, data);
   }
 
-  async add(group: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/firewall/group/add_item', group);
+  /**
+   * Execute set for firewall alias
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/alias/set`, data);
   }
 
-  async get(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/firewall/group/get_item/${uuid}` : '/api/firewall/group/get';
-    return this.http.get(path);
+  /**
+   * Execute set item for firewall alias
+   */
+  async setItem(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/alias/set_item/${uuid}`, data);
   }
 
-  async update(uuid: string, group: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/group/set_item/${uuid}`, group);
-  }
-
-  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/group/del_item/${uuid}`);
-  }
-
-  async toggle(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    const path =
-      enabled !== undefined
-        ? `/api/firewall/group/toggle_item/${uuid}/${enabled ? '1' : '0'}`
-        : `/api/firewall/group/toggle_item/${uuid}`;
-    return this.http.post(path);
-  }
-
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/firewall/group/reconfigure');
+  /**
+   * Execute toggle item for firewall alias
+   */
+  async toggleItem(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/alias/toggle_item/${uuid}/${enabled}`, data);
   }
 }
 
-export class FirewallSourceNat {
-  constructor(private http: any) {}
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    const defaultParams = {
-      current: 1,
-      rowCount: 100,
-      sort: {},
-      searchPhrase: '',
-    };
-    return this.http.post('/api/firewall/source_nat/search_rule', { ...defaultParams, ...params });
+export class FirewallAliasUtil extends BaseModule {
+  /**
+   * Execute add for firewall alias_util
+   */
+  async add(alias: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/alias_util/add/${alias}`, data);
   }
 
-  async add(rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/firewall/source_nat/add_rule', rule);
+  /**
+   * Get aliases for firewall alias_util
+   */
+  async aliases(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/firewall/firewall/alias_util/aliases`);
   }
 
-  async get(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/firewall/source_nat/get_rule/${uuid}` : '/api/firewall/source_nat/get_rule';
-    return this.http.get(path);
+  /**
+   * Execute delete for firewall alias_util
+   */
+  async delete(alias: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/alias_util/delete/${alias}`, data);
   }
 
-  async update(uuid: string, rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/source_nat/set_rule/${uuid}`, rule);
+  /**
+   * Execute find references for firewall alias_util
+   */
+  async findReferences(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/alias_util/find_references`, data);
   }
 
-  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/source_nat/del_rule/${uuid}`);
+  /**
+   * Execute flush for firewall alias_util
+   */
+  async flush(alias: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/alias_util/flush/${alias}`, data);
   }
 
-  async toggle(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    const path =
-      enabled !== undefined
-        ? `/api/firewall/source_nat/toggle_rule/${uuid}/${enabled ? '1' : '0'}`
-        : `/api/firewall/source_nat/toggle_rule/${uuid}`;
-    return this.http.post(path);
+  /**
+   * Get list for firewall alias_util
+   */
+  async list(alias: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/firewall/firewall/alias_util/list/${alias}`);
   }
 
-  async moveBefore(selectedUuid: string, targetUuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/source_nat/move_rule_before/${selectedUuid}/${targetUuid}`);
-  }
-}
-
-export class FirewallOneToOneNat {
-  constructor(private http: any) {}
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    const defaultParams = {
-      current: 1,
-      rowCount: 100,
-      sort: {},
-      searchPhrase: '',
-    };
-    return this.http.post('/api/firewall/nat_onetoone/search_rule', { ...defaultParams, ...params });
-  }
-
-  async add(rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/firewall/nat_onetoone/add_rule', rule);
-  }
-
-  async get(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/firewall/nat_onetoone/get_rule/${uuid}` : '/api/firewall/nat_onetoone/get_rule';
-    return this.http.get(path);
-  }
-
-  async update(uuid: string, rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/nat_onetoone/set_rule/${uuid}`, rule);
-  }
-
-  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/nat_onetoone/del_rule/${uuid}`);
-  }
-
-  async toggle(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    const path =
-      enabled !== undefined
-        ? `/api/firewall/nat_onetoone/toggle_rule/${uuid}/${enabled ? '1' : '0'}`
-        : `/api/firewall/nat_onetoone/toggle_rule/${uuid}`;
-    return this.http.post(path);
-  }
-
-  async moveBefore(selectedUuid: string, targetUuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/nat_onetoone/move_rule_before/${selectedUuid}/${targetUuid}`);
+  /**
+   * Get update bogons for firewall alias_util
+   */
+  async updateBogons(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/firewall/firewall/alias_util/update_bogons`);
   }
 }
 
-export class FirewallDestinationNat {
-  constructor(private http: any) {}
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    const defaultParams = {
-      current: 1,
-      rowCount: 100,
-      sort: {},
-      searchPhrase: '',
-    };
-    return this.http.post('/api/firewall/nat_destination/search_rule', { ...defaultParams, ...params });
+export class FirewallCategory extends BaseModule {
+  /**
+   * Execute add item for firewall category
+   */
+  async addItem(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/category/add_item`, data);
   }
 
-  async add(rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/firewall/nat_destination/add_rule', rule);
+  /**
+   * Execute del item for firewall category
+   */
+  async delItem(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/category/del_item/${uuid}`, data);
   }
 
-  async get(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/firewall/nat_destination/get_rule/${uuid}` : '/api/firewall/nat_destination/get_rule';
-    return this.http.get(path);
+  /**
+   * Get get for firewall category
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/firewall/firewall/category/get`);
   }
 
-  async update(uuid: string, rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/nat_destination/set_rule/${uuid}`, rule);
+  /**
+   * Get get item for firewall category
+   */
+  async getItem(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/firewall/firewall/category/get_item/${uuid}`);
   }
 
-  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/nat_destination/del_rule/${uuid}`);
+  /**
+   * Execute set for firewall category
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/category/set`, data);
   }
 
-  async toggle(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    const path =
-      enabled !== undefined
-        ? `/api/firewall/nat_destination/toggle_rule/${uuid}/${enabled ? '1' : '0'}`
-        : `/api/firewall/nat_destination/toggle_rule/${uuid}`;
-    return this.http.post(path);
-  }
-
-  async moveBefore(selectedUuid: string, targetUuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/nat_destination/move_rule_before/${selectedUuid}/${targetUuid}`);
-  }
-}
-
-export class FirewallCategories {
-  constructor(private http: any) {}
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    const defaultParams = {
-      current: 1,
-      rowCount: 100,
-      sort: {},
-      searchPhrase: '',
-    };
-    return this.http.post('/api/firewall/category/search_item', { ...defaultParams, ...params });
-  }
-
-  async add(category: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/firewall/category/add_item', category);
-  }
-
-  async get(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/firewall/category/get_item/${uuid}` : '/api/firewall/category/get';
-    return this.http.get(path);
-  }
-
-  async update(uuid: string, category: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/category/set_item/${uuid}`, category);
-  }
-
-  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/category/del_item/${uuid}`);
-  }
-
-  async toggle(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    const path =
-      enabled !== undefined
-        ? `/api/firewall/category/toggle_item/${uuid}/${enabled ? '1' : '0'}`
-        : `/api/firewall/category/toggle_item/${uuid}`;
-    return this.http.post(path);
+  /**
+   * Execute set item for firewall category
+   */
+  async setItem(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/category/set_item/${uuid}`, data);
   }
 }
 
-export class FirewallNpt {
-  constructor(private http: any) {}
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    const defaultParams = {
-      current: 1,
-      rowCount: 100,
-      sort: {},
-      searchPhrase: '',
-    };
-    return this.http.post('/api/firewall/npt/search_rule', { ...defaultParams, ...params });
+export class FirewallFilterBase extends BaseModule {
+  /**
+   * Execute apply for firewall filter_base
+   */
+  async apply(rollback_revision: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/filter_base/apply/${rollback_revision}`, data);
   }
 
-  async add(rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/firewall/npt/add_rule', rule);
+  /**
+   * Execute cancel rollback for firewall filter_base
+   */
+  async cancelRollback(rollback_revision: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/filter_base/cancel_rollback/${rollback_revision}`, data);
   }
 
-  async get(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/firewall/npt/get_rule/${uuid}` : '/api/firewall/npt/get_rule';
-    return this.http.get(path);
+  /**
+   * Get get for firewall filter_base
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/firewall/firewall/filter_base/get`);
   }
 
-  async update(uuid: string, rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/npt/set_rule/${uuid}`, rule);
-  }
-
-  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/npt/del_rule/${uuid}`);
-  }
-
-  async toggle(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    const path =
-      enabled !== undefined
-        ? `/api/firewall/npt/toggle_rule/${uuid}/${enabled ? '1' : '0'}`
-        : `/api/firewall/npt/toggle_rule/${uuid}`;
-    return this.http.post(path);
-  }
-
-  async moveBefore(selectedUuid: string, targetUuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/npt/move_rule_before/${selectedUuid}/${targetUuid}`);
-  }
-}
-
-export class FirewallModule extends BaseModule {
-  public readonly rules: FirewallRules;
-  public readonly aliases: FirewallAliases;
-  public readonly aliasUtils: FirewallAliasUtils;
-  public readonly groups: FirewallGroups;
-  public readonly sourceNat: FirewallSourceNat;
-  public readonly oneToOneNat: FirewallOneToOneNat;
-  public readonly destinationNat: FirewallDestinationNat;
-  public readonly categories: FirewallCategories;
-  public readonly npt: FirewallNpt;
-
-  constructor(httpClient: any) {
-    super(httpClient);
-    this.rules = new FirewallRules(this.http);
-    this.aliases = new FirewallAliases(this.http);
-    this.aliasUtils = new FirewallAliasUtils(this.http);
-    this.groups = new FirewallGroups(this.http);
-    this.sourceNat = new FirewallSourceNat(this.http);
-    this.oneToOneNat = new FirewallOneToOneNat(this.http);
-    this.destinationNat = new FirewallDestinationNat(this.http);
-    this.categories = new FirewallCategories(this.http);
-    this.npt = new FirewallNpt(this.http);
-  }
-
-  async apply(rollbackRevision?: number): Promise<ApiResponse<ApiResult>> {
-    const path = rollbackRevision
-      ? `/api/firewall/filter_base/apply/${rollbackRevision}`
-      : '/api/firewall/filter_base/apply';
-    return this.http.post(path);
-  }
-
-  async savepoint(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/firewall/filter_base/savepoint');
-  }
-
-  async revert(revision: number): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/filter_base/revert/${revision}`);
-  }
-
-  async cancelRollback(rollbackRevision: number): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/firewall/filter_base/cancel_rollback/${rollbackRevision}`);
-  }
-
-  async getConfig(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/firewall/filter_base/get');
-  }
-
-  async setConfig(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/firewall/filter_base/set', config);
-  }
-
+  /**
+   * Get list categories for firewall filter_base
+   */
   async listCategories(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/firewall/filter_base/list_categories');
+    return this.http.get(`/api/firewall/firewall/filter_base/list_categories`);
   }
 
+  /**
+   * Get list network select options for firewall filter_base
+   */
   async listNetworkSelectOptions(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/firewall/filter_base/list_network_select_options');
+    return this.http.get(`/api/firewall/firewall/filter_base/list_network_select_options`);
   }
 
-  async getRuleStats(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/firewall/filter_util/rule_stats');
+  /**
+   * Execute revert for firewall filter_base
+   */
+  async revert(revision: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/filter_base/revert/${revision}`, data);
+  }
+
+  /**
+   * Execute savepoint for firewall filter_base
+   */
+  async savepoint(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/filter_base/savepoint`, data);
+  }
+
+  /**
+   * Execute set for firewall filter_base
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/filter_base/set`, data);
+  }
+}
+
+export class FirewallFilter extends BaseModule {
+  /**
+   * Execute add rule for firewall filter
+   */
+  async addRule(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/filter/add_rule`, data);
+  }
+
+  /**
+   * Execute del rule for firewall filter
+   */
+  async delRule(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/filter/del_rule/${uuid}`, data);
+  }
+
+  /**
+   * Get get interface list for firewall filter
+   */
+  async getInterfaceList(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/firewall/firewall/filter/get_interface_list`);
+  }
+
+  /**
+   * Get get rule for firewall filter
+   */
+  async getRule(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/firewall/firewall/filter/get_rule/${uuid}`);
+  }
+
+  /**
+   * Execute move rule before for firewall filter
+   */
+  async moveRuleBefore(selected_uuid: string, target_uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/filter/move_rule_before/${selected_uuid}/${target_uuid}`, data);
+  }
+
+  /**
+   * Execute set rule for firewall filter
+   */
+  async setRule(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/filter/set_rule/${uuid}`, data);
+  }
+
+  /**
+   * Execute toggle rule for firewall filter
+   */
+  async toggleRule(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/filter/toggle_rule/${uuid}/${enabled}`, data);
+  }
+}
+
+export class FirewallFilterUtil extends BaseModule {
+  /**
+   * Get rule stats for firewall filter_util
+   */
+  async ruleStats(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/firewall/firewall/filter_util/rule_stats`);
+  }
+}
+
+export class FirewallGroup extends BaseModule {
+  /**
+   * Execute add item for firewall group
+   */
+  async addItem(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/group/add_item`, data);
+  }
+
+  /**
+   * Execute del item for firewall group
+   */
+  async delItem(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/group/del_item/${uuid}`, data);
+  }
+
+  /**
+   * Get get for firewall group
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/firewall/firewall/group/get`);
+  }
+
+  /**
+   * Get get item for firewall group
+   */
+  async getItem(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/firewall/firewall/group/get_item/${uuid}`);
+  }
+
+  /**
+   * Execute reconfigure for firewall group
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/firewall/firewall/group/reconfigure`, data);
+  }
+
+  /**
+   * Execute set for firewall group
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/group/set`, data);
+  }
+
+  /**
+   * Execute set item for firewall group
+   */
+  async setItem(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/group/set_item/${uuid}`, data);
+  }
+}
+
+export class FirewallNpt extends BaseModule {
+  /**
+   * Execute add rule for firewall npt
+   */
+  async addRule(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/npt/add_rule`, data);
+  }
+
+  /**
+   * Execute del rule for firewall npt
+   */
+  async delRule(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/npt/del_rule/${uuid}`, data);
+  }
+
+  /**
+   * Get get rule for firewall npt
+   */
+  async getRule(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/firewall/firewall/npt/get_rule/${uuid}`);
+  }
+
+  /**
+   * Execute set rule for firewall npt
+   */
+  async setRule(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/npt/set_rule/${uuid}`, data);
+  }
+
+  /**
+   * Execute toggle rule for firewall npt
+   */
+  async toggleRule(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/npt/toggle_rule/${uuid}/${enabled}`, data);
+  }
+}
+
+export class FirewallOneToOne extends BaseModule {
+  /**
+   * Execute add rule for firewall one_to_one
+   */
+  async addRule(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/one_to_one/add_rule`, data);
+  }
+
+  /**
+   * Execute del rule for firewall one_to_one
+   */
+  async delRule(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/one_to_one/del_rule/${uuid}`, data);
+  }
+
+  /**
+   * Get get rule for firewall one_to_one
+   */
+  async getRule(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/firewall/firewall/one_to_one/get_rule/${uuid}`);
+  }
+
+  /**
+   * Execute set rule for firewall one_to_one
+   */
+  async setRule(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/one_to_one/set_rule/${uuid}`, data);
+  }
+
+  /**
+   * Execute toggle rule for firewall one_to_one
+   */
+  async toggleRule(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/one_to_one/toggle_rule/${uuid}/${enabled}`, data);
+  }
+}
+
+export class FirewallSourceNat extends BaseModule {
+  /**
+   * Execute add rule for firewall source_nat
+   */
+  async addRule(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/source_nat/add_rule`, data);
+  }
+
+  /**
+   * Execute del rule for firewall source_nat
+   */
+  async delRule(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/source_nat/del_rule/${uuid}`, data);
+  }
+
+  /**
+   * Get get rule for firewall source_nat
+   */
+  async getRule(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/firewall/firewall/source_nat/get_rule/${uuid}`);
+  }
+
+  /**
+   * Execute set rule for firewall source_nat
+   */
+  async setRule(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/source_nat/set_rule/${uuid}`, data);
+  }
+
+  /**
+   * Execute toggle rule for firewall source_nat
+   */
+  async toggleRule(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/firewall/source_nat/toggle_rule/${uuid}/${enabled}`, data);
+  }
+}
+
+// Main module class
+export class FirewallModule extends BaseModule {
+  public readonly alias: FirewallAlias;
+  public readonly aliasUtil: FirewallAliasUtil;
+  public readonly category: FirewallCategory;
+  public readonly filterBase: FirewallFilterBase;
+  public readonly filter: FirewallFilter;
+  public readonly filterUtil: FirewallFilterUtil;
+  public readonly group: FirewallGroup;
+  public readonly npt: FirewallNpt;
+  public readonly oneToOne: FirewallOneToOne;
+  public readonly sourceNat: FirewallSourceNat;
+
+  constructor(http: any) {
+    super(http);
+    this.alias = new FirewallAlias(http);
+    this.aliasUtil = new FirewallAliasUtil(http);
+    this.category = new FirewallCategory(http);
+    this.filterBase = new FirewallFilterBase(http);
+    this.filter = new FirewallFilter(http);
+    this.filterUtil = new FirewallFilterUtil(http);
+    this.group = new FirewallGroup(http);
+    this.npt = new FirewallNpt(http);
+    this.oneToOne = new FirewallOneToOne(http);
+    this.sourceNat = new FirewallSourceNat(http);
+  }
+
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/firewall/service/status');
+  }
+
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/firewall/service/start');
+  }
+
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/firewall/service/stop');
+  }
+
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/firewall/service/restart');
+  }
+
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/firewall/service/reconfigure');
   }
 }

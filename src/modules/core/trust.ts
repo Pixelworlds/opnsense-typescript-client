@@ -1,295 +1,229 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
-
-export class TrustCa {
-  constructor(private http: any) {}
-
+// Controller classes
+export class TrustCa extends BaseModule {
+  /**
+   * Get ca info for trust ca
+   */
   async caInfo(caref: string): Promise<ApiResponse<any>> {
-    return this.http.get(`/api/trust/ca/ca_info/${caref}`);
+    return this.http.get(`/api/trust/trust/ca/ca_info/${caref}`);
   }
 
+  /**
+   * Get ca list for trust ca
+   */
   async caList(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/trust/ca/ca_list');
+    return this.http.get(`/api/trust/trust/ca/ca_list`);
   }
 
-  async del(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/trust/ca/del/${uuid}`);
+  /**
+   * Execute del for trust ca
+   */
+  async del(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/trust/trust/ca/del/${uuid}`, data);
   }
 
-  async generateFile(uuid?: string, type: string = 'crt'): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/trust/ca/generate_file/${uuid}/${type}` : `/api/trust/ca/generate_file/${type}`;
-    return this.http.get(path);
+  /**
+   * Execute generate file for trust ca
+   */
+  async generateFile(uuid: string, type: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/trust/trust/ca/generate_file/${uuid}/${type}`, data);
   }
 
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    if (Object.keys(params).length === 0) {
-      return this.http.get('/api/trust/ca/search');
-    }
-    return this.http.post('/api/trust/ca/search', params);
-  }
-
-  async set(ca: Record<string, any>, uuid?: string): Promise<ApiResponse<ApiResult>> {
-    // For adding new CA, no UUID is used
-    if (!uuid) {
-      return this.http.post('/api/trust/ca/set', ca);
-    }
-    // For updating existing CA
-    return this.http.post(`/api/trust/ca/set/${uuid}`, ca);
-  }
-}
-
-export class TrustCert {
-  constructor(private http: any) {}
-
-  async add(cert: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/trust/cert/add', cert);
-  }
-
-  async caInfo(caref?: string): Promise<ApiResponse<any>> {
-    const path = caref ? `/api/trust/cert/ca_info/${caref}` : '/api/trust/cert/ca_info';
-    return this.http.get(path);
-  }
-
-  async del(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/trust/cert/del/${uuid}`);
-  }
-
-  async generateFile(uuid?: string, type: string = 'crt'): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/trust/cert/generate_file/${uuid}/${type}` : `/api/trust/cert/generate_file/${type}`;
-    return this.http.get(path);
-  }
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    if (Object.keys(params).length === 0) {
-      return this.http.get('/api/trust/cert/search');
-    }
-    return this.http.post('/api/trust/cert/search', params);
-  }
-
-  async userList(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/trust/cert/user_list');
-  }
-}
-
-export class TrustCrl {
-  constructor(private http: any) {}
-
-  async del(caref: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/trust/crl/del/${caref}`);
-  }
-
-  async get(caref: string): Promise<ApiResponse<any>> {
-    return this.http.get(`/api/trust/crl/get/${caref}`);
-  }
-
-  async getOcspInfoData(caref: string): Promise<ApiResponse<any>> {
-    return this.http.get(`/api/trust/crl/get_ocsp_info_data/${caref}`);
-  }
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    if (Object.keys(params).length === 0) {
-      return this.http.get('/api/trust/crl/search');
-    }
-    return this.http.post('/api/trust/crl/search', params);
-  }
-}
-
-export class TrustSettings {
-  constructor(private http: any) {}
-
+  /**
+   * Get get for trust ca
+   */
   async get(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/trust/settings/get');
+    return this.http.get(`/api/trust/trust/ca/get`);
   }
 
-  async set(settings: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/trust/settings/set', settings);
+  /**
+   * Get raw dump for trust ca
+   */
+  async rawDump(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/trust/trust/ca/raw_dump/${uuid}`);
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/trust/settings/reconfigure');
+  /**
+   * Execute set for trust ca
+   */
+  async set(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/trust/trust/ca/set/${uuid}`, data);
   }
 }
 
+export class TrustCert extends BaseModule {
+  /**
+   * Execute add for trust cert
+   */
+  async add(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/trust/trust/cert/add`, data);
+  }
+
+  /**
+   * Get ca info for trust cert
+   */
+  async caInfo(caref: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/trust/trust/cert/ca_info/${caref}`);
+  }
+
+  /**
+   * Get ca list for trust cert
+   */
+  async caList(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/trust/trust/cert/ca_list`);
+  }
+
+  /**
+   * Execute del for trust cert
+   */
+  async del(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/trust/trust/cert/del/${uuid}`, data);
+  }
+
+  /**
+   * Execute generate file for trust cert
+   */
+  async generateFile(uuid: string, type: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/trust/trust/cert/generate_file/${uuid}/${type}`, data);
+  }
+
+  /**
+   * Get get for trust cert
+   */
+  async get(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/trust/trust/cert/get/${uuid}`);
+  }
+
+  /**
+   * Get raw dump for trust cert
+   */
+  async rawDump(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/trust/trust/cert/raw_dump/${uuid}`);
+  }
+
+  /**
+   * Execute set for trust cert
+   */
+  async set(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/trust/trust/cert/set/${uuid}`, data);
+  }
+
+  /**
+   * Get user list for trust cert
+   */
+  async userList(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/trust/trust/cert/user_list`);
+  }
+}
+
+export class TrustCrl extends BaseModule {
+  /**
+   * Execute del for trust crl
+   */
+  async del(caref: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/trust/trust/crl/del/${caref}`, data);
+  }
+
+  /**
+   * Get get for trust crl
+   */
+  async get(caref: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/trust/trust/crl/get/${caref}`);
+  }
+
+  /**
+   * Get get ocsp info data for trust crl
+   */
+  async getOcspInfoData(caref: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/trust/trust/crl/get_ocsp_info_data/${caref}`);
+  }
+
+  /**
+   * Get raw dump for trust crl
+   */
+  async rawDump(caref: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/trust/trust/crl/raw_dump/${caref}`);
+  }
+
+  /**
+   * Get search for trust crl
+   */
+  async search(): Promise<ApiResponse<SearchResult>> {
+    return this.http.get(`/api/trust/trust/crl/search`);
+  }
+
+  /**
+   * Execute set for trust crl
+   */
+  async set(caref: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/trust/trust/crl/set/${caref}`, data);
+  }
+}
+
+export class TrustSettings extends BaseModule {
+  /**
+   * Get get for trust settings
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/trust/trust/settings/get`);
+  }
+
+  /**
+   * Execute reconfigure for trust settings
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/trust/trust/settings/reconfigure`, data);
+  }
+
+  /**
+   * Execute set for trust settings
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/trust/trust/settings/set`, data);
+  }
+}
+
+// Main module class
 export class TrustModule extends BaseModule {
   public readonly ca: TrustCa;
   public readonly cert: TrustCert;
   public readonly crl: TrustCrl;
   public readonly settings: TrustSettings;
 
-  constructor(httpClient: any) {
-    super(httpClient);
-    this.ca = new TrustCa(this.http);
-    this.cert = new TrustCert(this.http);
-    this.crl = new TrustCrl(this.http);
-    this.settings = new TrustSettings(this.http);
+  constructor(http: any) {
+    super(http);
+    this.ca = new TrustCa(http);
+    this.cert = new TrustCert(http);
+    this.crl = new TrustCrl(http);
+    this.settings = new TrustSettings(http);
   }
 
   // Legacy methods for backward compatibility
-  async searchCAs(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.ca.search(params);
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/trust/service/status');
   }
 
-  async getCA(uuid?: string): Promise<ApiResponse<any>> {
-    // Note: API documentation doesn't show a get endpoint, only search
-    return this.ca.search({ uuid });
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/trust/service/start');
   }
 
-  async setCA(uuid: string, ca: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.ca.set(ca, uuid);
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/trust/service/stop');
   }
 
-  async addCA(ca: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.ca.set(ca);
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/trust/service/restart');
   }
 
-  async deleteCA(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.ca.del(uuid);
-  }
-
-  async getCAInfo(caref: string): Promise<ApiResponse<any>> {
-    return this.ca.caInfo(caref);
-  }
-
-  async getCAList(): Promise<ApiResponse<any>> {
-    return this.ca.caList();
-  }
-
-  async generateCAFile(uuid?: string, type: string = 'crt'): Promise<ApiResponse<any>> {
-    return this.ca.generateFile(uuid, type);
-  }
-
-  async searchCerts(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.cert.search(params);
-  }
-
-  async addCert(cert: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.cert.add(cert);
-  }
-
-  async getCert(uuid?: string): Promise<ApiResponse<any>> {
-    // Note: API documentation doesn't show a get endpoint, only search
-    return this.cert.search({ uuid });
-  }
-
-  async deleteCert(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.cert.del(uuid);
-  }
-
-  async getCertCAInfo(caref?: string): Promise<ApiResponse<any>> {
-    return this.cert.caInfo(caref);
-  }
-
-  async generateCertFile(uuid?: string, type: string = 'crt'): Promise<ApiResponse<any>> {
-    return this.cert.generateFile(uuid, type);
-  }
-
-  async getUserList(): Promise<ApiResponse<any>> {
-    return this.cert.userList();
-  }
-
-  async searchCRLs(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.crl.search(params);
-  }
-
-  async getCRL(caref: string): Promise<ApiResponse<any>> {
-    return this.crl.get(caref);
-  }
-
-  async deleteCRL(caref: string): Promise<ApiResponse<ApiResult>> {
-    return this.crl.del(caref);
-  }
-
-  async getOCSPInfo(caref: string): Promise<ApiResponse<any>> {
-    return this.crl.getOcspInfoData(caref);
-  }
-
-  async getSettings(): Promise<ApiResponse<any>> {
-    return this.settings.get();
-  }
-
-  async setSettings(settings: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.settings.set(settings);
-  }
-
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.settings.reconfigure();
-  }
-
-  // New convenience methods
-  async getAllCAs(): Promise<ApiResponse<any>> {
-    return this.ca.search();
-  }
-
-  async getAllCerts(): Promise<ApiResponse<any>> {
-    return this.cert.search();
-  }
-
-  async getAllCRLs(): Promise<ApiResponse<any>> {
-    return this.crl.search();
-  }
-
-  async createSelfSignedCA(
-    commonName: string,
-    organization?: string,
-    country?: string,
-    keyLength: number = 2048
-  ): Promise<ApiResponse<ApiResult>> {
-    const ca = {
-      method: 'internal',
-      keylen: keyLength.toString(),
-      lifetime: '3650',
-      dn_commonname: commonName,
-      dn_organization: organization || '',
-      dn_country: country || 'US',
-      digest_alg: 'sha256'
-    };
-    return this.ca.set(ca);
-  }
-
-  async importCA(certData: string, description?: string): Promise<ApiResponse<ApiResult>> {
-    const ca = {
-      method: 'import',
-      cert: certData,
-      descr: description || 'Imported CA'
-    };
-    return this.ca.set(ca);
-  }
-
-  async importCertificate(
-    certData: string,
-    privateKey?: string,
-    description?: string
-  ): Promise<ApiResponse<ApiResult>> {
-    const cert = {
-      method: 'import',
-      cert: certData,
-      prv: privateKey || '',
-      descr: description || 'Imported Certificate'
-    };
-    return this.cert.add(cert);
-  }
-
-  async getTrustOverview(): Promise<{
-    cas: any;
-    certificates: any;
-    crls: any;
-    settings: any;
-    timestamp: string;
-  }> {
-    const [cas, certificates, crls, settings] = await Promise.allSettled([
-      this.getAllCAs(),
-      this.getAllCerts(),
-      this.getAllCRLs(),
-      this.getSettings()
-    ]);
-
-    return {
-      cas: cas.status === 'fulfilled' ? cas.value.data : null,
-      certificates: certificates.status === 'fulfilled' ? certificates.value.data : null,
-      crls: crls.status === 'fulfilled' ? crls.value.data : null,
-      settings: settings.status === 'fulfilled' ? settings.value.data : null,
-      timestamp: new Date().toISOString()
-    };
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/trust/service/reconfigure');
   }
 }

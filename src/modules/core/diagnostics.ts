@@ -1,371 +1,676 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
-
-export class DiagnosticsActivity {
-  constructor(private http: any) {}
-
+// Controller classes
+export class DiagnosticsActivity extends BaseModule {
+  /**
+   * Get get activity for diagnostics activity
+   */
   async getActivity(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/activity/get_activity');
+    return this.http.get(`/api/diagnostics/diagnostics/activity/get_activity`);
   }
 }
 
-export class DiagnosticsCpuUsage {
-  constructor(private http: any) {}
-
-  async getCpuType(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/cpu_usage/get_c_p_u_type');
+export class DiagnosticsCpuUsage extends BaseModule {
+  /**
+   * Get get c p u type for diagnostics cpu_usage
+   */
+  async getCPUType(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/cpu_usage/get_c_p_u_type`);
   }
 
+  /**
+   * Get stream for diagnostics cpu_usage
+   */
   async stream(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/cpu_usage/stream');
+    return this.http.get(`/api/diagnostics/diagnostics/cpu_usage/stream`);
   }
 }
 
-export class DiagnosticsDns {
-  constructor(private http: any) {}
-
-  async reverseLookup(params: Record<string, any>): Promise<ApiResponse<any>> {
-    return this.http.post('/api/diagnostics/dns/reverse_lookup', params);
+export class DiagnosticsDns extends BaseModule {
+  /**
+   * Get reverse lookup for diagnostics dns
+   */
+  async reverseLookup(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/dns/reverse_lookup`);
   }
 }
 
-export class DiagnosticsDnsDiagnostics {
-  constructor(private http: any) {}
-
+export class DiagnosticsDnsDiagnostics extends BaseModule {
+  /**
+   * Get get for diagnostics dns_diagnostics
+   */
   async get(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/dns_diagnostics/get');
+    return this.http.get(`/api/diagnostics/diagnostics/dns_diagnostics/get`);
   }
 
-  async set(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/diagnostics/dns_diagnostics/set', config);
+  /**
+   * Execute set for diagnostics dns_diagnostics
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/diagnostics/diagnostics/dns_diagnostics/set`, data);
   }
 }
 
-export class DiagnosticsFirewall {
-  constructor(private http: any) {}
-
-  async deleteState(stateId: string, creatorId: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/diagnostics/firewall/del_state/${stateId}/${creatorId}`);
+export class DiagnosticsFirewall extends BaseModule {
+  /**
+   * Execute del state for diagnostics firewall
+   */
+  async delState(stateid: string, creatorid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/diagnostics/diagnostics/firewall/del_state/${stateid}/${creatorid}`, data);
   }
 
-  async flushStates(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/diagnostics/firewall/flush_states');
+  /**
+   * Execute flush sources for diagnostics firewall
+   */
+  async flushSources(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/diagnostics/diagnostics/firewall/flush_sources`, data);
   }
 
-  async getLog(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/firewall/log', params);
+  /**
+   * Execute flush states for diagnostics firewall
+   */
+  async flushStates(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/diagnostics/diagnostics/firewall/flush_states`, data);
   }
 
-  async getPfStates(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/firewall/pf_states', params);
+  /**
+   * Execute kill states for diagnostics firewall
+   */
+  async killStates(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/diagnostics/diagnostics/firewall/kill_states`, data);
   }
 
-  async queryStates(params: Record<string, any>): Promise<ApiResponse<any>> {
-    return this.http.post('/api/diagnostics/firewall/query_states', params);
+  /**
+   * Get list rule ids for diagnostics firewall
+   */
+  async listRuleIds(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/firewall/list_rule_ids`);
   }
 
-  async getPfStatistics(section?: string): Promise<ApiResponse<any>> {
-    const path = section
-      ? `/api/diagnostics/firewall/pf_statistics/${section}`
-      : '/api/diagnostics/firewall/pf_statistics';
-    return this.http.get(path);
+  /**
+   * Get log for diagnostics firewall
+   */
+  async log(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/firewall/log`);
   }
 
-  async killStates(params: Record<string, any>): Promise<ApiResponse<any>> {
-    return this.http.post('/api/diagnostics/firewall/kill_states', params);
+  /**
+   * Get log filters for diagnostics firewall
+   */
+  async logFilters(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/firewall/log_filters`);
   }
 
+  /**
+   * Get pf states for diagnostics firewall
+   */
+  async pfStates(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/firewall/pf_states`);
+  }
+
+  /**
+   * Get pf statistics for diagnostics firewall
+   */
+  async pfStatistics(section: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/firewall/pf_statistics/${section}`);
+  }
+
+  /**
+   * Execute query pf top for diagnostics firewall
+   */
+  async queryPfTop(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/diagnostics/diagnostics/firewall/query_pf_top`, data);
+  }
+
+  /**
+   * Execute query states for diagnostics firewall
+   */
+  async queryStates(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/diagnostics/diagnostics/firewall/query_states`, data);
+  }
+
+  /**
+   * Get stats for diagnostics firewall
+   */
+  async stats(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/firewall/stats`);
+  }
+
+  /**
+   * Get stream log for diagnostics firewall
+   */
   async streamLog(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/firewall/stream_log');
-  }
-
-  async getLogFilters(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/firewall/log_filters');
-  }
-
-  async getStats(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/firewall/stats');
+    return this.http.get(`/api/diagnostics/diagnostics/firewall/stream_log`);
   }
 }
 
-export class DiagnosticsInterface {
-  constructor(private http: any) {}
-
-  async flushArp(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/diagnostics/interface/flush_arp');
+export class DiagnosticsInterface extends BaseModule {
+  /**
+   * Execute  carp status for diagnostics interface
+   */
+  async carpStatus(status: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/diagnostics/diagnostics/interface/_carp_status/${status}`, data);
   }
 
+  /**
+   * Execute del route for diagnostics interface
+   */
+  async delRoute(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/diagnostics/diagnostics/interface/del_route`, data);
+  }
+
+  /**
+   * Execute flush arp for diagnostics interface
+   */
+  async flushArp(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/diagnostics/diagnostics/interface/flush_arp`, data);
+  }
+
+  /**
+   * Get get arp for diagnostics interface
+   */
   async getArp(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/interface/get_arp');
+    return this.http.get(`/api/diagnostics/diagnostics/interface/get_arp`);
   }
 
-  async searchArp(params: Record<string, any>): Promise<ApiResponse<any>> {
-    return this.http.post('/api/diagnostics/interface/search_arp', params);
+  /**
+   * Get get bpf statistics for diagnostics interface
+   */
+  async getBpfStatistics(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/interface/get_bpf_statistics`);
   }
 
-  async getNdp(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/interface/get_ndp');
-  }
-
-  async searchNdp(params: Record<string, any>): Promise<ApiResponse<any>> {
-    return this.http.post('/api/diagnostics/interface/search_ndp', params);
-  }
-
-  async getRoutes(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/interface/get_routes');
-  }
-
-  async deleteRoute(params: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/diagnostics/interface/del_route', params);
-  }
-
-  async getInterfaceStatistics(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/interface/get_interface_statistics');
-  }
-
+  /**
+   * Get get interface config for diagnostics interface
+   */
   async getInterfaceConfig(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/interface/get_interface_config');
+    return this.http.get(`/api/diagnostics/diagnostics/interface/get_interface_config`);
+  }
+
+  /**
+   * Get get interface names for diagnostics interface
+   */
+  async getInterfaceNames(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/interface/get_interface_names`);
+  }
+
+  /**
+   * Get get interface statistics for diagnostics interface
+   */
+  async getInterfaceStatistics(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/interface/get_interface_statistics`);
+  }
+
+  /**
+   * Get get memory statistics for diagnostics interface
+   */
+  async getMemoryStatistics(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/interface/get_memory_statistics`);
+  }
+
+  /**
+   * Get get ndp for diagnostics interface
+   */
+  async getNdp(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/interface/get_ndp`);
+  }
+
+  /**
+   * Get get netisr statistics for diagnostics interface
+   */
+  async getNetisrStatistics(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/interface/get_netisr_statistics`);
+  }
+
+  /**
+   * Get get pfsync nodes for diagnostics interface
+   */
+  async getPfsyncNodes(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/interface/get_pfsync_nodes`);
+  }
+
+  /**
+   * Get get protocol statistics for diagnostics interface
+   */
+  async getProtocolStatistics(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/interface/get_protocol_statistics`);
+  }
+
+  /**
+   * Get get routes for diagnostics interface
+   */
+  async getRoutes(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/interface/get_routes`);
+  }
+
+  /**
+   * Get get socket statistics for diagnostics interface
+   */
+  async getSocketStatistics(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/interface/get_socket_statistics`);
+  }
+
+  /**
+   * Get get vip status for diagnostics interface
+   */
+  async getVipStatus(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/interface/get_vip_status`);
+  }
+
+  /**
+   * Get search arp for diagnostics interface
+   */
+  async searchArp(): Promise<ApiResponse<SearchResult>> {
+    return this.http.get(`/api/diagnostics/diagnostics/interface/search_arp`);
+  }
+
+  /**
+   * Get search ndp for diagnostics interface
+   */
+  async searchNdp(): Promise<ApiResponse<SearchResult>> {
+    return this.http.get(`/api/diagnostics/diagnostics/interface/search_ndp`);
   }
 }
 
-export class DiagnosticsLvtemplate {
-  constructor(private http: any) {}
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.http.post('/api/diagnostics/lvtemplate/search_item', params);
+export class DiagnosticsLvtemplate extends BaseModule {
+  /**
+   * Execute add item for diagnostics lvtemplate
+   */
+  async addItem(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/diagnostics/diagnostics/lvtemplate/add_item`, data);
   }
 
-  async add(template: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/diagnostics/lvtemplate/add_item', template);
+  /**
+   * Execute del item for diagnostics lvtemplate
+   */
+  async delItem(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/diagnostics/diagnostics/lvtemplate/del_item/${uuid}`, data);
   }
 
-  async get(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/diagnostics/lvtemplate/get_item/${uuid}` : '/api/diagnostics/lvtemplate/get';
-    return this.http.get(path);
-  }
-
-  async set(uuid: string, template: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/diagnostics/lvtemplate/set_item/${uuid}`, template);
-  }
-
-  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/diagnostics/lvtemplate/del_item/${uuid}`);
-  }
-}
-
-export class DiagnosticsNetflow {
-  constructor(private http: any) {}
-
+  /**
+   * Get get for diagnostics lvtemplate
+   */
   async get(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/netflow/get');
+    return this.http.get(`/api/diagnostics/diagnostics/lvtemplate/get`);
   }
 
-  async set(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/diagnostics/netflow/set', config);
+  /**
+   * Get get item for diagnostics lvtemplate
+   */
+  async getItem(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/lvtemplate/get_item/${uuid}`);
   }
 
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/netflow/status');
+  /**
+   * Execute set for diagnostics lvtemplate
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/diagnostics/diagnostics/lvtemplate/set`, data);
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/diagnostics/netflow/reconfigure');
+  /**
+   * Execute set item for diagnostics lvtemplate
+   */
+  async setItem(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/diagnostics/diagnostics/lvtemplate/set_item/${uuid}`, data);
   }
 }
 
-export class DiagnosticsNetworkinsight {
-  constructor(private http: any) {}
-
-  async getMetadata(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/networkinsight/get_metadata');
+export class DiagnosticsNetflow extends BaseModule {
+  /**
+   * Get cache stats for diagnostics netflow
+   */
+  async cacheStats(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/netflow/cache_stats`);
   }
 
+  /**
+   * Get getconfig for diagnostics netflow
+   */
+  async getconfig(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/netflow/getconfig`);
+  }
+
+  /**
+   * Get is enabled for diagnostics netflow
+   */
+  async isEnabled(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/netflow/is_enabled`);
+  }
+
+  /**
+   * Execute reconfigure for diagnostics netflow
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/diagnostics/diagnostics/netflow/reconfigure`, data);
+  }
+
+  /**
+   * Get setconfig for diagnostics netflow
+   */
+  async setconfig(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/netflow/setconfig`);
+  }
+
+  /**
+   * Get status for diagnostics netflow
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/diagnostics/diagnostics/netflow/status`);
+  }
+}
+
+export class DiagnosticsNetworkinsight extends BaseModule {
+  /**
+   * Get export for diagnostics networkinsight
+   */
+  async export(provider: string, from_date: string, to_date: string, resolution: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/networkinsight/export/${provider}/${from_date}/${to_date}/${resolution}`);
+  }
+
+  /**
+   * Get get interfaces for diagnostics networkinsight
+   */
   async getInterfaces(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/networkinsight/get_interfaces');
+    return this.http.get(`/api/diagnostics/diagnostics/networkinsight/get_interfaces`);
   }
 
+  /**
+   * Get get metadata for diagnostics networkinsight
+   */
+  async getMetadata(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/networkinsight/get_metadata`);
+  }
+
+  /**
+   * Get get protocols for diagnostics networkinsight
+   */
+  async getProtocols(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/networkinsight/get_protocols`);
+  }
+
+  /**
+   * Get get services for diagnostics networkinsight
+   */
   async getServices(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/networkinsight/get_services');
+    return this.http.get(`/api/diagnostics/diagnostics/networkinsight/get_services`);
   }
 
-  async getTimeseries(params: Record<string, any>): Promise<ApiResponse<any>> {
-    return this.http.post('/api/diagnostics/networkinsight/get_timeseries', params);
+  /**
+   * Get timeserie for diagnostics networkinsight
+   */
+  async timeserie(provider: string, measure: string, from_date: string, to_date: string, resolution: string, field: string, emulation: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/networkinsight/timeserie/${provider}/${measure}/${from_date}/${to_date}/${resolution}/${field}/${emulation}`);
   }
 
-  async getTopFlows(params: Record<string, any>): Promise<ApiResponse<any>> {
-    return this.http.post('/api/diagnostics/networkinsight/get_top_flows', params);
+  /**
+   * Get top for diagnostics networkinsight
+   */
+  async top(provider: string, from_date: string, to_date: string, field: string, measure: string, max_hits: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/networkinsight/top/${provider}/${from_date}/${to_date}/${field}/${measure}/${max_hits}`);
   }
 }
 
-export class DiagnosticsPacketCapture {
-  constructor(private http: any) {}
+export class DiagnosticsPacketCapture extends BaseModule {
+  /**
+   * Get download for diagnostics packet_capture
+   */
+  async download(jobid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/packet_capture/download/${jobid}`);
+  }
 
+  /**
+   * Get get for diagnostics packet_capture
+   */
   async get(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/packet_capture/get');
+    return this.http.get(`/api/diagnostics/diagnostics/packet_capture/get`);
   }
 
-  async set(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/diagnostics/packet_capture/set', config);
+  /**
+   * Get mac info for diagnostics packet_capture
+   */
+  async macInfo(macaddr: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/packet_capture/mac_info/${macaddr}`);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/diagnostics/packet_capture/start');
+  /**
+   * Execute remove for diagnostics packet_capture
+   */
+  async remove(jobid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/diagnostics/diagnostics/packet_capture/remove/${jobid}`, data);
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/diagnostics/packet_capture/stop');
+  /**
+   * Get search jobs for diagnostics packet_capture
+   */
+  async searchJobs(): Promise<ApiResponse<SearchResult>> {
+    return this.http.get(`/api/diagnostics/diagnostics/packet_capture/search_jobs`);
   }
 
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/packet_capture/status');
+  /**
+   * Execute set for diagnostics packet_capture
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/diagnostics/diagnostics/packet_capture/set`, data);
   }
 
-  async download(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/packet_capture/download');
+  /**
+   * Execute start for diagnostics packet_capture
+   */
+  async start(jobid: string): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/diagnostics/diagnostics/packet_capture/start/${jobid}`, data);
   }
 
-  async remove(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/diagnostics/packet_capture/remove');
+  /**
+   * Execute stop for diagnostics packet_capture
+   */
+  async stop(jobid: string): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/diagnostics/diagnostics/packet_capture/stop/${jobid}`, data);
+  }
+
+  /**
+   * Get view for diagnostics packet_capture
+   */
+  async view(jobid: string, detail: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/packet_capture/view/${jobid}/${detail}`);
   }
 }
 
-export class DiagnosticsPing {
-  constructor(private http: any) {}
-
+export class DiagnosticsPing extends BaseModule {
+  /**
+   * Get get for diagnostics ping
+   */
   async get(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/ping/get');
+    return this.http.get(`/api/diagnostics/diagnostics/ping/get`);
   }
 
-  async set(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/diagnostics/ping/set', config);
+  /**
+   * Execute remove for diagnostics ping
+   */
+  async remove(jobid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/diagnostics/diagnostics/ping/remove/${jobid}`, data);
   }
 
-  async ping(params: Record<string, any>): Promise<ApiResponse<any>> {
-    return this.http.post('/api/diagnostics/ping/ping', params);
+  /**
+   * Get search jobs for diagnostics ping
+   */
+  async searchJobs(): Promise<ApiResponse<SearchResult>> {
+    return this.http.get(`/api/diagnostics/diagnostics/ping/search_jobs`);
   }
 
-  async getJob(jobId: string): Promise<ApiResponse<any>> {
-    return this.http.get(`/api/diagnostics/ping/get_job/${jobId}`);
+  /**
+   * Execute set for diagnostics ping
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/diagnostics/diagnostics/ping/set`, data);
   }
 
-  async stopJob(jobId: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/diagnostics/ping/stop_job/${jobId}`);
+  /**
+   * Execute start for diagnostics ping
+   */
+  async start(jobid: string): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/diagnostics/diagnostics/ping/start/${jobid}`, data);
+  }
+
+  /**
+   * Execute stop for diagnostics ping
+   */
+  async stop(jobid: string): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/diagnostics/diagnostics/ping/stop/${jobid}`, data);
   }
 }
 
-export class DiagnosticsPortprobe {
-  constructor(private http: any) {}
-
+export class DiagnosticsPortprobe extends BaseModule {
+  /**
+   * Get get for diagnostics portprobe
+   */
   async get(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/portprobe/get');
+    return this.http.get(`/api/diagnostics/diagnostics/portprobe/get`);
   }
 
-  async set(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/diagnostics/portprobe/set', config);
-  }
-}
-
-export class DiagnosticsSystem {
-  constructor(private http: any) {}
-
-  async getSystemInformation(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/system/system_information');
-  }
-
-  async getMemory(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/system/memory');
-  }
-
-  async getDisk(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/system/system_disk');
-  }
-
-  async getSystemResources(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/system/system_resources');
-  }
-
-  async getTemperature(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/system/system_temperature');
-  }
-
-  async getSystemTime(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/system/system_time');
-  }
-
-  async getSwap(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/system/system_swap');
-  }
-
-  async getMbuf(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/system/system_mbuf');
-  }
-
-  async getLoad(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/system/system_load');
+  /**
+   * Execute set for diagnostics portprobe
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/diagnostics/diagnostics/portprobe/set`, data);
   }
 }
 
-export class DiagnosticsSystemhealth {
-  constructor(private http: any) {}
-
-  async getRrdList(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/systemhealth/get_rrd_list');
+export class DiagnosticsSystem extends BaseModule {
+  /**
+   * Get memory for diagnostics system
+   */
+  async memory(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/system/memory`);
   }
 
-  async getRrdData(params: Record<string, any>): Promise<ApiResponse<any>> {
-    return this.http.post('/api/diagnostics/systemhealth/get_rrd_data', params);
+  /**
+   * Get system disk for diagnostics system
+   */
+  async systemDisk(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/system/system_disk`);
   }
 
-  async exportRrd(params: Record<string, any>): Promise<ApiResponse<any>> {
-    return this.http.post('/api/diagnostics/systemhealth/export_rrd', params);
+  /**
+   * Get system information for diagnostics system
+   */
+  async systemInformation(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/system/system_information`);
   }
 
-  async getInfo(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/systemhealth/get_info');
+  /**
+   * Get system mbuf for diagnostics system
+   */
+  async systemMbuf(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/system/system_mbuf`);
+  }
+
+  /**
+   * Get system resources for diagnostics system
+   */
+  async systemResources(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/system/system_resources`);
+  }
+
+  /**
+   * Get system swap for diagnostics system
+   */
+  async systemSwap(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/system/system_swap`);
+  }
+
+  /**
+   * Get system temperature for diagnostics system
+   */
+  async systemTemperature(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/system/system_temperature`);
+  }
+
+  /**
+   * Get system time for diagnostics system
+   */
+  async systemTime(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/system/system_time`);
   }
 }
 
-export class DiagnosticsTraceroute {
-  constructor(private http: any) {}
+export class DiagnosticsSystemhealth extends BaseModule {
+  /**
+   * Get export as c s v for diagnostics systemhealth
+   */
+  async exportAsCSV(rrd: string, detail: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/systemhealth/export_as_c_s_v/${rrd}/${detail}`);
+  }
 
+  /**
+   * Get get interfaces for diagnostics systemhealth
+   */
+  async getInterfaces(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/systemhealth/get_interfaces`);
+  }
+
+  /**
+   * Get get r r dlist for diagnostics systemhealth
+   */
+  async getRRDlist(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/systemhealth/get_r_r_dlist`);
+  }
+
+  /**
+   * Get get system health for diagnostics systemhealth
+   */
+  async getSystemHealth(rrd: string, unused: string, detail: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/systemhealth/get_system_health/${rrd}/${unused}/${detail}`);
+  }
+}
+
+export class DiagnosticsTraceroute extends BaseModule {
+  /**
+   * Get get for diagnostics traceroute
+   */
   async get(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/traceroute/get');
+    return this.http.get(`/api/diagnostics/diagnostics/traceroute/get`);
   }
 
-  async set(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/diagnostics/traceroute/set', config);
-  }
-
-  async traceroute(params: Record<string, any>): Promise<ApiResponse<any>> {
-    return this.http.post('/api/diagnostics/traceroute/traceroute', params);
-  }
-
-  async getJob(jobId: string): Promise<ApiResponse<any>> {
-    return this.http.get(`/api/diagnostics/traceroute/get_job/${jobId}`);
-  }
-
-  async stopJob(jobId: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/diagnostics/traceroute/stop_job/${jobId}`);
+  /**
+   * Execute set for diagnostics traceroute
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/diagnostics/diagnostics/traceroute/set`, data);
   }
 }
 
-export class DiagnosticsTraffic {
-  constructor(private http: any) {}
-
-  async getInterface(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/diagnostics/traffic/interface');
+export class DiagnosticsTraffic extends BaseModule {
+  /**
+   * Get  interface for diagnostics traffic
+   */
+  async interface(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/traffic/_interface`);
   }
 
-  async getTop(interfaces: string): Promise<ApiResponse<any>> {
-    return this.http.get(`/api/diagnostics/traffic/top/${interfaces}`);
+  /**
+   * Get  top for diagnostics traffic
+   */
+  async top(interfaces: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/traffic/_top/${interfaces}`);
   }
 
-  async stream(pollInterval: number = 1): Promise<ApiResponse<any>> {
-    return this.http.get(`/api/diagnostics/traffic/stream/${pollInterval}`);
+  /**
+   * Get stream for diagnostics traffic
+   */
+  async stream(poll_interval: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/diagnostics/diagnostics/traffic/stream/${poll_interval}`);
   }
 }
 
+// Main module class
 export class DiagnosticsModule extends BaseModule {
   public readonly activity: DiagnosticsActivity;
   public readonly cpuUsage: DiagnosticsCpuUsage;
@@ -384,245 +689,44 @@ export class DiagnosticsModule extends BaseModule {
   public readonly traceroute: DiagnosticsTraceroute;
   public readonly traffic: DiagnosticsTraffic;
 
-  constructor(httpClient: any) {
-    super(httpClient);
-    this.activity = new DiagnosticsActivity(this.http);
-    this.cpuUsage = new DiagnosticsCpuUsage(this.http);
-    this.dns = new DiagnosticsDns(this.http);
-    this.dnsDiagnostics = new DiagnosticsDnsDiagnostics(this.http);
-    this.firewall = new DiagnosticsFirewall(this.http);
-    this.interface = new DiagnosticsInterface(this.http);
-    this.lvtemplate = new DiagnosticsLvtemplate(this.http);
-    this.netflow = new DiagnosticsNetflow(this.http);
-    this.networkinsight = new DiagnosticsNetworkinsight(this.http);
-    this.packetCapture = new DiagnosticsPacketCapture(this.http);
-    this.ping = new DiagnosticsPing(this.http);
-    this.portprobe = new DiagnosticsPortprobe(this.http);
-    this.system = new DiagnosticsSystem(this.http);
-    this.systemhealth = new DiagnosticsSystemhealth(this.http);
-    this.traceroute = new DiagnosticsTraceroute(this.http);
-    this.traffic = new DiagnosticsTraffic(this.http);
+  constructor(http: any) {
+    super(http);
+    this.activity = new DiagnosticsActivity(http);
+    this.cpuUsage = new DiagnosticsCpuUsage(http);
+    this.dns = new DiagnosticsDns(http);
+    this.dnsDiagnostics = new DiagnosticsDnsDiagnostics(http);
+    this.firewall = new DiagnosticsFirewall(http);
+    this.interface = new DiagnosticsInterface(http);
+    this.lvtemplate = new DiagnosticsLvtemplate(http);
+    this.netflow = new DiagnosticsNetflow(http);
+    this.networkinsight = new DiagnosticsNetworkinsight(http);
+    this.packetCapture = new DiagnosticsPacketCapture(http);
+    this.ping = new DiagnosticsPing(http);
+    this.portprobe = new DiagnosticsPortprobe(http);
+    this.system = new DiagnosticsSystem(http);
+    this.systemhealth = new DiagnosticsSystemhealth(http);
+    this.traceroute = new DiagnosticsTraceroute(http);
+    this.traffic = new DiagnosticsTraffic(http);
   }
 
   // Legacy methods for backward compatibility
-  async getSystemInformation(): Promise<ApiResponse<any>> {
-    return this.system.getSystemInformation();
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/diagnostics/service/status');
   }
 
-  async getMemory(): Promise<ApiResponse<any>> {
-    return this.system.getMemory();
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/diagnostics/service/start');
   }
 
-  async getDisk(): Promise<ApiResponse<any>> {
-    return this.system.getDisk();
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/diagnostics/service/stop');
   }
 
-  async getSystemResources(): Promise<ApiResponse<any>> {
-    return this.system.getSystemResources();
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/diagnostics/service/restart');
   }
 
-  async getTemperature(): Promise<ApiResponse<any>> {
-    return this.system.getTemperature();
-  }
-
-  async getSystemTime(): Promise<ApiResponse<any>> {
-    return this.system.getSystemTime();
-  }
-
-  async getSwap(): Promise<ApiResponse<any>> {
-    return this.system.getSwap();
-  }
-
-  async getMbuf(): Promise<ApiResponse<any>> {
-    return this.system.getMbuf();
-  }
-
-  async getFirewallStats(): Promise<ApiResponse<any>> {
-    return this.firewall.getStats();
-  }
-
-  async getFirewallLogs(): Promise<ApiResponse<any>> {
-    return this.firewall.getLog();
-  }
-
-  async streamFirewallLogs(): Promise<ApiResponse<any>> {
-    return this.firewall.streamLog();
-  }
-
-  async getFirewallLogFilters(): Promise<ApiResponse<any>> {
-    return this.firewall.getLogFilters();
-  }
-
-  async getPfStates(): Promise<ApiResponse<any>> {
-    return this.firewall.getPfStates();
-  }
-
-  async queryPfStates(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.firewall.queryStates(params);
-  }
-
-  async getPfStatistics(section?: string): Promise<ApiResponse<any>> {
-    return this.firewall.getPfStatistics(section);
-  }
-
-  async flushFirewallStates(): Promise<ApiResponse<any>> {
-    return this.firewall.flushStates();
-  }
-
-  async killFirewallStates(params: Record<string, any>): Promise<ApiResponse<any>> {
-    return this.firewall.killStates(params);
-  }
-
-  async deleteFirewallState(stateId: string, creatorId: string): Promise<ApiResponse<any>> {
-    return this.firewall.deleteState(stateId, creatorId);
-  }
-
-  async getInterfaceStatistics(): Promise<ApiResponse<any>> {
-    return this.interface.getInterfaceStatistics();
-  }
-
-  async getInterfaceConfig(): Promise<ApiResponse<any>> {
-    return this.interface.getInterfaceConfig();
-  }
-
-  async getArp(): Promise<ApiResponse<any>> {
-    return this.interface.getArp();
-  }
-
-  async searchArp(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.interface.searchArp(params);
-  }
-
-  async flushArp(): Promise<ApiResponse<any>> {
-    return this.interface.flushArp();
-  }
-
-  async getNdp(): Promise<ApiResponse<any>> {
-    return this.interface.getNdp();
-  }
-
-  async searchNdp(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.interface.searchNdp(params);
-  }
-
-  async getRoutes(): Promise<ApiResponse<any>> {
-    return this.interface.getRoutes();
-  }
-
-  async deleteRoute(params: Record<string, any>): Promise<ApiResponse<any>> {
-    return this.interface.deleteRoute(params);
-  }
-
-  async getCpuUsageStream(): Promise<ApiResponse<any>> {
-    return this.cpuUsage.stream();
-  }
-
-  async getCpuType(): Promise<ApiResponse<any>> {
-    return this.cpuUsage.getCpuType();
-  }
-
-  async getTrafficInterface(): Promise<ApiResponse<any>> {
-    return this.traffic.getInterface();
-  }
-
-  async getTopTraffic(interfaces: string): Promise<ApiResponse<any>> {
-    return this.traffic.getTop(interfaces);
-  }
-
-  async streamTraffic(pollInterval: number = 1): Promise<ApiResponse<any>> {
-    return this.traffic.stream(pollInterval);
-  }
-
-  async dnsLookup(params: Record<string, any>): Promise<ApiResponse<any>> {
-    return this.dns.reverseLookup(params);
-  }
-
-  async getActivity(): Promise<ApiResponse<any>> {
-    return this.activity.getActivity();
-  }
-
-  // New convenience methods
-  async getSystemOverview(): Promise<{
-    system: any;
-    memory: any;
-    disk: any;
-    temperature: any;
-    load: any;
-    timestamp: string;
-  }> {
-    const [system, memory, disk, temperature, load] = await Promise.allSettled([
-      this.getSystemInformation(),
-      this.getMemory(),
-      this.getDisk(),
-      this.getTemperature(),
-      this.system.getLoad().catch(() => ({ data: null })),
-    ]);
-
-    return {
-      system: system.status === 'fulfilled' ? system.value.data : null,
-      memory: memory.status === 'fulfilled' ? memory.value.data : null,
-      disk: disk.status === 'fulfilled' ? disk.value.data : null,
-      temperature: temperature.status === 'fulfilled' ? temperature.value.data : null,
-      load: load.status === 'fulfilled' ? load.value.data : null,
-      timestamp: new Date().toISOString(),
-    };
-  }
-
-  async getNetworkOverview(): Promise<{
-    interfaces: any;
-    arp: any;
-    routes: any;
-    traffic: any;
-    timestamp: string;
-  }> {
-    const [interfaces, arp, routes, traffic] = await Promise.allSettled([
-      this.getInterfaceStatistics(),
-      this.getArp(),
-      this.getRoutes(),
-      this.getTrafficInterface(),
-    ]);
-
-    return {
-      interfaces: interfaces.status === 'fulfilled' ? interfaces.value.data : null,
-      arp: arp.status === 'fulfilled' ? arp.value.data : null,
-      routes: routes.status === 'fulfilled' ? routes.value.data : null,
-      traffic: traffic.status === 'fulfilled' ? traffic.value.data : null,
-      timestamp: new Date().toISOString(),
-    };
-  }
-
-  async startPacketCapture(interface_name: string, filter?: string): Promise<ApiResponse<ApiResult>> {
-    await this.packetCapture.set({
-      interface: interface_name,
-      filter: filter || '',
-      count: 100,
-    });
-    return this.packetCapture.start();
-  }
-
-  async stopAndDownloadCapture(): Promise<{
-    stop: ApiResponse<ApiResult>;
-    download: ApiResponse<any>;
-  }> {
-    const stop = await this.packetCapture.stop();
-    const download = await this.packetCapture.download();
-
-    return { stop, download };
-  }
-
-  async quickPing(host: string, count: number = 4): Promise<ApiResponse<any>> {
-    await this.ping.set({
-      hostname: host,
-      count: count.toString(),
-    });
-    return this.ping.ping({ hostname: host });
-  }
-
-  async quickTraceroute(host: string, maxHops: number = 30): Promise<ApiResponse<any>> {
-    await this.traceroute.set({
-      hostname: host,
-      max_hops: maxHops.toString(),
-    });
-    return this.traceroute.traceroute({ hostname: host });
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/diagnostics/service/reconfigure');
   }
 }

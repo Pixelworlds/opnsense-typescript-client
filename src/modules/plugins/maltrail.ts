@@ -1,45 +1,170 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class MaltrailGeneral extends BaseModule {
+  /**
+   * Get get for maltrail general
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/maltrail/maltrail/general/get`);
+  }
 
+  /**
+   * Execute set for maltrail general
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/maltrail/maltrail/general/set`, data);
+  }
+}
+
+export class MaltrailSensor extends BaseModule {
+  /**
+   * Get get for maltrail sensor
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/maltrail/maltrail/sensor/get`);
+  }
+
+  /**
+   * Execute set for maltrail sensor
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/maltrail/maltrail/sensor/set`, data);
+  }
+}
+
+export class MaltrailServer extends BaseModule {
+  /**
+   * Get get for maltrail server
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/maltrail/maltrail/server/get`);
+  }
+
+  /**
+   * Execute set for maltrail server
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/maltrail/maltrail/server/set`, data);
+  }
+}
+
+export class MaltrailServerservice extends BaseModule {
+  /**
+   * Execute reconfigure for maltrail serverservice
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/maltrail/maltrail/serverservice/reconfigure`);
+  }
+
+  /**
+   * Execute restart for maltrail serverservice
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/maltrail/maltrail/serverservice/restart`);
+  }
+
+  /**
+   * Execute start for maltrail serverservice
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/maltrail/maltrail/serverservice/start`);
+  }
+
+  /**
+   * Get status for maltrail serverservice
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/maltrail/maltrail/serverservice/status`);
+  }
+
+  /**
+   * Execute stop for maltrail serverservice
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/maltrail/maltrail/serverservice/stop`);
+  }
+}
+
+export class MaltrailService extends BaseModule {
+  /**
+   * Execute reconfigure for maltrail service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/maltrail/maltrail/service/reconfigure`);
+  }
+
+  /**
+   * Execute restart for maltrail service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/maltrail/maltrail/service/restart`);
+  }
+
+  /**
+   * Execute start for maltrail service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/maltrail/maltrail/service/start`);
+  }
+
+  /**
+   * Get status for maltrail service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/maltrail/maltrail/service/status`);
+  }
+
+  /**
+   * Execute stop for maltrail service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/maltrail/maltrail/service/stop`);
+  }
+}
+
+// Main module class
 export class MaltrailModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('maltrail', 'status');
+  public readonly general: MaltrailGeneral;
+  public readonly sensor: MaltrailSensor;
+  public readonly server: MaltrailServer;
+  public readonly serverservice: MaltrailServerservice;
+  public readonly service: MaltrailService;
+
+  constructor(http: any) {
+    super(http);
+    this.general = new MaltrailGeneral(http);
+    this.sensor = new MaltrailSensor(http);
+    this.server = new MaltrailServer(http);
+    this.serverservice = new MaltrailServerservice(http);
+    this.service = new MaltrailService(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('maltrail', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/maltrail/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('maltrail', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/maltrail/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('maltrail', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/maltrail/service/stop');
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('maltrail', 'reconfigure');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/maltrail/service/restart');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/maltrail/general/get');
-  }
-
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/maltrail/general/set', config);
-  }
-
-  async getTrails(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/maltrail/service/trails');
-  }
-
-  async getEvents(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/maltrail/service/events');
-  }
-
-  async updateTrails(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/maltrail/service/update');
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/maltrail/service/reconfigure');
   }
 }

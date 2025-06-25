@@ -1,500 +1,326 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
-
-export class IdsAlerts {
-  constructor(private http: any) {}
-
-  async query(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.http.post('/api/ids/service/query_alerts', params);
+// Controller classes
+export class IdsService extends BaseModule {
+  /**
+   * Execute drop alert log for ids service
+   */
+  async dropAlertLog(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ids/ids/service/drop_alert_log`, data);
   }
 
-  async getInfo(alertId: string, fileId?: string): Promise<ApiResponse<any>> {
-    const path = fileId
-      ? `/api/ids/service/get_alert_info/${alertId}/${fileId}`
-      : `/api/ids/service/get_alert_info/${alertId}`;
-    return this.http.get(path);
+  /**
+   * Get get alert info for ids service
+   */
+  async getAlertInfo(alertId: string, fileid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ids/ids/service/get_alert_info/${alertId}/${fileid}`);
   }
 
-  async drop(alertId: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ids/service/drop_alert/${alertId}`);
+  /**
+   * Get get alert logs for ids service
+   */
+  async getAlertLogs(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ids/ids/service/get_alert_logs`);
   }
 
-  async dropLog(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ids/service/drop_alert_log');
+  /**
+   * Execute query alerts for ids service
+   */
+  async queryAlerts(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ids/ids/service/query_alerts`, data);
   }
 
-  async getLogs(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/ids/service/get_alert_logs');
-  }
-}
-
-export class IdsPolicies {
-  constructor(private http: any) {}
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    if (Object.keys(params).length === 0) {
-      return this.http.get('/api/ids/settings/search_policy');
-    }
-    return this.http.post('/api/ids/settings/search_policy', params);
+  /**
+   * Execute reconfigure for ids service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/ids/ids/service/reconfigure`, data);
   }
 
-  async add(policy: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ids/settings/add_policy', policy);
+  /**
+   * Execute reload rules for ids service
+   */
+  async reloadRules(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ids/ids/service/reload_rules`, data);
   }
 
-  async get(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/ids/settings/get_policy/${uuid}` : '/api/ids/settings/get_policy';
-    return this.http.get(path);
+  /**
+   * Execute restart for ids service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/ids/ids/service/restart`, data);
   }
 
-  async set(uuid: string, policy: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ids/settings/set_policy/${uuid}`, policy);
+  /**
+   * Execute start for ids service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/ids/ids/service/start`, data);
   }
 
-  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ids/settings/del_policy/${uuid}`);
+  /**
+   * Get status for ids service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/ids/ids/service/status`);
   }
 
-  async toggle(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    const path =
-      enabled !== undefined
-        ? `/api/ids/settings/toggle_policy/${uuid}/${enabled ? '1' : '0'}`
-        : `/api/ids/settings/toggle_policy/${uuid}`;
-    return this.http.post(path);
+  /**
+   * Execute stop for ids service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/ids/ids/service/stop`, data);
   }
 
-  // Policy rule management
-  async addRule(policyUuid: string, rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ids/settings/add_policy_rule/${policyUuid}`, rule);
-  }
-
-  async deleteRule(policyUuid: string, ruleUuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ids/settings/del_policy_rule/${policyUuid}/${ruleUuid}`);
-  }
-
-  async getRule(policyUuid: string, ruleUuid?: string): Promise<ApiResponse<any>> {
-    const path = ruleUuid
-      ? `/api/ids/settings/get_policy_rule/${policyUuid}/${ruleUuid}`
-      : `/api/ids/settings/get_policy_rule/${policyUuid}`;
-    return this.http.get(path);
-  }
-
-  async setRule(policyUuid: string, ruleUuid: string, rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ids/settings/set_policy_rule/${policyUuid}/${ruleUuid}`, rule);
-  }
-
-  async toggleRule(policyUuid: string, ruleUuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    const path =
-      enabled !== undefined
-        ? `/api/ids/settings/toggle_policy_rule/${policyUuid}/${ruleUuid}/${enabled ? '1' : '0'}`
-        : `/api/ids/settings/toggle_policy_rule/${policyUuid}/${ruleUuid}`;
-    return this.http.post(path);
+  /**
+   * Execute update rules for ids service
+   */
+  async updateRules(wait: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ids/ids/service/update_rules/${wait}`, data);
   }
 }
 
-export class IdsRules {
-  constructor(private http: any) {}
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    if (Object.keys(params).length === 0) {
-      return this.http.get('/api/ids/settings/search_rule');
-    }
-    return this.http.post('/api/ids/settings/search_rule', params);
+export class IdsSettings extends BaseModule {
+  /**
+   * Execute add policy for ids settings
+   */
+  async addPolicy(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ids/ids/settings/add_policy`, data);
   }
 
-  async get(sid: string): Promise<ApiResponse<any>> {
-    return this.http.get(`/api/ids/settings/get_rule/${sid}`);
+  /**
+   * Execute add policy rule for ids settings
+   */
+  async addPolicyRule(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ids/ids/settings/add_policy_rule`, data);
   }
 
-  async set(sid: string, rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ids/settings/set_rule/${sid}`, rule);
+  /**
+   * Execute add user rule for ids settings
+   */
+  async addUserRule(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ids/ids/settings/add_user_rule`, data);
   }
 
-  async getInfo(sid: string): Promise<ApiResponse<any>> {
-    return this.http.get(`/api/ids/settings/rule_info/${sid}`);
+  /**
+   * Get check policy rule for ids settings
+   */
+  async checkPolicyRule(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ids/ids/settings/check_policy_rule`);
   }
 
-  async enable(sid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ids/settings/enable_rule/${sid}`);
+  /**
+   * Execute del policy for ids settings
+   */
+  async delPolicy(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ids/ids/settings/del_policy/${uuid}`, data);
   }
 
-  async disable(sid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ids/settings/disable_rule/${sid}`);
+  /**
+   * Execute del policy rule for ids settings
+   */
+  async delPolicyRule(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ids/ids/settings/del_policy_rule/${uuid}`, data);
   }
 
-  async toggle(sid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ids/settings/toggle_rule/${sid}`);
+  /**
+   * Execute del user rule for ids settings
+   */
+  async delUserRule(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ids/ids/settings/del_user_rule/${uuid}`, data);
   }
-}
 
-export class IdsRulesets {
-  constructor(private http: any) {}
-
+  /**
+   * Get get for ids settings
+   */
   async get(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/ids/settings/get_ruleset');
+    return this.http.get(`/api/ids/ids/settings/get`);
   }
 
-  async toggle(rulesetName: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    const path =
-      enabled !== undefined
-        ? `/api/ids/settings/toggle_ruleset/${rulesetName}/${enabled ? '1' : '0'}`
-        : `/api/ids/settings/toggle_ruleset/${rulesetName}`;
-    return this.http.post(path);
+  /**
+   * Get get policy for ids settings
+   */
+  async getPolicy(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ids/ids/settings/get_policy/${uuid}`);
   }
 
-  async enable(rulesetName: string): Promise<ApiResponse<ApiResult>> {
-    return this.toggle(rulesetName, true);
+  /**
+   * Get get policy rule for ids settings
+   */
+  async getPolicyRule(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ids/ids/settings/get_policy_rule/${uuid}`);
   }
 
-  async disable(rulesetName: string): Promise<ApiResponse<ApiResult>> {
-    return this.toggle(rulesetName, false);
+  /**
+   * Get get rule info for ids settings
+   */
+  async getRuleInfo(sid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ids/ids/settings/get_rule_info/${sid}`);
+  }
+
+  /**
+   * Get get ruleset for ids settings
+   */
+  async getRuleset(id: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ids/ids/settings/get_ruleset/${id}`);
+  }
+
+  /**
+   * Get get rulesetproperties for ids settings
+   */
+  async getRulesetproperties(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ids/ids/settings/get_rulesetproperties`);
+  }
+
+  /**
+   * Get get user rule for ids settings
+   */
+  async getUserRule(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ids/ids/settings/get_user_rule/${uuid}`);
+  }
+
+  /**
+   * Get list rule metadata for ids settings
+   */
+  async listRuleMetadata(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ids/ids/settings/list_rule_metadata`);
+  }
+
+  /**
+   * Get list rulesets for ids settings
+   */
+  async listRulesets(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ids/ids/settings/list_rulesets`);
+  }
+
+  /**
+   * Execute search installed rules for ids settings
+   */
+  async searchInstalledRules(params?: Record<string, any>): Promise<ApiResponse<SearchResult>> {
+    return this.http.post(`/api/ids/ids/settings/search_installed_rules`, data);
+  }
+
+  /**
+   * Execute set for ids settings
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ids/ids/settings/set`, data);
+  }
+
+  /**
+   * Execute set policy for ids settings
+   */
+  async setPolicy(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ids/ids/settings/set_policy/${uuid}`, data);
+  }
+
+  /**
+   * Execute set policy rule for ids settings
+   */
+  async setPolicyRule(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ids/ids/settings/set_policy_rule/${uuid}`, data);
+  }
+
+  /**
+   * Execute set rule for ids settings
+   */
+  async setRule(sid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ids/ids/settings/set_rule/${sid}`, data);
+  }
+
+  /**
+   * Execute set ruleset for ids settings
+   */
+  async setRuleset(filename: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ids/ids/settings/set_ruleset/${filename}`, data);
+  }
+
+  /**
+   * Execute set rulesetproperties for ids settings
+   */
+  async setRulesetproperties(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ids/ids/settings/set_rulesetproperties`, data);
+  }
+
+  /**
+   * Execute set user rule for ids settings
+   */
+  async setUserRule(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ids/ids/settings/set_user_rule/${uuid}`, data);
+  }
+
+  /**
+   * Execute toggle policy for ids settings
+   */
+  async togglePolicy(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ids/ids/settings/toggle_policy/${uuid}/${enabled}`, data);
+  }
+
+  /**
+   * Execute toggle policy rule for ids settings
+   */
+  async togglePolicyRule(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ids/ids/settings/toggle_policy_rule/${uuid}/${enabled}`, data);
+  }
+
+  /**
+   * Execute toggle rule for ids settings
+   */
+  async toggleRule(sids: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ids/ids/settings/toggle_rule/${sids}/${enabled}`, data);
+  }
+
+  /**
+   * Execute toggle ruleset for ids settings
+   */
+  async toggleRuleset(filenames: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ids/ids/settings/toggle_ruleset/${filenames}/${enabled}`, data);
+  }
+
+  /**
+   * Execute toggle user rule for ids settings
+   */
+  async toggleUserRule(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ids/ids/settings/toggle_user_rule/${uuid}/${enabled}`, data);
   }
 }
 
-export class IdsService {
-  constructor(private http: any) {}
-
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/ids/service/status');
-  }
-
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ids/service/start');
-  }
-
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ids/service/stop');
-  }
-
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ids/service/restart');
-  }
-
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ids/service/reconfigure');
-  }
-
-  async reload(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ids/service/reload');
-  }
-
-  async reloadRules(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ids/service/reload_rules');
-  }
-
-  async updateRules(wait?: boolean): Promise<ApiResponse<ApiResult>> {
-    const path =
-      wait !== undefined ? `/api/ids/service/update_rules/${wait ? '1' : '0'}` : '/api/ids/service/update_rules';
-    return this.http.post(path);
-  }
-}
-
-export class IdsSettings {
-  constructor(private http: any) {}
-
-  async get(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/ids/settings/get');
-  }
-
-  async set(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ids/settings/set', config);
-  }
-
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/ids/settings/get_general');
-  }
-
-  async setGeneral(settings: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ids/settings/set_general', settings);
-  }
-}
-
-export class IdsUserRules {
-  constructor(private http: any) {}
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    if (Object.keys(params).length === 0) {
-      return this.http.get('/api/ids/settings/search_userrule');
-    }
-    return this.http.post('/api/ids/settings/search_userrule', params);
-  }
-
-  async add(rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ids/settings/add_userrule', rule);
-  }
-
-  async get(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/ids/settings/get_userrule/${uuid}` : '/api/ids/settings/get_userrule';
-    return this.http.get(path);
-  }
-
-  async set(uuid: string, rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ids/settings/set_userrule/${uuid}`, rule);
-  }
-
-  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ids/settings/del_userrule/${uuid}`);
-  }
-
-  async toggle(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    const path =
-      enabled !== undefined
-        ? `/api/ids/settings/toggle_userrule/${uuid}/${enabled ? '1' : '0'}`
-        : `/api/ids/settings/toggle_userrule/${uuid}`;
-    return this.http.post(path);
-  }
-}
-
+// Main module class
 export class IdsModule extends BaseModule {
-  public readonly alerts: IdsAlerts;
-  public readonly policies: IdsPolicies;
-  public readonly rules: IdsRules;
-  public readonly rulesets: IdsRulesets;
   public readonly service: IdsService;
   public readonly settings: IdsSettings;
-  public readonly userRules: IdsUserRules;
 
-  constructor(httpClient: any) {
-    super(httpClient);
-    this.alerts = new IdsAlerts(this.http);
-    this.policies = new IdsPolicies(this.http);
-    this.rules = new IdsRules(this.http);
-    this.rulesets = new IdsRulesets(this.http);
-    this.service = new IdsService(this.http);
-    this.settings = new IdsSettings(this.http);
-    this.userRules = new IdsUserRules(this.http);
+  constructor(http: any) {
+    super(http);
+    this.service = new IdsService(http);
+    this.settings = new IdsSettings(http);
   }
 
   // Legacy methods for backward compatibility
-  async getConfig(): Promise<ApiResponse<any>> {
-    return this.settings.get();
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/ids/service/status');
   }
 
-  async setConfig(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.settings.set(config);
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/ids/service/start');
   }
 
-  async getGeneralSettings(): Promise<ApiResponse<any>> {
-    return this.settings.getGeneral();
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/ids/service/stop');
   }
 
-  async setGeneralSettings(settings: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.settings.setGeneral(settings);
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/ids/service/restart');
   }
 
-  async searchPolicies(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.policies.search(params);
-  }
-
-  async addPolicy(policy: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.policies.add(policy);
-  }
-
-  async getPolicy(uuid?: string): Promise<ApiResponse<any>> {
-    return this.policies.get(uuid);
-  }
-
-  async updatePolicy(uuid: string, policy: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.policies.set(uuid, policy);
-  }
-
-  async deletePolicy(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.policies.delete(uuid);
-  }
-
-  async togglePolicy(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    return this.policies.toggle(uuid, enabled);
-  }
-
-  async searchUserRules(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.userRules.search(params);
-  }
-
-  async addUserRule(rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.userRules.add(rule);
-  }
-
-  async getUserRule(uuid?: string): Promise<ApiResponse<any>> {
-    return this.userRules.get(uuid);
-  }
-
-  async updateUserRule(uuid: string, rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.userRules.set(uuid, rule);
-  }
-
-  async deleteUserRule(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.userRules.delete(uuid);
-  }
-
-  async toggleUserRule(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    return this.userRules.toggle(uuid, enabled);
-  }
-
-  async searchRules(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.rules.search(params);
-  }
-
-  async getRule(sid: string): Promise<ApiResponse<any>> {
-    return this.rules.get(sid);
-  }
-
-  async setRule(sid: string, rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.rules.set(sid, rule);
-  }
-
-  async getRuleInfo(sid: string): Promise<ApiResponse<any>> {
-    return this.rules.getInfo(sid);
-  }
-
-  async toggleRule(sid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    if (enabled !== undefined) {
-      return enabled ? this.rules.enable(sid) : this.rules.disable(sid);
-    }
-    return this.rules.toggle(sid);
-  }
-
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.service.start();
-  }
-
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.service.stop();
-  }
-
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.service.restart();
-  }
-
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.service.reconfigure();
-  }
-
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.service.getStatus();
-  }
-
-  async reload(): Promise<ApiResponse<ApiResult>> {
-    return this.service.reload();
-  }
-
-  async updateRules(): Promise<ApiResponse<ApiResult>> {
-    return this.service.updateRules();
-  }
-
-  async queryAlerts(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.alerts.query(params);
-  }
-
-  async getAlertInfo(alertId: string): Promise<ApiResponse<any>> {
-    return this.alerts.getInfo(alertId);
-  }
-
-  async dropAlert(alertId: string): Promise<ApiResponse<ApiResult>> {
-    return this.alerts.drop(alertId);
-  }
-
-  // New convenience methods
-  async getAllPolicies(): Promise<ApiResponse<any>> {
-    return this.policies.search();
-  }
-
-  async getAllUserRules(): Promise<ApiResponse<any>> {
-    return this.userRules.search();
-  }
-
-  async getAllRules(): Promise<ApiResponse<any>> {
-    return this.rules.search();
-  }
-
-  async enablePolicy(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.policies.toggle(uuid, true);
-  }
-
-  async disablePolicy(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.policies.toggle(uuid, false);
-  }
-
-  async enableUserRule(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.userRules.toggle(uuid, true);
-  }
-
-  async disableUserRule(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.userRules.toggle(uuid, false);
-  }
-
-  async enableRule(sid: string): Promise<ApiResponse<ApiResult>> {
-    return this.rules.enable(sid);
-  }
-
-  async disableRule(sid: string): Promise<ApiResponse<ApiResult>> {
-    return this.rules.disable(sid);
-  }
-
-  async enableRuleset(rulesetName: string): Promise<ApiResponse<ApiResult>> {
-    return this.rulesets.enable(rulesetName);
-  }
-
-  async disableRuleset(rulesetName: string): Promise<ApiResponse<ApiResult>> {
-    return this.rulesets.disable(rulesetName);
-  }
-
-  async clearAlertLog(): Promise<ApiResponse<ApiResult>> {
-    return this.alerts.dropLog();
-  }
-
-  async getAllAlertLogs(): Promise<ApiResponse<any>> {
-    return this.alerts.getLogs();
-  }
-
-  async updateRulesAndWait(): Promise<ApiResponse<ApiResult>> {
-    return this.service.updateRules(true);
-  }
-
-  async getIdsOverview(): Promise<{
-    status: any;
-    policies: any;
-    userRules: any;
-    rulesets: any;
-    alerts: any;
-    config: any;
-    timestamp: string;
-  }> {
-    const [status, policies, userRules, rulesets, config, alerts] = await Promise.allSettled([
-      this.getStatus(),
-      this.getAllPolicies(),
-      this.getAllUserRules(),
-      this.rulesets.get(),
-      this.getConfig(),
-      this.queryAlerts({ limit: 10 }).catch(() => ({ data: null })),
-    ]);
-
-    return {
-      status: status.status === 'fulfilled' ? status.value.data : null,
-      policies: policies.status === 'fulfilled' ? policies.value.data : null,
-      userRules: userRules.status === 'fulfilled' ? userRules.value.data : null,
-      rulesets: rulesets.status === 'fulfilled' ? rulesets.value.data : null,
-      alerts: alerts.status === 'fulfilled' ? alerts.value.data : null,
-      config: config.status === 'fulfilled' ? config.value.data : null,
-      timestamp: new Date().toISOString(),
-    };
-  }
-
-  async createPolicy(name: string, description?: string, enabled = true): Promise<ApiResponse<ApiResult>> {
-    const policy = {
-      enabled: enabled ? '1' : '0',
-      name,
-      description: description || `IDS policy ${name}`,
-    };
-    return this.addPolicy(policy);
-  }
-
-  async createUserRule(rule: string, description?: string, enabled = true): Promise<ApiResponse<ApiResult>> {
-    const userRule = {
-      enabled: enabled ? '1' : '0',
-      rule,
-      description: description || 'Custom user rule',
-    };
-    return this.addUserRule(userRule);
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/ids/service/reconfigure');
   }
 }

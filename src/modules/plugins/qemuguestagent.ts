@@ -1,25 +1,95 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class QemuguestagentService extends BaseModule {
+  /**
+   * Execute reconfigure for qemuguestagent service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/qemuguestagent/qemuguestagent/service/reconfigure`);
+  }
 
+  /**
+   * Execute restart for qemuguestagent service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/qemuguestagent/qemuguestagent/service/restart`);
+  }
+
+  /**
+   * Execute start for qemuguestagent service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/qemuguestagent/qemuguestagent/service/start`);
+  }
+
+  /**
+   * Get status for qemuguestagent service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/qemuguestagent/qemuguestagent/service/status`);
+  }
+
+  /**
+   * Execute stop for qemuguestagent service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/qemuguestagent/qemuguestagent/service/stop`);
+  }
+}
+
+export class QemuguestagentSettings extends BaseModule {
+  /**
+   * Get get for qemuguestagent settings
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/qemuguestagent/qemuguestagent/settings/get`);
+  }
+
+  /**
+   * Execute set for qemuguestagent settings
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/qemuguestagent/qemuguestagent/settings/set`, data);
+  }
+}
+
+// Main module class
 export class QemuguestagentModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('qemu-guest-agent', 'status');
+  public readonly service: QemuguestagentService;
+  public readonly settings: QemuguestagentSettings;
+
+  constructor(http: any) {
+    super(http);
+    this.service = new QemuguestagentService(http);
+    this.settings = new QemuguestagentSettings(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('qemu-guest-agent', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/qemuguestagent/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('qemu-guest-agent', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/qemuguestagent/service/start');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/qemuguestagent/general/get');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/qemuguestagent/service/stop');
   }
 
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/qemuguestagent/general/set', config);
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/qemuguestagent/service/restart');
+  }
+
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/qemuguestagent/service/reconfigure');
   }
 }

@@ -1,46 +1,35 @@
 import { HttpClient } from './http-client';
 import {
-    AuthModule, CaptivePortalModule, CoreModule, CronModule, Dhcpv4Module, Dhcpv6Module, DhcrelayModule,
-    DiagnosticsModule, DnsmasqModule, FirewallModule, FirmwareModule, IdsModule, InterfacesModule, IPsecModule,
-    KeaModule, MonitModule, OpenVPNModule, RoutesModule, RoutingModule, ServiceModule, SyslogModule, SystemModule,
+    AuthModule, CaptiveportalModule, CoreModule, CronModule, Dhcpv4Module, Dhcpv6Module, DhcrelayModule,
+    DiagnosticsModule, DnsmasqModule, FirewallModule, FirmwareModule, IdsModule, InterfacesModule, IpsecModule,
+    KeaModule, MonitModule, OpenvpnModule, RoutesModule, RoutingModule, ServiceModule, SyslogModule, SystemModule,
     TrafficshaperModule, TrustModule, UnboundModule, WireguardModule
 } from './modules/core';
 import {
-    AcmeclientModule, ApcupsdModule, BindModule, CaddyModule, ChronyModule, CicapModule, ClamavModule,
-    CollectdModule, CrowdsecModule, DechwModule, PluginDiagnosticsModule, DmidecodeModule,
-    DnscryptproxyModule, DyndnsModule, FreeradiusModule, FtpproxyModule, GridexampleModule,
-    HAProxyModule, HelloworldModule, HwprobeModule, IperfModule, LldpdModule, MaltrailModule,
-    MdnsrepeaterModule, MuninnodeModule, NdproxyModule, NetdataModule, NetsnmpModule, NginxModule,
-    NodeexporterModule, NrpeModule, NtopngModule, NutModule, OpenconnectModule, PostfixModule,
-    ProxyModule, ProxyssoModule, PuppetagentModule, QemuguestagentModule, QuaggaModule,
-    RadsecproxyModule, RedisModule, RelaydModule, RspamdModule, ShadowsocksModule, SiproxydModule,
-    SmartModule, SoftetherModule, SslhModule, StunnelModule, TailscaleModule, TaygaModule,
-    TelegrafModule, TftpModule, TincModule, TorModule, TurnserverModule, UdpbroadcastrelayModule,
-    VnstatModule, WazuhagentModule, WireGuardModule, WolModule, ZabbixagentModule,
+    AcmeclientModule, ApcupsdModule, BindModule, CaddyModule, ChronyModule, CicapModule, ClamavModule, CollectdModule,
+    CrowdsecModule, DechwModule, DiagnosticsModule as PluginDiagnosticsModule, DmidecodeModule, DnscryptproxyModule,
+    DyndnsModule, FreeradiusModule, FtpproxyModule, GridexampleModule, HaproxyModule, HelloworldModule, HwprobeModule,
+    IperfModule, LldpdModule, MaltrailModule, MdnsrepeaterModule, MuninnodeModule, NdproxyModule, NetdataModule,
+    NetsnmpModule, NginxModule, NodeexporterModule, NrpeModule, NtopngModule, NutModule, OpenconnectModule,
+    PostfixModule, ProxyModule, ProxyssoModule, PuppetagentModule, QemuguestagentModule, QuaggaModule,
+    RadsecproxyModule, RedisModule, RelaydModule, RspamdModule, ShadowsocksModule, SiproxdModule, SmartModule,
+    SoftetherModule, SslhModule, StunnelModule, TailscaleModule, TaygaModule, TelegrafModule, TftpModule, TincModule,
+    TorModule, TurnserverModule, UdpbroadcastrelayModule, VnstatModule, WazuhagentModule, WolModule, ZabbixagentModule,
     ZabbixproxyModule, ZerotierModule
 } from './modules/plugins';
 
 import type { ApiResponse, ApiResult, OPNsenseConfig } from './types';
 
-/**
- * Main OPNsense API client
- *
- * Provides a comprehensive interface to the OPNsense API with organized modules
- * for different functionality areas, separated into core and plugin modules.
- */
 export class OPNsenseClient {
   private http: HttpClient;
 
-  // Core modules (built into OPNsense)
-  public readonly system: SystemModule;
   public readonly firmware: FirmwareModule;
   public readonly firewall: FirewallModule;
   public readonly diagnostics: DiagnosticsModule;
   public readonly interfaces: InterfacesModule;
-  public readonly service: ServiceModule;
-  public readonly captivePortal: CaptivePortalModule;
-  public readonly openVPN: OpenVPNModule;
-  public readonly ipsec: IPsecModule;
+  public readonly captivePortal: CaptiveportalModule;
+  public readonly openVPN: OpenvpnModule;
+  public readonly ipsec: IpsecModule;
   public readonly auth: AuthModule;
   public readonly trust: TrustModule;
   public readonly cron: CronModule;
@@ -54,12 +43,13 @@ export class OPNsenseClient {
   public readonly kea: KeaModule;
   public readonly routes: RoutesModule;
   public readonly routing: RoutingModule;
+  public readonly service: ServiceModule;
   public readonly syslog: SyslogModule;
+  public readonly system: SystemModule;
   public readonly trafficshaper: TrafficshaperModule;
   public readonly unbound: UnboundModule;
   public readonly wireguard: WireguardModule;
 
-  // Plugin modules (require plugin installation)
   public readonly plugins: {
     acmeclient: AcmeclientModule;
     apcupsd: ApcupsdModule;
@@ -78,7 +68,7 @@ export class OPNsenseClient {
     freeradius: FreeradiusModule;
     ftpproxy: FtpproxyModule;
     gridexample: GridexampleModule;
-    haproxy: HAProxyModule;
+    haproxy: HaproxyModule;
     helloworld: HelloworldModule;
     hwprobe: HwprobeModule;
     iperf: IperfModule;
@@ -106,7 +96,7 @@ export class OPNsenseClient {
     relayd: RelaydModule;
     rspamd: RspamdModule;
     shadowsocks: ShadowsocksModule;
-    siproxyd: SiproxydModule;
+    siproxyd: SiproxdModule;
     smart: SmartModule;
     softether: SoftetherModule;
     sslh: SslhModule;
@@ -121,7 +111,6 @@ export class OPNsenseClient {
     udpbroadcastrelay: UdpbroadcastrelayModule;
     vnstat: VnstatModule;
     wazuhagent: WazuhagentModule;
-    wireGuard: WireGuardModule;
     wol: WolModule;
     zabbixagent: ZabbixagentModule;
     zabbixproxy: ZabbixproxyModule;
@@ -131,16 +120,13 @@ export class OPNsenseClient {
   constructor(config: OPNsenseConfig) {
     this.http = new HttpClient(config);
 
-    // Initialize core modules
-    this.system = new SystemModule(this.http);
     this.firmware = new FirmwareModule(this.http);
     this.firewall = new FirewallModule(this.http);
     this.diagnostics = new DiagnosticsModule(this.http);
     this.interfaces = new InterfacesModule(this.http);
-    this.service = new ServiceModule(this.http);
-    this.captivePortal = new CaptivePortalModule(this.http);
-    this.openVPN = new OpenVPNModule(this.http);
-    this.ipsec = new IPsecModule(this.http);
+    this.captivePortal = new CaptiveportalModule(this.http);
+    this.openVPN = new OpenvpnModule(this.http);
+    this.ipsec = new IpsecModule(this.http);
     this.auth = new AuthModule(this.http);
     this.trust = new TrustModule(this.http);
     this.cron = new CronModule(this.http);
@@ -154,12 +140,13 @@ export class OPNsenseClient {
     this.kea = new KeaModule(this.http);
     this.routes = new RoutesModule(this.http);
     this.routing = new RoutingModule(this.http);
+    this.service = new ServiceModule(this.http);
     this.syslog = new SyslogModule(this.http);
+    this.system = new SystemModule(this.http);
     this.trafficshaper = new TrafficshaperModule(this.http);
     this.unbound = new UnboundModule(this.http);
     this.wireguard = new WireguardModule(this.http);
 
-    // Initialize plugin modules
     this.plugins = {
       acmeclient: new AcmeclientModule(this.http),
       apcupsd: new ApcupsdModule(this.http),
@@ -178,7 +165,7 @@ export class OPNsenseClient {
       freeradius: new FreeradiusModule(this.http),
       ftpproxy: new FtpproxyModule(this.http),
       gridexample: new GridexampleModule(this.http),
-      haproxy: new HAProxyModule(this.http),
+      haproxy: new HaproxyModule(this.http),
       helloworld: new HelloworldModule(this.http),
       hwprobe: new HwprobeModule(this.http),
       iperf: new IperfModule(this.http),
@@ -206,7 +193,7 @@ export class OPNsenseClient {
       relayd: new RelaydModule(this.http),
       rspamd: new RspamdModule(this.http),
       shadowsocks: new ShadowsocksModule(this.http),
-      siproxyd: new SiproxydModule(this.http),
+      siproxyd: new SiproxdModule(this.http),
       smart: new SmartModule(this.http),
       softether: new SoftetherModule(this.http),
       sslh: new SslhModule(this.http),
@@ -221,7 +208,6 @@ export class OPNsenseClient {
       udpbroadcastrelay: new UdpbroadcastrelayModule(this.http),
       vnstat: new VnstatModule(this.http),
       wazuhagent: new WazuhagentModule(this.http),
-      wireGuard: new WireGuardModule(this.http),
       wol: new WolModule(this.http),
       zabbixagent: new ZabbixagentModule(this.http),
       zabbixproxy: new ZabbixproxyModule(this.http),
@@ -229,54 +215,23 @@ export class OPNsenseClient {
     };
   }
 
-  /**
-   * Get the underlying HTTP client for direct access
-   *
-   * @example
-   * ```typescript
-   * const response = await client.httpClient.get('/api/custom/endpoint');
-   * ```
-   */
   get httpClient(): HttpClient {
     return this.http;
   }
 
-  /**
-   * Test the connection to the OPNsense API
-   *
-   * @returns Promise resolving to true if connection is successful
-   * @throws {OPNsenseApiError} If connection fails
-   *
-   * @example
-   * ```typescript
-   * const isConnected = await client.testConnection();
-   * console.log('Connected:', isConnected);
-   * ```
-   */
   async testConnection(): Promise<boolean> {
     try {
-      await this.system.getStatus();
+      await this.firmware.firmware.status();
       return true;
     } catch (error) {
       return false;
     }
   }
 
-  /**
-   * Get basic system information
-   *
-   * @returns Promise with system info including version, uptime, etc.
-   *
-   * @example
-   * ```typescript
-   * const info = await client.getSystemInfo();
-   * console.log('OPNsense version:', info.version);
-   * ```
-   */
   async getSystemInfo(): Promise<any> {
     const [status, firmwareInfo] = await Promise.all([
-      this.system.getStatus(),
-      this.firmware.getInfo().catch(() => null), // Firmware endpoint might not be accessible
+      this.firmware.firmware.status(),
+      this.firmware.firmware.info().catch(() => null),
     ]);
 
     return {
@@ -286,43 +241,25 @@ export class OPNsenseClient {
     };
   }
 
-  /**
-   * Apply configuration changes and restart services if needed
-   *
-   * @param services - Optional array of service names to restart
-   * @returns Promise with operation results
-   *
-   * @example
-   * ```typescript
-   * // Apply all pending changes
-   * await client.applyConfiguration();
-   *
-   * // Apply changes and restart specific services
-   * await client.applyConfiguration(['firewall', 'openssh']);
-   * ```
-   */
   async applyConfiguration(services?: string[]): Promise<ApiResult[]> {
     const results: ApiResult[] = [];
 
-    // Apply firewall configuration
     try {
-      const firewallResult = await this.firewall.apply();
-      results.push(firewallResult.data);
+      const firewallResult = await this.firewall.filterBase.apply('');
+      results.push(firewallResult.data || { result: 'ok', message: 'Firewall configuration applied' });
     } catch (error) {
-      // Firewall apply might not be needed
+      results.push({ result: 'failed', message: 'Failed to apply firewall configuration' });
     }
 
-    // Restart specified services
     if (services && services.length > 0) {
       for (const serviceName of services) {
         try {
           const serviceResult = await this.service.restart(serviceName);
-          results.push(serviceResult.data);
+          results.push(serviceResult.data || { result: 'ok', message: `Service ${serviceName} restarted` });
         } catch (error) {
           results.push({
-            result: 'error',
-            service: serviceName,
-            error: error instanceof Error ? error.message : 'Unknown error',
+            result: 'failed',
+            message: error instanceof Error ? error.message : `Failed to restart service ${serviceName}`,
           });
         }
       }
@@ -331,65 +268,27 @@ export class OPNsenseClient {
     return results;
   }
 
-  /**
-   * Create a backup of the current configuration
-   *
-   * @returns Promise with backup download URL or data
-   *
-   * @example
-   * ```typescript
-   * const backup = await client.createBackup();
-   * console.log('Backup created:', backup);
-   * ```
-   */
   async createBackup(): Promise<ApiResponse<any>> {
-    return this.core.backup.downloadBackup('');
+    return this.core.backup.download('', '');
   }
 
-  /**
-   * Get comprehensive system health status
-   *
-   * @returns Promise with system health information
-   *
-   * @example
-   * ```typescript
-   * const health = await client.getSystemHealth();
-   * console.log('System load:', health.system.load);
-   * console.log('Memory usage:', health.system.memory);
-   * ```
-   */
   async getSystemHealth(): Promise<any> {
     const [systemStatus, interfaceStats, firewallStats] = await Promise.allSettled([
-      this.system.getStatus(),
-      this.diagnostics.getSystemInformation(),
-      this.diagnostics.getFirewallStats(),
+      this.firmware.firmware.status(),
+      this.diagnostics.system.systemInformation(),
+      this.diagnostics.firewall.log().catch(() => null),
     ]);
 
     return {
       system: systemStatus.status === 'fulfilled' ? systemStatus.value.data : null,
       interfaces: interfaceStats.status === 'fulfilled' ? interfaceStats.value.data : null,
-      firewall: firewallStats.status === 'fulfilled' ? firewallStats.value.data : null,
+      firewall: firewallStats.status === 'fulfilled' && firewallStats.value ? firewallStats.value.data : null,
       timestamp: new Date().toISOString(),
     };
   }
 
-  /**
-   * Check if a plugin is available (installed and accessible)
-   *
-   * @param pluginName - Name of the plugin to check
-   * @returns Promise resolving to true if plugin is available
-   *
-   * @example
-   * ```typescript
-   * const hasWireGuard = await client.isPluginAvailable('wireGuard');
-   * if (hasWireGuard) {
-   *   await client.plugins.wireGuard.getStatus();
-   * }
-   * ```
-   */
   async isPluginAvailable(pluginName: string): Promise<boolean> {
     try {
-      // Try to access the plugin's status endpoint
       const pluginModule = this.plugins[pluginName as keyof typeof this.plugins];
       if (!pluginModule) return false;
 
@@ -398,7 +297,6 @@ export class OPNsenseClient {
         return true;
       }
 
-      // For plugins without status endpoint, try a basic GET
       await this.http.get(`/api/${pluginName}/general/get`);
       return true;
     } catch (error) {
@@ -406,17 +304,6 @@ export class OPNsenseClient {
     }
   }
 
-  /**
-   * Get a list of available (installed) plugins
-   *
-   * @returns Promise with array of available plugin names
-   *
-   * @example
-   * ```typescript
-   * const plugins = await client.getAvailablePlugins();
-   * console.log('Available plugins:', plugins);
-   * ```
-   */
   async getAvailablePlugins(): Promise<string[]> {
     const pluginNames = Object.keys(this.plugins);
     const availablePlugins: string[] = [];

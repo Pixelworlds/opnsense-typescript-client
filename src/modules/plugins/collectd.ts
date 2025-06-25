@@ -1,41 +1,95 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class CollectdGeneral extends BaseModule {
+  /**
+   * Get get for collectd general
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/collectd/collectd/general/get`);
+  }
 
+  /**
+   * Execute set for collectd general
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/collectd/collectd/general/set`, data);
+  }
+}
+
+export class CollectdService extends BaseModule {
+  /**
+   * Execute reconfigure for collectd service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/collectd/collectd/service/reconfigure`);
+  }
+
+  /**
+   * Execute restart for collectd service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/collectd/collectd/service/restart`);
+  }
+
+  /**
+   * Execute start for collectd service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/collectd/collectd/service/start`);
+  }
+
+  /**
+   * Get status for collectd service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/collectd/collectd/service/status`);
+  }
+
+  /**
+   * Execute stop for collectd service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/collectd/collectd/service/stop`);
+  }
+}
+
+// Main module class
 export class CollectdModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('collectd', 'status');
+  public readonly general: CollectdGeneral;
+  public readonly service: CollectdService;
+
+  constructor(http: any) {
+    super(http);
+    this.general = new CollectdGeneral(http);
+    this.service = new CollectdService(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('collectd', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/collectd/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('collectd', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/collectd/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('collectd', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/collectd/service/stop');
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('collectd', 'reconfigure');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/collectd/service/restart');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/collectd/general/get');
-  }
-
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/collectd/general/set', config);
-  }
-
-  async getStatistics(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/collectd/service/statistics');
-  }
-
-  async getValues(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/collectd/service/values');
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/collectd/service/reconfigure');
   }
 }

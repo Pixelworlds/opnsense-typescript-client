@@ -1,33 +1,95 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class MdnsrepeaterService extends BaseModule {
+  /**
+   * Execute reconfigure for mdnsrepeater service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/mdnsrepeater/mdnsrepeater/service/reconfigure`);
+  }
 
+  /**
+   * Execute restart for mdnsrepeater service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/mdnsrepeater/mdnsrepeater/service/restart`);
+  }
+
+  /**
+   * Execute start for mdnsrepeater service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/mdnsrepeater/mdnsrepeater/service/start`);
+  }
+
+  /**
+   * Get status for mdnsrepeater service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/mdnsrepeater/mdnsrepeater/service/status`);
+  }
+
+  /**
+   * Execute stop for mdnsrepeater service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/mdnsrepeater/mdnsrepeater/service/stop`);
+  }
+}
+
+export class MdnsrepeaterSettings extends BaseModule {
+  /**
+   * Get get for mdnsrepeater settings
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/mdnsrepeater/mdnsrepeater/settings/get`);
+  }
+
+  /**
+   * Execute set for mdnsrepeater settings
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/mdnsrepeater/mdnsrepeater/settings/set`, data);
+  }
+}
+
+// Main module class
 export class MdnsrepeaterModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('mdnsrepeater', 'status');
+  public readonly service: MdnsrepeaterService;
+  public readonly settings: MdnsrepeaterSettings;
+
+  constructor(http: any) {
+    super(http);
+    this.service = new MdnsrepeaterService(http);
+    this.settings = new MdnsrepeaterSettings(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('mdnsrepeater', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/mdnsrepeater/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('mdnsrepeater', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/mdnsrepeater/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('mdnsrepeater', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/mdnsrepeater/service/stop');
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('mdnsrepeater', 'reconfigure');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/mdnsrepeater/service/restart');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/mdnsrepeater/general/get');
-  }
-
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/mdnsrepeater/general/set', config);
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/mdnsrepeater/service/reconfigure');
   }
 }

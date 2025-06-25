@@ -5,4 +5,6 @@ export type * from './types';
 
 export { OPNsenseApiError, ValidationError } from './errors';
 
-export * from './modules';
+export { BaseModule } from './modules/base';
+export * as CoreModules from './modules/core';
+export * as PluginModules from './modules/plugins';

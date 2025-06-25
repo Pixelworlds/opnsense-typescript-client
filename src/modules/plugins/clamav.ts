@@ -1,61 +1,162 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class ClamavGeneral extends BaseModule {
+  /**
+   * Get get for clamav general
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/clamav/clamav/general/get`);
+  }
 
+  /**
+   * Execute set for clamav general
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/clamav/clamav/general/set`, data);
+  }
+}
+
+export class ClamavService extends BaseModule {
+  /**
+   * Execute freshclam for clamav service
+   */
+  async freshclam(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/clamav/clamav/service/freshclam`, data);
+  }
+
+  /**
+   * Execute reconfigure for clamav service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/clamav/clamav/service/reconfigure`);
+  }
+
+  /**
+   * Execute restart for clamav service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/clamav/clamav/service/restart`);
+  }
+
+  /**
+   * Execute start for clamav service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/clamav/clamav/service/start`);
+  }
+
+  /**
+   * Get status for clamav service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/clamav/clamav/service/status`);
+  }
+
+  /**
+   * Execute stop for clamav service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/clamav/clamav/service/stop`);
+  }
+
+  /**
+   * Get version for clamav service
+   */
+  async version(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/clamav/clamav/service/version`);
+  }
+}
+
+export class ClamavUrl extends BaseModule {
+  /**
+   * Execute add url for clamav url
+   */
+  async addUrl(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/clamav/clamav/url/add_url`, data);
+  }
+
+  /**
+   * Execute del url for clamav url
+   */
+  async delUrl(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/clamav/clamav/url/del_url/${uuid}`, data);
+  }
+
+  /**
+   * Get get for clamav url
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/clamav/clamav/url/get`);
+  }
+
+  /**
+   * Get get url for clamav url
+   */
+  async getUrl(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/clamav/clamav/url/get_url/${uuid}`);
+  }
+
+  /**
+   * Execute set for clamav url
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/clamav/clamav/url/set`, data);
+  }
+
+  /**
+   * Execute set url for clamav url
+   */
+  async setUrl(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/clamav/clamav/url/set_url/${uuid}`, data);
+  }
+
+  /**
+   * Execute toggle url for clamav url
+   */
+  async toggleUrl(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/clamav/clamav/url/toggle_url/${uuid}`, data);
+  }
+}
+
+// Main module class
 export class ClamavModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('clamav', 'status');
+  public readonly general: ClamavGeneral;
+  public readonly service: ClamavService;
+  public readonly url: ClamavUrl;
+
+  constructor(http: any) {
+    super(http);
+    this.general = new ClamavGeneral(http);
+    this.service = new ClamavService(http);
+    this.url = new ClamavUrl(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('clamav', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/clamav/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('clamav', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/clamav/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('clamav', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/clamav/service/stop');
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('clamav', 'reconfigure');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/clamav/service/restart');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/clamav/general/get');
-  }
-
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/clamav/general/set', config);
-  }
-
-  async updateDatabase(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/clamav/service/update');
-  }
-
-  async getDatabaseStatus(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/clamav/service/database_status');
-  }
-
-  async scanPath(path: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/clamav/service/scan', { path });
-  }
-
-  async getScanResults(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/clamav/service/scan_results');
-  }
-
-  async getQuarantine(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/clamav/service/quarantine');
-  }
-
-  async deleteQuarantineFile(fileId: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/clamav/service/delete_quarantine/${fileId}`);
-  }
-
-  async restoreQuarantineFile(fileId: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/clamav/service/restore_quarantine/${fileId}`);
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/clamav/service/reconfigure');
   }
 }
