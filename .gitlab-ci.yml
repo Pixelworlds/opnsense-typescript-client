@@ -124,7 +124,7 @@ test_typescript_declarations:
 
       // This should compile without errors if types are correct
       const client = new OPNsenseClient({
-        host: 'https://opnsense.example.com',
+        baseUrl: 'https://opnsense.example.com',
         apiKey: 'test-key',
         apiSecret: 'test-secret'
       });
