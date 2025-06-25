@@ -1,37 +1,95 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class NodeexporterGeneral extends BaseModule {
+  /**
+   * Get get for nodeexporter general
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/nodeexporter/nodeexporter/general/get`);
+  }
 
+  /**
+   * Execute set for nodeexporter general
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/nodeexporter/nodeexporter/general/set`, data);
+  }
+}
+
+export class NodeexporterService extends BaseModule {
+  /**
+   * Execute reconfigure for nodeexporter service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/nodeexporter/nodeexporter/service/reconfigure`);
+  }
+
+  /**
+   * Execute restart for nodeexporter service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/nodeexporter/nodeexporter/service/restart`);
+  }
+
+  /**
+   * Execute start for nodeexporter service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/nodeexporter/nodeexporter/service/start`);
+  }
+
+  /**
+   * Get status for nodeexporter service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/nodeexporter/nodeexporter/service/status`);
+  }
+
+  /**
+   * Execute stop for nodeexporter service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/nodeexporter/nodeexporter/service/stop`);
+  }
+}
+
+// Main module class
 export class NodeexporterModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('node_exporter', 'status');
+  public readonly general: NodeexporterGeneral;
+  public readonly service: NodeexporterService;
+
+  constructor(http: any) {
+    super(http);
+    this.general = new NodeexporterGeneral(http);
+    this.service = new NodeexporterService(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('node_exporter', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/nodeexporter/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('node_exporter', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/nodeexporter/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('node_exporter', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/nodeexporter/service/stop');
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('node_exporter', 'reconfigure');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/nodeexporter/service/restart');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/nodeexporter/general/get');
-  }
-
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/nodeexporter/general/set', config);
-  }
-
-  async getMetrics(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/nodeexporter/service/metrics');
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/nodeexporter/service/reconfigure');
   }
 }

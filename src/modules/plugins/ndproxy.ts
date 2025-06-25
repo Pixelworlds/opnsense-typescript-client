@@ -1,25 +1,95 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class NdproxyGeneral extends BaseModule {
+  /**
+   * Get get for ndproxy general
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ndproxy/ndproxy/general/get`);
+  }
 
+  /**
+   * Execute set for ndproxy general
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ndproxy/ndproxy/general/set`, data);
+  }
+}
+
+export class NdproxyService extends BaseModule {
+  /**
+   * Execute reconfigure for ndproxy service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/ndproxy/ndproxy/service/reconfigure`);
+  }
+
+  /**
+   * Execute restart for ndproxy service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/ndproxy/ndproxy/service/restart`);
+  }
+
+  /**
+   * Execute start for ndproxy service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/ndproxy/ndproxy/service/start`);
+  }
+
+  /**
+   * Get status for ndproxy service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/ndproxy/ndproxy/service/status`);
+  }
+
+  /**
+   * Execute stop for ndproxy service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/ndproxy/ndproxy/service/stop`);
+  }
+}
+
+// Main module class
 export class NdproxyModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('ndproxy', 'status');
+  public readonly general: NdproxyGeneral;
+  public readonly service: NdproxyService;
+
+  constructor(http: any) {
+    super(http);
+    this.general = new NdproxyGeneral(http);
+    this.service = new NdproxyService(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('ndproxy', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/ndproxy/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('ndproxy', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/ndproxy/service/start');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/ndproxy/general/get');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/ndproxy/service/stop');
   }
 
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ndproxy/general/set', config);
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/ndproxy/service/restart');
+  }
+
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/ndproxy/service/reconfigure');
   }
 }

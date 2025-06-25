@@ -1,91 +1,152 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class ShadowsocksGeneral extends BaseModule {
+  /**
+   * Get get for shadowsocks general
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/shadowsocks/shadowsocks/general/get`);
+  }
 
+  /**
+   * Execute set for shadowsocks general
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/shadowsocks/shadowsocks/general/set`, data);
+  }
+}
+
+export class ShadowsocksLocal extends BaseModule {
+  /**
+   * Get get for shadowsocks local
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/shadowsocks/shadowsocks/local/get`);
+  }
+
+  /**
+   * Execute set for shadowsocks local
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/shadowsocks/shadowsocks/local/set`, data);
+  }
+}
+
+export class ShadowsocksLocalservice extends BaseModule {
+  /**
+   * Execute reconfigure for shadowsocks localservice
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/shadowsocks/shadowsocks/localservice/reconfigure`);
+  }
+
+  /**
+   * Execute restart for shadowsocks localservice
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/shadowsocks/shadowsocks/localservice/restart`);
+  }
+
+  /**
+   * Execute start for shadowsocks localservice
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/shadowsocks/shadowsocks/localservice/start`);
+  }
+
+  /**
+   * Get status for shadowsocks localservice
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/shadowsocks/shadowsocks/localservice/status`);
+  }
+
+  /**
+   * Execute stop for shadowsocks localservice
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/shadowsocks/shadowsocks/localservice/stop`);
+  }
+}
+
+export class ShadowsocksService extends BaseModule {
+  /**
+   * Execute reconfigure for shadowsocks service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/shadowsocks/shadowsocks/service/reconfigure`);
+  }
+
+  /**
+   * Execute restart for shadowsocks service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/shadowsocks/shadowsocks/service/restart`);
+  }
+
+  /**
+   * Execute start for shadowsocks service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/shadowsocks/shadowsocks/service/start`);
+  }
+
+  /**
+   * Get status for shadowsocks service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/shadowsocks/shadowsocks/service/status`);
+  }
+
+  /**
+   * Execute stop for shadowsocks service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/shadowsocks/shadowsocks/service/stop`);
+  }
+}
+
+// Main module class
 export class ShadowsocksModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('shadowsocks', 'status');
+  public readonly general: ShadowsocksGeneral;
+  public readonly local: ShadowsocksLocal;
+  public readonly localservice: ShadowsocksLocalservice;
+  public readonly service: ShadowsocksService;
+
+  constructor(http: any) {
+    super(http);
+    this.general = new ShadowsocksGeneral(http);
+    this.local = new ShadowsocksLocal(http);
+    this.localservice = new ShadowsocksLocalservice(http);
+    this.service = new ShadowsocksService(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('shadowsocks', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/shadowsocks/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('shadowsocks', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/shadowsocks/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('shadowsocks', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/shadowsocks/service/stop');
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('shadowsocks', 'reconfigure');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/shadowsocks/service/restart');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/shadowsocks/general/get');
-  }
-
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/shadowsocks/general/set', config);
-  }
-
-  async searchServers(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/shadowsocks/settings/search_server', params);
-  }
-
-  async addServer(server: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/shadowsocks/settings/add_server', server);
-  }
-
-  async getServer(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/shadowsocks/settings/get_server/${uuid}` : '/api/shadowsocks/settings/get_server';
-    return this.http.get(path);
-  }
-
-  async updateServer(uuid: string, server: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/shadowsocks/settings/set_server/${uuid}`, server);
-  }
-
-  async deleteServer(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/shadowsocks/settings/del_server/${uuid}`);
-  }
-
-  async toggleServer(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    return this.toggle('/api/shadowsocks/settings/toggle_server', uuid, enabled);
-  }
-
-  async searchClients(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/shadowsocks/settings/search_client', params);
-  }
-
-  async addClient(client: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/shadowsocks/settings/add_client', client);
-  }
-
-  async getClient(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/shadowsocks/settings/get_client/${uuid}` : '/api/shadowsocks/settings/get_client';
-    return this.http.get(path);
-  }
-
-  async updateClient(uuid: string, client: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/shadowsocks/settings/set_client/${uuid}`, client);
-  }
-
-  async deleteClient(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/shadowsocks/settings/del_client/${uuid}`);
-  }
-
-  async toggleClient(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    return this.toggle('/api/shadowsocks/settings/toggle_client', uuid, enabled);
-  }
-
-  async getStatistics(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/shadowsocks/service/statistics');
-  }
-
-  async getConnections(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/shadowsocks/service/connections');
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/shadowsocks/service/reconfigure');
   }
 }

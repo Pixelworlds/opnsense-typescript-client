@@ -1,66 +1,95 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class OpenconnectGeneral extends BaseModule {
+  /**
+   * Get get for openconnect general
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/openconnect/openconnect/general/get`);
+  }
 
+  /**
+   * Execute set for openconnect general
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/openconnect/openconnect/general/set`, data);
+  }
+}
+
+export class OpenconnectService extends BaseModule {
+  /**
+   * Execute reconfigure for openconnect service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/openconnect/openconnect/service/reconfigure`);
+  }
+
+  /**
+   * Execute restart for openconnect service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/openconnect/openconnect/service/restart`);
+  }
+
+  /**
+   * Execute start for openconnect service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/openconnect/openconnect/service/start`);
+  }
+
+  /**
+   * Get status for openconnect service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/openconnect/openconnect/service/status`);
+  }
+
+  /**
+   * Execute stop for openconnect service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/openconnect/openconnect/service/stop`);
+  }
+}
+
+// Main module class
 export class OpenconnectModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('openconnect', 'status');
+  public readonly general: OpenconnectGeneral;
+  public readonly service: OpenconnectService;
+
+  constructor(http: any) {
+    super(http);
+    this.general = new OpenconnectGeneral(http);
+    this.service = new OpenconnectService(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('openconnect', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/openconnect/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('openconnect', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/openconnect/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('openconnect', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/openconnect/service/stop');
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('openconnect', 'reconfigure');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/openconnect/service/restart');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/openconnect/general/get');
-  }
-
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/openconnect/general/set', config);
-  }
-
-  async searchClients(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/openconnect/settings/search_client', params);
-  }
-
-  async addClient(client: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/openconnect/settings/add_client', client);
-  }
-
-  async getClient(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/openconnect/settings/get_client/${uuid}` : '/api/openconnect/settings/get_client';
-    return this.http.get(path);
-  }
-
-  async updateClient(uuid: string, client: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/openconnect/settings/set_client/${uuid}`, client);
-  }
-
-  async deleteClient(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/openconnect/settings/del_client/${uuid}`);
-  }
-
-  async toggleClient(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    return this.toggle('/api/openconnect/settings/toggle_client', uuid, enabled);
-  }
-
-  async getSessions(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/openconnect/service/sessions');
-  }
-
-  async disconnectSession(sessionId: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/openconnect/service/disconnect/${sessionId}`);
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/openconnect/service/reconfigure');
   }
 }

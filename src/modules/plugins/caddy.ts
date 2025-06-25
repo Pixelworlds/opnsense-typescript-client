@@ -1,222 +1,418 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
-
-export class CaddyModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('caddy', 'status');
+// Controller classes
+export class CaddyDiagnostics extends BaseModule {
+  /**
+   * Get caddyfile for caddy diagnostics
+   */
+  async caddyfile(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/caddy/caddy/diagnostics/caddyfile`);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('caddy', 'start');
+  /**
+   * Get config for caddy diagnostics
+   */
+  async config(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/caddy/caddy/diagnostics/config`);
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('caddy', 'stop');
+  /**
+   * Get get for caddy diagnostics
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/caddy/caddy/diagnostics/get`);
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('caddy', 'restart');
+  /**
+   * Execute set for caddy diagnostics
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/diagnostics/set`, data);
+  }
+}
+
+export class CaddyGeneral extends BaseModule {
+  /**
+   * Get get for caddy general
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/caddy/caddy/general/get`);
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('caddy', 'reconfigure');
+  /**
+   * Execute set for caddy general
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/general/set`, data);
+  }
+}
+
+export class CaddyReverseProxy extends BaseModule {
+  /**
+   * Execute add access list for caddy reverse_proxy
+   */
+  async addAccessList(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/add_access_list`, data);
   }
 
-  async validate(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/caddy/service/validate');
+  /**
+   * Execute add basic auth for caddy reverse_proxy
+   */
+  async addBasicAuth(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/add_basic_auth`, data);
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/caddy/general/get');
+  /**
+   * Execute add handle for caddy reverse_proxy
+   */
+  async addHandle(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/add_handle`, data);
   }
 
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/caddy/general/set', config);
+  /**
+   * Execute add header for caddy reverse_proxy
+   */
+  async addHeader(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/add_header`, data);
   }
 
-  async searchReverseProxies(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/caddy/reverse_proxy/search_reverse_proxy', params);
+  /**
+   * Execute add layer4 for caddy reverse_proxy
+   */
+  async addLayer4(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/add_layer4`, data);
   }
 
-  async addReverseProxy(proxy: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/caddy/reverse_proxy/add_reverse_proxy', proxy);
+  /**
+   * Execute add layer4 openvpn for caddy reverse_proxy
+   */
+  async addLayer4Openvpn(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/add_layer4_openvpn`, data);
   }
 
-  async getReverseProxy(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid
-      ? `/api/caddy/reverse_proxy/get_reverse_proxy/${uuid}`
-      : '/api/caddy/reverse_proxy/get_reverse_proxy';
-    return this.http.get(path);
+  /**
+   * Execute add reverse proxy for caddy reverse_proxy
+   */
+  async addReverseProxy(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/add_reverse_proxy`, data);
   }
 
-  async updateReverseProxy(uuid: string, proxy: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/caddy/reverse_proxy/set_reverse_proxy/${uuid}`, proxy);
+  /**
+   * Execute add subdomain for caddy reverse_proxy
+   */
+  async addSubdomain(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/add_subdomain`, data);
   }
 
-  async deleteReverseProxy(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/caddy/reverse_proxy/del_reverse_proxy/${uuid}`);
+  /**
+   * Execute del access list for caddy reverse_proxy
+   */
+  async delAccessList(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/del_access_list/${uuid}`, data);
   }
 
-  async toggleReverseProxy(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    return this.toggle('/api/caddy/reverse_proxy/toggle_reverse_proxy', uuid, enabled);
+  /**
+   * Execute del basic auth for caddy reverse_proxy
+   */
+  async delBasicAuth(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/del_basic_auth/${uuid}`, data);
   }
 
-  async searchSubdomains(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/caddy/reverse_proxy/search_subdomain', params);
+  /**
+   * Execute del handle for caddy reverse_proxy
+   */
+  async delHandle(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/del_handle/${uuid}`, data);
   }
 
-  async addSubdomain(subdomain: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/caddy/reverse_proxy/add_subdomain', subdomain);
+  /**
+   * Execute del header for caddy reverse_proxy
+   */
+  async delHeader(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/del_header/${uuid}`, data);
   }
 
-  async getSubdomain(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/caddy/reverse_proxy/get_subdomain/${uuid}` : '/api/caddy/reverse_proxy/get_subdomain';
-    return this.http.get(path);
+  /**
+   * Execute del layer4 for caddy reverse_proxy
+   */
+  async delLayer4(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/del_layer4/${uuid}`, data);
   }
 
-  async updateSubdomain(uuid: string, subdomain: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/caddy/reverse_proxy/set_subdomain/${uuid}`, subdomain);
+  /**
+   * Execute del layer4 openvpn for caddy reverse_proxy
+   */
+  async delLayer4Openvpn(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/del_layer4_openvpn/${uuid}`, data);
   }
 
-  async deleteSubdomain(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/caddy/reverse_proxy/del_subdomain/${uuid}`);
+  /**
+   * Execute del reverse proxy for caddy reverse_proxy
+   */
+  async delReverseProxy(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/del_reverse_proxy/${uuid}`, data);
   }
 
-  async toggleSubdomain(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    return this.toggle('/api/caddy/reverse_proxy/toggle_subdomain', uuid, enabled);
+  /**
+   * Execute del subdomain for caddy reverse_proxy
+   */
+  async delSubdomain(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/del_subdomain/${uuid}`, data);
   }
 
-  async searchHandles(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/caddy/reverse_proxy/search_handle', params);
+  /**
+   * Get get for caddy reverse_proxy
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/caddy/caddy/reverse_proxy/get`);
   }
 
-  async addHandle(handle: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/caddy/reverse_proxy/add_handle', handle);
+  /**
+   * Get get access list for caddy reverse_proxy
+   */
+  async getAccessList(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/caddy/caddy/reverse_proxy/get_access_list/${uuid}`);
   }
 
-  async getHandle(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/caddy/reverse_proxy/get_handle/${uuid}` : '/api/caddy/reverse_proxy/get_handle';
-    return this.http.get(path);
-  }
-
-  async updateHandle(uuid: string, handle: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/caddy/reverse_proxy/set_handle/${uuid}`, handle);
-  }
-
-  async deleteHandle(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/caddy/reverse_proxy/del_handle/${uuid}`);
-  }
-
-  async toggleHandle(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    return this.toggle('/api/caddy/reverse_proxy/toggle_handle', uuid, enabled);
-  }
-
-  async searchAccessLists(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/caddy/reverse_proxy/search_access_list', params);
-  }
-
-  async addAccessList(accessList: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/caddy/reverse_proxy/add_access_list', accessList);
-  }
-
-  async getAccessList(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/caddy/reverse_proxy/get_access_list/${uuid}` : '/api/caddy/reverse_proxy/get_access_list';
-    return this.http.get(path);
-  }
-
-  async updateAccessList(uuid: string, accessList: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/caddy/reverse_proxy/set_access_list/${uuid}`, accessList);
-  }
-
-  async deleteAccessList(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/caddy/reverse_proxy/del_access_list/${uuid}`);
-  }
-
-  async searchBasicAuth(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/caddy/reverse_proxy/search_basic_auth', params);
-  }
-
-  async addBasicAuth(basicAuth: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/caddy/reverse_proxy/add_basic_auth', basicAuth);
-  }
-
-  async getBasicAuth(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/caddy/reverse_proxy/get_basic_auth/${uuid}` : '/api/caddy/reverse_proxy/get_basic_auth';
-    return this.http.get(path);
-  }
-
-  async updateBasicAuth(uuid: string, basicAuth: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/caddy/reverse_proxy/set_basic_auth/${uuid}`, basicAuth);
-  }
-
-  async deleteBasicAuth(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/caddy/reverse_proxy/del_basic_auth/${uuid}`);
-  }
-
-  async searchHeaders(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/caddy/reverse_proxy/search_header', params);
-  }
-
-  async addHeader(header: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/caddy/reverse_proxy/add_header', header);
-  }
-
-  async getHeader(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/caddy/reverse_proxy/get_header/${uuid}` : '/api/caddy/reverse_proxy/get_header';
-    return this.http.get(path);
-  }
-
-  async updateHeader(uuid: string, header: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/caddy/reverse_proxy/set_header/${uuid}`, header);
-  }
-
-  async deleteHeader(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/caddy/reverse_proxy/del_header/${uuid}`);
-  }
-
-  async searchLayer4(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/caddy/reverse_proxy/search_layer4', params);
-  }
-
-  async addLayer4(layer4: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/caddy/reverse_proxy/add_layer4', layer4);
-  }
-
-  async getLayer4(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/caddy/reverse_proxy/get_layer4/${uuid}` : '/api/caddy/reverse_proxy/get_layer4';
-    return this.http.get(path);
-  }
-
-  async updateLayer4(uuid: string, layer4: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/caddy/reverse_proxy/set_layer4/${uuid}`, layer4);
-  }
-
-  async deleteLayer4(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/caddy/reverse_proxy/del_layer4/${uuid}`);
-  }
-
-  async toggleLayer4(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    return this.toggle('/api/caddy/reverse_proxy/toggle_layer4', uuid, enabled);
-  }
-
-  async getCaddyfile(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/caddy/diagnostics/caddyfile');
-  }
-
-  async getConfig(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/caddy/diagnostics/config');
-  }
-
-  async getDiagnostics(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/caddy/diagnostics/get');
-  }
-
-  async setDiagnostics(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/caddy/diagnostics/set', config);
-  }
-
+  /**
+   * Get get all reverse domains for caddy reverse_proxy
+   */
   async getAllReverseDomains(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/caddy/reverse_proxy/get_all_reverse_domains');
+    return this.http.get(`/api/caddy/caddy/reverse_proxy/get_all_reverse_domains`);
+  }
+
+  /**
+   * Get get basic auth for caddy reverse_proxy
+   */
+  async getBasicAuth(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/caddy/caddy/reverse_proxy/get_basic_auth/${uuid}`);
+  }
+
+  /**
+   * Get get handle for caddy reverse_proxy
+   */
+  async getHandle(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/caddy/caddy/reverse_proxy/get_handle/${uuid}`);
+  }
+
+  /**
+   * Get get header for caddy reverse_proxy
+   */
+  async getHeader(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/caddy/caddy/reverse_proxy/get_header/${uuid}`);
+  }
+
+  /**
+   * Get get layer4 for caddy reverse_proxy
+   */
+  async getLayer4(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/caddy/caddy/reverse_proxy/get_layer4/${uuid}`);
+  }
+
+  /**
+   * Get get layer4 openvpn for caddy reverse_proxy
+   */
+  async getLayer4Openvpn(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/caddy/caddy/reverse_proxy/get_layer4_openvpn/${uuid}`);
+  }
+
+  /**
+   * Get get reverse proxy for caddy reverse_proxy
+   */
+  async getReverseProxy(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/caddy/caddy/reverse_proxy/get_reverse_proxy/${uuid}`);
+  }
+
+  /**
+   * Get get subdomain for caddy reverse_proxy
+   */
+  async getSubdomain(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/caddy/caddy/reverse_proxy/get_subdomain/${uuid}`);
+  }
+
+  /**
+   * Execute set for caddy reverse_proxy
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/set`, data);
+  }
+
+  /**
+   * Execute set access list for caddy reverse_proxy
+   */
+  async setAccessList(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/set_access_list/${uuid}`, data);
+  }
+
+  /**
+   * Execute set basic auth for caddy reverse_proxy
+   */
+  async setBasicAuth(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/set_basic_auth/${uuid}`, data);
+  }
+
+  /**
+   * Execute set handle for caddy reverse_proxy
+   */
+  async setHandle(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/set_handle/${uuid}`, data);
+  }
+
+  /**
+   * Execute set header for caddy reverse_proxy
+   */
+  async setHeader(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/set_header/${uuid}`, data);
+  }
+
+  /**
+   * Execute set layer4 for caddy reverse_proxy
+   */
+  async setLayer4(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/set_layer4/${uuid}`, data);
+  }
+
+  /**
+   * Execute set layer4 openvpn for caddy reverse_proxy
+   */
+  async setLayer4Openvpn(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/set_layer4_openvpn/${uuid}`, data);
+  }
+
+  /**
+   * Execute set reverse proxy for caddy reverse_proxy
+   */
+  async setReverseProxy(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/set_reverse_proxy/${uuid}`, data);
+  }
+
+  /**
+   * Execute set subdomain for caddy reverse_proxy
+   */
+  async setSubdomain(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/set_subdomain/${uuid}`, data);
+  }
+
+  /**
+   * Execute toggle handle for caddy reverse_proxy
+   */
+  async toggleHandle(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/toggle_handle/${uuid}/${enabled}`, data);
+  }
+
+  /**
+   * Execute toggle layer4 for caddy reverse_proxy
+   */
+  async toggleLayer4(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/toggle_layer4/${uuid}/${enabled}`, data);
+  }
+
+  /**
+   * Execute toggle layer4 openvpn for caddy reverse_proxy
+   */
+  async toggleLayer4Openvpn(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/toggle_layer4_openvpn/${uuid}/${enabled}`, data);
+  }
+
+  /**
+   * Execute toggle reverse proxy for caddy reverse_proxy
+   */
+  async toggleReverseProxy(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/toggle_reverse_proxy/${uuid}/${enabled}`, data);
+  }
+
+  /**
+   * Execute toggle subdomain for caddy reverse_proxy
+   */
+  async toggleSubdomain(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/caddy/caddy/reverse_proxy/toggle_subdomain/${uuid}/${enabled}`, data);
+  }
+}
+
+export class CaddyService extends BaseModule {
+  /**
+   * Execute reconfigure for caddy service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/caddy/caddy/service/reconfigure`);
+  }
+
+  /**
+   * Execute restart for caddy service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/caddy/caddy/service/restart`);
+  }
+
+  /**
+   * Execute start for caddy service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/caddy/caddy/service/start`);
+  }
+
+  /**
+   * Get status for caddy service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/caddy/caddy/service/status`);
+  }
+
+  /**
+   * Execute stop for caddy service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/caddy/caddy/service/stop`);
+  }
+
+  /**
+   * Get validate for caddy service
+   */
+  async validate(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/caddy/caddy/service/validate`);
+  }
+}
+
+// Main module class
+export class CaddyModule extends BaseModule {
+  public readonly diagnostics: CaddyDiagnostics;
+  public readonly general: CaddyGeneral;
+  public readonly reverseProxy: CaddyReverseProxy;
+  public readonly service: CaddyService;
+
+  constructor(http: any) {
+    super(http);
+    this.diagnostics = new CaddyDiagnostics(http);
+    this.general = new CaddyGeneral(http);
+    this.reverseProxy = new CaddyReverseProxy(http);
+    this.service = new CaddyService(http);
+  }
+
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/caddy/service/status');
+  }
+
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/caddy/service/start');
+  }
+
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/caddy/service/stop');
+  }
+
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/caddy/service/restart');
+  }
+
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/caddy/service/reconfigure');
   }
 }

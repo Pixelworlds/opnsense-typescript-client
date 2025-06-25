@@ -1,239 +1,354 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
-
-export class CoreBackup {
-  constructor(private http: any) {}
-
-  async getBackups(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/core/backup/backups');
+// Controller classes
+export class CoreBackup extends BaseModule {
+  /**
+   * Get backups for core backup
+   */
+  async backups(host: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/core/core/backup/backups/${host}`);
   }
 
-  async deleteBackup(filename: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/core/backup/delete_backup/${filename}`);
+  /**
+   * Get delete backup for core backup
+   */
+  async deleteBackup(backup: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/core/core/backup/delete_backup/${backup}`);
   }
 
-  async diffBackups(from: string, to: string): Promise<ApiResponse<any>> {
-    return this.http.get(`/api/core/backup/diff/${from}/${to}`);
+  /**
+   * Get diff for core backup
+   */
+  async diff(host: string, backup1: string, backup2: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/core/core/backup/diff/${host}/${backup1}/${backup2}`);
   }
 
-  async downloadBackup(filename: string): Promise<ApiResponse<any>> {
-    return this.http.get(`/api/core/backup/download/${filename}`);
+  /**
+   * Get download for core backup
+   */
+  async download(host: string, backup: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/core/core/backup/download/${host}/${backup}`);
   }
 
-  async getProviders(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/core/backup/providers');
+  /**
+   * Get providers for core backup
+   */
+  async providers(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/core/core/backup/providers`);
   }
 
-  async revertBackup(filename: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/core/backup/revert_backup/${filename}`);
+  /**
+   * Get revert backup for core backup
+   */
+  async revertBackup(backup: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/core/core/backup/revert_backup/${backup}`);
   }
 }
 
-export class CoreDashboard {
-  constructor(private http: any) {}
-
+export class CoreDashboard extends BaseModule {
+  /**
+   * Get get dashboard for core dashboard
+   */
   async getDashboard(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/core/dashboard/get_dashboard');
+    return this.http.get(`/api/core/core/dashboard/get_dashboard`);
   }
 
-  async getPicture(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/core/dashboard/picture');
+  /**
+   * Get picture for core dashboard
+   */
+  async picture(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/core/core/dashboard/picture`);
   }
 
-  async getProductInfoFeed(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/core/dashboard/product_info_feed');
+  /**
+   * Get product info feed for core dashboard
+   */
+  async productInfoFeed(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/core/core/dashboard/product_info_feed`);
   }
 
-  async restoreDefaults(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/core/dashboard/restore_defaults');
+  /**
+   * Execute restore defaults for core dashboard
+   */
+  async restoreDefaults(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/core/core/dashboard/restore_defaults`, data);
   }
 
-  async saveWidgets(widgets: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/core/dashboard/save_widgets', widgets);
+  /**
+   * Execute save widgets for core dashboard
+   */
+  async saveWidgets(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/core/core/dashboard/save_widgets`, data);
   }
 }
 
-export class CoreHasync {
-  constructor(private http: any) {}
-
+export class CoreHasync extends BaseModule {
+  /**
+   * Get get for core hasync
+   */
   async get(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/core/hasync/get');
+    return this.http.get(`/api/core/core/hasync/get`);
   }
 
-  async set(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/core/hasync/set', config);
+  /**
+   * Execute reconfigure for core hasync
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/core/core/hasync/reconfigure`, data);
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/core/hasync/reconfigure');
-  }
-}
-
-export class CoreHasyncStatus {
-  constructor(private http: any) {}
-
-  async getRemoteService(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/core/hasyncstatus/remote_service');
-  }
-
-  async getServices(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/core/hasyncstatus/services');
-  }
-
-  async getVersion(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/core/hasyncstatus/version');
-  }
-
-  async restart(service?: string): Promise<ApiResponse<ApiResult>> {
-    const path = service ? `/api/core/hasyncstatus/restart/${service}` : '/api/core/hasyncstatus/restart';
-    return this.http.post(path);
-  }
-
-  async restartAll(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/core/hasyncstatus/restart_all');
-  }
-
-  async start(service: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/core/hasyncstatus/start/${service}`);
-  }
-
-  async stop(service: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/core/hasyncstatus/stop/${service}`);
+  /**
+   * Execute set for core hasync
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/core/core/hasync/set`, data);
   }
 }
 
-export class CoreMenu {
-  constructor(private http: any) {}
-
-  async search(query?: string): Promise<ApiResponse<any>> {
-    const params = query ? { q: query } : {};
-    return this.http.get('/api/core/menu/search', params);
+export class CoreHasyncStatus extends BaseModule {
+  /**
+   * Get remote service for core hasync_status
+   */
+  async remoteService(action: string, service: string, service_id: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/core/core/hasync_status/remote_service/${action}/${service}/${service_id}`);
   }
 
-  async getTree(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/core/menu/tree');
+  /**
+   * Execute restart for core hasync_status
+   */
+  async restart(service: string, service_id: string): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/core/core/hasync_status/restart/${service}/${service_id}`, data);
+  }
+
+  /**
+   * Execute restart all for core hasync_status
+   */
+  async restartAll(service: string, service_id: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/core/core/hasync_status/restart_all/${service}/${service_id}`, data);
+  }
+
+  /**
+   * Get services for core hasync_status
+   */
+  async services(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/core/core/hasync_status/services`);
+  }
+
+  /**
+   * Execute start for core hasync_status
+   */
+  async start(service: string, service_id: string): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/core/core/hasync_status/start/${service}/${service_id}`, data);
+  }
+
+  /**
+   * Execute stop for core hasync_status
+   */
+  async stop(service: string, service_id: string): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/core/core/hasync_status/stop/${service}/${service_id}`, data);
+  }
+
+  /**
+   * Get version for core hasync_status
+   */
+  async version(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/core/core/hasync_status/version`);
   }
 }
 
-export class CoreService {
-  constructor(private http: any) {}
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    // Support both GET and POST methods
-    if (Object.keys(params).length === 0) {
-      return this.http.get('/api/core/service/search');
-    }
-    return this.http.post('/api/core/service/search', params);
+export class CoreMenu extends BaseModule {
+  /**
+   * Get search for core menu
+   */
+  async search(): Promise<ApiResponse<SearchResult>> {
+    return this.http.get(`/api/core/core/menu/search`);
   }
 
-  async start(service: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/core/service/start/${service}`);
-  }
-
-  async stop(service: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/core/service/stop/${service}`);
-  }
-
-  async restart(service: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/core/service/restart/${service}`);
+  /**
+   * Get tree for core menu
+   */
+  async tree(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/core/core/menu/tree`);
   }
 }
 
-export class CoreSnapshots {
-  constructor(private http: any) {}
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.http.post('/api/core/snapshots/search', params);
+export class CoreService extends BaseModule {
+  /**
+   * Execute restart for core service
+   */
+  async restart(name: string, id: string): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/core/core/service/restart/${name}/${id}`, data);
   }
 
-  async add(snapshot: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/core/snapshots/add', snapshot);
+  /**
+   * Get search for core service
+   */
+  async search(): Promise<ApiResponse<SearchResult>> {
+    return this.http.get(`/api/core/core/service/search`);
   }
 
-  async get(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/core/snapshots/get/${uuid}` : '/api/core/snapshots/get';
-    return this.http.get(path);
+  /**
+   * Execute start for core service
+   */
+  async start(name: string, id: string): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/core/core/service/start/${name}/${id}`, data);
   }
 
-  async set(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/core/snapshots/set', config);
+  /**
+   * Execute stop for core service
+   */
+  async stop(name: string, id: string): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/core/core/service/stop/${name}/${id}`, data);
+  }
+}
+
+export class CoreSnapshots extends BaseModule {
+  /**
+   * Execute activate for core snapshots
+   */
+  async activate(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/core/core/snapshots/activate/${uuid}`, data);
   }
 
-  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/core/snapshots/del/${uuid}`);
+  /**
+   * Execute add for core snapshots
+   */
+  async add(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/core/core/snapshots/add`, data);
   }
 
-  async activate(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/core/snapshots/activate/${uuid}`);
+  /**
+   * Execute del for core snapshots
+   */
+  async del(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/core/core/snapshots/del/${uuid}`, data);
   }
 
+  /**
+   * Get get for core snapshots
+   */
+  async get(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/core/core/snapshots/get/${uuid}`);
+  }
+
+  /**
+   * Get is supported for core snapshots
+   */
   async isSupported(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/core/snapshots/is_supported');
+    return this.http.get(`/api/core/core/snapshots/is_supported`);
+  }
+
+  /**
+   * Get search for core snapshots
+   */
+  async search(): Promise<ApiResponse<SearchResult>> {
+    return this.http.get(`/api/core/core/snapshots/search`);
+  }
+
+  /**
+   * Execute set for core snapshots
+   */
+  async set(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/core/core/snapshots/set/${uuid}`, data);
   }
 }
 
-export class CoreSystem {
-  constructor(private http: any) {}
-
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/core/system/status');
+export class CoreSystem extends BaseModule {
+  /**
+   * Execute dismiss status for core system
+   */
+  async dismissStatus(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/core/core/system/dismiss_status`, data);
   }
 
-  async reboot(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/core/system/reboot');
+  /**
+   * Execute halt for core system
+   */
+  async halt(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/core/core/system/halt`, data);
   }
 
-  async halt(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/core/system/halt');
+  /**
+   * Execute reboot for core system
+   */
+  async reboot(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/core/core/system/reboot`, data);
   }
 
-  async dismissStatus(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/core/system/dismiss_status');
+  /**
+   * Get status for core system
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/core/core/system/status`);
   }
 }
 
-export class CoreTunables {
-  constructor(private http: any) {}
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.http.post('/api/core/tunables/search_item', params);
+export class CoreTunables extends BaseModule {
+  /**
+   * Execute add item for core tunables
+   */
+  async addItem(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/core/core/tunables/add_item`, data);
   }
 
-  async add(tunable: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/core/tunables/add_item', tunable);
+  /**
+   * Execute del item for core tunables
+   */
+  async delItem(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/core/core/tunables/del_item/${uuid}`, data);
   }
 
+  /**
+   * Get get for core tunables
+   */
   async get(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/core/tunables/get');
+    return this.http.get(`/api/core/core/tunables/get`);
   }
 
-  async getItem(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/core/tunables/get_item/${uuid}` : '/api/core/tunables/get_item';
-    return this.http.get(path);
+  /**
+   * Get get item for core tunables
+   */
+  async getItem(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/core/core/tunables/get_item/${uuid}`);
   }
 
-  async set(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/core/tunables/set', config);
+  /**
+   * Execute reconfigure for core tunables
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/core/core/tunables/reconfigure`, data);
   }
 
-  async setItem(uuid: string, tunable: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/core/tunables/set_item/${uuid}`, tunable);
+  /**
+   * Execute reset for core tunables
+   */
+  async reset(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/core/core/tunables/reset`, data);
   }
 
-  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/core/tunables/del_item/${uuid}`);
+  /**
+   * Execute set for core tunables
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/core/core/tunables/set`, data);
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/core/tunables/reconfigure');
-  }
-
-  async reset(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/core/tunables/reset');
+  /**
+   * Execute set item for core tunables
+   */
+  async setItem(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/core/core/tunables/set_item/${uuid}`, data);
   }
 }
 
+// Main module class
 export class CoreModule extends BaseModule {
   public readonly backup: CoreBackup;
   public readonly dashboard: CoreDashboard;
@@ -245,122 +360,37 @@ export class CoreModule extends BaseModule {
   public readonly system: CoreSystem;
   public readonly tunables: CoreTunables;
 
-  constructor(httpClient: any) {
-    super(httpClient);
-    this.backup = new CoreBackup(this.http);
-    this.dashboard = new CoreDashboard(this.http);
-    this.hasync = new CoreHasync(this.http);
-    this.hasyncStatus = new CoreHasyncStatus(this.http);
-    this.menu = new CoreMenu(this.http);
-    this.service = new CoreService(this.http);
-    this.snapshots = new CoreSnapshots(this.http);
-    this.system = new CoreSystem(this.http);
-    this.tunables = new CoreTunables(this.http);
+  constructor(http: any) {
+    super(http);
+    this.backup = new CoreBackup(http);
+    this.dashboard = new CoreDashboard(http);
+    this.hasync = new CoreHasync(http);
+    this.hasyncStatus = new CoreHasyncStatus(http);
+    this.menu = new CoreMenu(http);
+    this.service = new CoreService(http);
+    this.snapshots = new CoreSnapshots(http);
+    this.system = new CoreSystem(http);
+    this.tunables = new CoreTunables(http);
   }
 
   // Legacy methods for backward compatibility
-  async getConfig(): Promise<ApiResponse<any>> {
-    return this.menu.getTree();
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/core/service/status');
   }
 
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.system.getStatus();
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/core/service/start');
   }
 
-  async reboot(): Promise<ApiResponse<ApiResult>> {
-    return this.system.reboot();
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/core/service/stop');
   }
 
-  async halt(): Promise<ApiResponse<ApiResult>> {
-    return this.system.halt();
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/core/service/restart');
   }
 
-  async dismissStatus(): Promise<ApiResponse<ApiResult>> {
-    return this.system.dismissStatus();
-  }
-
-  // Convenience methods
-  async searchServices(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.service.search(params);
-  }
-
-  async startService(service: string): Promise<ApiResponse<ApiResult>> {
-    return this.service.start(service);
-  }
-
-  async stopService(service: string): Promise<ApiResponse<ApiResult>> {
-    return this.service.stop(service);
-  }
-
-  async restartService(service: string): Promise<ApiResponse<ApiResult>> {
-    return this.service.restart(service);
-  }
-
-  async searchTunables(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.tunables.search(params);
-  }
-
-  async addTunable(tunable: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.tunables.add(tunable);
-  }
-
-  async updateTunable(uuid: string, tunable: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.tunables.setItem(uuid, tunable);
-  }
-
-  async deleteTunable(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.tunables.delete(uuid);
-  }
-
-  async createSnapshot(description: string): Promise<ApiResponse<ApiResult>> {
-    return this.snapshots.add({ description });
-  }
-
-  async restoreSnapshot(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.snapshots.activate(uuid);
-  }
-
-  async deleteSnapshot(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.snapshots.delete(uuid);
-  }
-
-  async listBackups(): Promise<ApiResponse<any>> {
-    return this.backup.getBackups();
-  }
-
-  async downloadBackup(filename: string): Promise<ApiResponse<any>> {
-    return this.backup.downloadBackup(filename);
-  }
-
-  async restoreBackup(filename: string): Promise<ApiResponse<ApiResult>> {
-    return this.backup.revertBackup(filename);
-  }
-
-  async searchMenu(query: string): Promise<ApiResponse<any>> {
-    return this.menu.search(query);
-  }
-
-  async getMenuTree(): Promise<ApiResponse<any>> {
-    return this.menu.getTree();
-  }
-
-  async getDashboardInfo(): Promise<ApiResponse<any>> {
-    return this.dashboard.getDashboard();
-  }
-
-  async saveDashboardWidgets(widgets: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.dashboard.saveWidgets(widgets);
-  }
-
-  async getHAsyncConfig(): Promise<ApiResponse<any>> {
-    return this.hasync.get();
-  }
-
-  async setHAsyncConfig(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.hasync.set(config);
-  }
-
-  async reconfigureHAsync(): Promise<ApiResponse<ApiResult>> {
-    return this.hasync.reconfigure();
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/core/service/reconfigure');
   }
 }

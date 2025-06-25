@@ -1,42 +1,98 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class WolWol extends BaseModule {
+  /**
+   * Execute add host for wol wol
+   */
+  async addHost(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/wol/wol/wol/add_host`, data);
+  }
 
+  /**
+   * Execute del host for wol wol
+   */
+  async delHost(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/wol/wol/wol/del_host/${uuid}`, data);
+  }
+
+  /**
+   * Get get for wol wol
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/wol/wol/wol/get`);
+  }
+
+  /**
+   * Get get host for wol wol
+   */
+  async getHost(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/wol/wol/wol/get_host/${uuid}`);
+  }
+
+  /**
+   * Get getwake for wol wol
+   */
+  async getwake(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/wol/wol/wol/getwake`);
+  }
+
+  /**
+   * Execute set for wol wol
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/wol/wol/wol/set`, data);
+  }
+
+  /**
+   * Execute set host for wol wol
+   */
+  async setHost(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/wol/wol/wol/set_host/${uuid}`, data);
+  }
+
+  /**
+   * Execute wakeall for wol wol
+   */
+  async wakeall(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/wol/wol/wol/wakeall`, data);
+  }
+}
+
+// Main module class
 export class WolModule extends BaseModule {
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/wol/general/get');
+  public readonly wol: WolWol;
+
+  constructor(http: any) {
+    super(http);
+    this.wol = new WolWol(http);
   }
 
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/wol/general/set', config);
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/wol/service/status');
   }
 
-  async searchEntries(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/wol/settings/search_entry', params);
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/wol/service/start');
   }
 
-  async addEntry(entry: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/wol/settings/add_entry', entry);
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/wol/service/stop');
   }
 
-  async getEntry(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/wol/settings/get_entry/${uuid}` : '/api/wol/settings/get_entry';
-    return this.http.get(path);
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/wol/service/restart');
   }
 
-  async updateEntry(uuid: string, entry: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/wol/settings/set_entry/${uuid}`, entry);
-  }
-
-  async deleteEntry(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/wol/settings/del_entry/${uuid}`);
-  }
-
-  async wakeup(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/wol/service/wakeup/${uuid}`);
-  }
-
-  async wakeupMac(mac: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/wol/service/wakeup_mac', { mac });
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/wol/service/reconfigure');
   }
 }

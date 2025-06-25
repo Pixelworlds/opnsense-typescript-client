@@ -1,99 +1,184 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class TelegrafGeneral extends BaseModule {
+  /**
+   * Get get for telegraf general
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/telegraf/telegraf/general/get`);
+  }
 
+  /**
+   * Execute set for telegraf general
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/telegraf/telegraf/general/set`, data);
+  }
+}
+
+export class TelegrafInput extends BaseModule {
+  /**
+   * Get get for telegraf input
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/telegraf/telegraf/input/get`);
+  }
+
+  /**
+   * Execute set for telegraf input
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/telegraf/telegraf/input/set`, data);
+  }
+}
+
+export class TelegrafKey extends BaseModule {
+  /**
+   * Execute add key for telegraf key
+   */
+  async addKey(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/telegraf/telegraf/key/add_key`, data);
+  }
+
+  /**
+   * Execute del key for telegraf key
+   */
+  async delKey(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/telegraf/telegraf/key/del_key/${uuid}`, data);
+  }
+
+  /**
+   * Get get for telegraf key
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/telegraf/telegraf/key/get`);
+  }
+
+  /**
+   * Get get key for telegraf key
+   */
+  async getKey(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/telegraf/telegraf/key/get_key/${uuid}`);
+  }
+
+  /**
+   * Execute set for telegraf key
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/telegraf/telegraf/key/set`, data);
+  }
+
+  /**
+   * Execute set key for telegraf key
+   */
+  async setKey(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/telegraf/telegraf/key/set_key/${uuid}`, data);
+  }
+
+  /**
+   * Execute toggle key for telegraf key
+   */
+  async toggleKey(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/telegraf/telegraf/key/toggle_key/${uuid}`, data);
+  }
+}
+
+export class TelegrafOutput extends BaseModule {
+  /**
+   * Get get for telegraf output
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/telegraf/telegraf/output/get`);
+  }
+
+  /**
+   * Execute set for telegraf output
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/telegraf/telegraf/output/set`, data);
+  }
+}
+
+export class TelegrafService extends BaseModule {
+  /**
+   * Execute reconfigure for telegraf service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/telegraf/telegraf/service/reconfigure`);
+  }
+
+  /**
+   * Execute restart for telegraf service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/telegraf/telegraf/service/restart`);
+  }
+
+  /**
+   * Execute start for telegraf service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/telegraf/telegraf/service/start`);
+  }
+
+  /**
+   * Get status for telegraf service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/telegraf/telegraf/service/status`);
+  }
+
+  /**
+   * Execute stop for telegraf service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/telegraf/telegraf/service/stop`);
+  }
+}
+
+// Main module class
 export class TelegrafModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('telegraf', 'status');
+  public readonly general: TelegrafGeneral;
+  public readonly input: TelegrafInput;
+  public readonly key: TelegrafKey;
+  public readonly output: TelegrafOutput;
+  public readonly service: TelegrafService;
+
+  constructor(http: any) {
+    super(http);
+    this.general = new TelegrafGeneral(http);
+    this.input = new TelegrafInput(http);
+    this.key = new TelegrafKey(http);
+    this.output = new TelegrafOutput(http);
+    this.service = new TelegrafService(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('telegraf', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/telegraf/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('telegraf', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/telegraf/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('telegraf', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/telegraf/service/stop');
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('telegraf', 'reconfigure');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/telegraf/service/restart');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/telegraf/general/get');
-  }
-
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/telegraf/general/set', config);
-  }
-
-  async searchInputs(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/telegraf/settings/search_input', params);
-  }
-
-  async addInput(input: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/telegraf/settings/add_input', input);
-  }
-
-  async getInput(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/telegraf/settings/get_input/${uuid}` : '/api/telegraf/settings/get_input';
-    return this.http.get(path);
-  }
-
-  async updateInput(uuid: string, input: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/telegraf/settings/set_input/${uuid}`, input);
-  }
-
-  async deleteInput(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/telegraf/settings/del_input/${uuid}`);
-  }
-
-  async toggleInput(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    return this.toggle('/api/telegraf/settings/toggle_input', uuid, enabled);
-  }
-
-  async searchOutputs(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/telegraf/settings/search_output', params);
-  }
-
-  async addOutput(output: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/telegraf/settings/add_output', output);
-  }
-
-  async getOutput(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/telegraf/settings/get_output/${uuid}` : '/api/telegraf/settings/get_output';
-    return this.http.get(path);
-  }
-
-  async updateOutput(uuid: string, output: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/telegraf/settings/set_output/${uuid}`, output);
-  }
-
-  async deleteOutput(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/telegraf/settings/del_output/${uuid}`);
-  }
-
-  async toggleOutput(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    return this.toggle('/api/telegraf/settings/toggle_output', uuid, enabled);
-  }
-
-  async getConfig(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/telegraf/service/config');
-  }
-
-  async testConfig(): Promise<ApiResponse<any>> {
-    return this.http.post('/api/telegraf/service/test');
-  }
-
-  async getMetrics(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/telegraf/service/metrics');
-  }
-
-  async reloadConfig(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/telegraf/service/reload');
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/telegraf/service/reconfigure');
   }
 }

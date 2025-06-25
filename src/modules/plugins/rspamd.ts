@@ -1,61 +1,95 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class RspamdService extends BaseModule {
+  /**
+   * Execute reconfigure for rspamd service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/rspamd/rspamd/service/reconfigure`);
+  }
 
+  /**
+   * Execute restart for rspamd service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/rspamd/rspamd/service/restart`);
+  }
+
+  /**
+   * Execute start for rspamd service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/rspamd/rspamd/service/start`);
+  }
+
+  /**
+   * Get status for rspamd service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/rspamd/rspamd/service/status`);
+  }
+
+  /**
+   * Execute stop for rspamd service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/rspamd/rspamd/service/stop`);
+  }
+}
+
+export class RspamdSettings extends BaseModule {
+  /**
+   * Get get for rspamd settings
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/rspamd/rspamd/settings/get`);
+  }
+
+  /**
+   * Execute set for rspamd settings
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/rspamd/rspamd/settings/set`, data);
+  }
+}
+
+// Main module class
 export class RspamdModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('rspamd', 'status');
+  public readonly service: RspamdService;
+  public readonly settings: RspamdSettings;
+
+  constructor(http: any) {
+    super(http);
+    this.service = new RspamdService(http);
+    this.settings = new RspamdSettings(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('rspamd', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/rspamd/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('rspamd', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/rspamd/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('rspamd', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/rspamd/service/stop');
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('rspamd', 'reconfigure');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/rspamd/service/restart');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/rspamd/general/get');
-  }
-
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/rspamd/general/set', config);
-  }
-
-  async getStatistics(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/rspamd/service/statistics');
-  }
-
-  async resetStatistics(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/rspamd/service/reset_statistics');
-  }
-
-  async scanMessage(message: string): Promise<ApiResponse<any>> {
-    return this.http.post('/api/rspamd/service/scan', { message });
-  }
-
-  async getSymbols(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/rspamd/service/symbols');
-  }
-
-  async getActions(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/rspamd/service/actions');
-  }
-
-  async learnSpam(message: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/rspamd/service/learn_spam', { message });
-  }
-
-  async learnHam(message: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/rspamd/service/learn_ham', { message });
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/rspamd/service/reconfigure');
   }
 }

@@ -1,70 +1,116 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class ZerotierNetwork extends BaseModule {
+  /**
+   * Execute add for zerotier network
+   */
+  async add(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/zerotier/zerotier/network/add`, data);
+  }
 
+  /**
+   * Execute del for zerotier network
+   */
+  async del(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/zerotier/zerotier/network/del/${uuid}`, data);
+  }
+
+  /**
+   * Get get for zerotier network
+   */
+  async get(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/zerotier/zerotier/network/get/${uuid}`);
+  }
+
+  /**
+   * Get info for zerotier network
+   */
+  async info(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/zerotier/zerotier/network/info/${uuid}`);
+  }
+
+  /**
+   * Get search for zerotier network
+   */
+  async search(): Promise<ApiResponse<SearchResult>> {
+    return this.http.get(`/api/zerotier/zerotier/network/search`);
+  }
+
+  /**
+   * Execute set for zerotier network
+   */
+  async set(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/zerotier/zerotier/network/set/${uuid}`, data);
+  }
+
+  /**
+   * Execute toggle for zerotier network
+   */
+  async toggle(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/zerotier/zerotier/network/toggle/${uuid}`, data);
+  }
+}
+
+export class ZerotierSettings extends BaseModule {
+  /**
+   * Get get for zerotier settings
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/zerotier/zerotier/settings/get`);
+  }
+
+  /**
+   * Execute set for zerotier settings
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/zerotier/zerotier/settings/set`, data);
+  }
+
+  /**
+   * Get status for zerotier settings
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/zerotier/zerotier/settings/status`);
+  }
+}
+
+// Main module class
 export class ZerotierModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('zerotier', 'status');
+  public readonly network: ZerotierNetwork;
+  public readonly settings: ZerotierSettings;
+
+  constructor(http: any) {
+    super(http);
+    this.network = new ZerotierNetwork(http);
+    this.settings = new ZerotierSettings(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('zerotier', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/zerotier/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('zerotier', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/zerotier/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('zerotier', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/zerotier/service/stop');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/zerotier/general/get');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/zerotier/service/restart');
   }
 
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/zerotier/general/set', config);
-  }
-
-  async searchNetworks(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/zerotier/settings/search_network', params);
-  }
-
-  async addNetwork(network: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/zerotier/settings/add_network', network);
-  }
-
-  async getNetwork(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/zerotier/settings/get_network/${uuid}` : '/api/zerotier/settings/get_network';
-    return this.http.get(path);
-  }
-
-  async updateNetwork(uuid: string, network: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/zerotier/settings/set_network/${uuid}`, network);
-  }
-
-  async deleteNetwork(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/zerotier/settings/del_network/${uuid}`);
-  }
-
-  async toggleNetwork(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    return this.toggle('/api/zerotier/settings/toggle_network', uuid, enabled);
-  }
-
-  async joinNetwork(networkId: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/zerotier/service/join/${networkId}`);
-  }
-
-  async leaveNetwork(networkId: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/zerotier/service/leave/${networkId}`);
-  }
-
-  async getNetworkInfo(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/zerotier/service/info');
-  }
-
-  async getPeers(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/zerotier/service/peers');
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/zerotier/service/reconfigure');
   }
 }

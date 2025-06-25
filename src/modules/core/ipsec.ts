@@ -1,754 +1,654 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
-
-export class IpsecConnections {
-  constructor(private http: any) {}
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    if (Object.keys(params).length === 0) {
-      return this.http.get('/api/ipsec/connections/search_connection');
-    }
-    return this.http.post('/api/ipsec/connections/search_connection', params);
+// Controller classes
+export class IpsecConnections extends BaseModule {
+  /**
+   * Execute add child for ipsec connections
+   */
+  async addChild(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/connections/add_child`, data);
   }
 
-  async add(connection: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ipsec/connections/add_connection', connection);
+  /**
+   * Execute add connection for ipsec connections
+   */
+  async addConnection(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/connections/add_connection`, data);
   }
 
-  async get(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/ipsec/connections/get_connection/${uuid}` : '/api/ipsec/connections/get';
-    return this.http.get(path);
+  /**
+   * Execute add local for ipsec connections
+   */
+  async addLocal(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/connections/add_local`, data);
   }
 
-  async set(uuid: string, connection: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ipsec/connections/set_connection/${uuid}`, connection);
+  /**
+   * Execute add remote for ipsec connections
+   */
+  async addRemote(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/connections/add_remote`, data);
   }
 
-  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ipsec/connections/del_connection/${uuid}`);
+  /**
+   * Get connection exists for ipsec connections
+   */
+  async connectionExists(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ipsec/ipsec/connections/connection_exists/${uuid}`);
   }
 
-  async toggle(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    const path =
-      enabled !== undefined
-        ? `/api/ipsec/connections/toggle_connection/${uuid}/${enabled ? '1' : '0'}`
-        : `/api/ipsec/connections/toggle_connection/${uuid}`;
-    return this.http.post(path);
+  /**
+   * Execute del child for ipsec connections
+   */
+  async delChild(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/connections/del_child/${uuid}`, data);
   }
 
+  /**
+   * Execute del connection for ipsec connections
+   */
+  async delConnection(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/connections/del_connection/${uuid}`, data);
+  }
+
+  /**
+   * Execute del local for ipsec connections
+   */
+  async delLocal(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/connections/del_local/${uuid}`, data);
+  }
+
+  /**
+   * Execute del remote for ipsec connections
+   */
+  async delRemote(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/connections/del_remote/${uuid}`, data);
+  }
+
+  /**
+   * Get get for ipsec connections
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ipsec/ipsec/connections/get`);
+  }
+
+  /**
+   * Get get child for ipsec connections
+   */
+  async getChild(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ipsec/ipsec/connections/get_child/${uuid}`);
+  }
+
+  /**
+   * Get get connection for ipsec connections
+   */
+  async getConnection(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ipsec/ipsec/connections/get_connection/${uuid}`);
+  }
+
+  /**
+   * Get get local for ipsec connections
+   */
+  async getLocal(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ipsec/ipsec/connections/get_local/${uuid}`);
+  }
+
+  /**
+   * Get get remote for ipsec connections
+   */
+  async getRemote(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ipsec/ipsec/connections/get_remote/${uuid}`);
+  }
+
+  /**
+   * Get is enabled for ipsec connections
+   */
   async isEnabled(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/ipsec/connections/is_enabled');
+    return this.http.get(`/api/ipsec/ipsec/connections/is_enabled`);
   }
 
-  async toggleService(enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    const path =
-      enabled !== undefined ? `/api/ipsec/connections/toggle/${enabled ? '1' : '0'}` : '/api/ipsec/connections/toggle';
-    return this.http.post(path);
+  /**
+   * Execute set for ipsec connections
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/connections/set`, data);
   }
 
-  async getSwanctl(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/ipsec/connections/swanctl');
+  /**
+   * Execute set child for ipsec connections
+   */
+  async setChild(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/connections/set_child/${uuid}`, data);
   }
 
-  // Local endpoint management
-  async addLocal(local: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ipsec/connections/add_local', local);
+  /**
+   * Execute set connection for ipsec connections
+   */
+  async setConnection(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/connections/set_connection/${uuid}`, data);
   }
 
-  async deleteLocal(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ipsec/connections/del_local/${uuid}`);
+  /**
+   * Execute set local for ipsec connections
+   */
+  async setLocal(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/connections/set_local/${uuid}`, data);
   }
 
-  async getLocal(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/ipsec/connections/get_local/${uuid}` : '/api/ipsec/connections/get_local';
-    return this.http.get(path);
+  /**
+   * Execute set remote for ipsec connections
+   */
+  async setRemote(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/connections/set_remote/${uuid}`, data);
   }
 
-  async setLocal(uuid: string, local: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ipsec/connections/set_local/${uuid}`, local);
+  /**
+   * Get swanctl for ipsec connections
+   */
+  async swanctl(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ipsec/ipsec/connections/swanctl`);
   }
 
-  // Remote endpoint management
-  async addRemote(remote: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ipsec/connections/add_remote', remote);
+  /**
+   * Execute toggle for ipsec connections
+   */
+  async toggle(enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/connections/toggle/${enabled}`, data);
   }
 
-  async deleteRemote(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ipsec/connections/del_remote/${uuid}`);
+  /**
+   * Execute toggle child for ipsec connections
+   */
+  async toggleChild(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/connections/toggle_child/${uuid}/${enabled}`, data);
   }
 
-  async getRemote(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/ipsec/connections/get_remote/${uuid}` : '/api/ipsec/connections/get_remote';
-    return this.http.get(path);
+  /**
+   * Execute toggle connection for ipsec connections
+   */
+  async toggleConnection(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/connections/toggle_connection/${uuid}/${enabled}`, data);
   }
 
-  async setRemote(uuid: string, remote: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ipsec/connections/set_remote/${uuid}`, remote);
-  }
-}
-
-export class IpsecChildren {
-  constructor(private http: any) {}
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    if (Object.keys(params).length === 0) {
-      return this.http.get('/api/ipsec/connections/search_child');
-    }
-    return this.http.post('/api/ipsec/connections/search_child', params);
+  /**
+   * Execute toggle local for ipsec connections
+   */
+  async toggleLocal(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/connections/toggle_local/${uuid}/${enabled}`, data);
   }
 
-  async add(child: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ipsec/connections/add_child', child);
-  }
-
-  async get(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/ipsec/connections/get_child/${uuid}` : '/api/ipsec/connections/get_child';
-    return this.http.get(path);
-  }
-
-  async set(uuid: string, child: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ipsec/connections/set_child/${uuid}`, child);
-  }
-
-  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ipsec/connections/del_child/${uuid}`);
-  }
-
-  async toggle(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    const path =
-      enabled !== undefined
-        ? `/api/ipsec/connections/toggle_child/${uuid}/${enabled ? '1' : '0'}`
-        : `/api/ipsec/connections/toggle_child/${uuid}`;
-    return this.http.post(path);
+  /**
+   * Execute toggle remote for ipsec connections
+   */
+  async toggleRemote(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/connections/toggle_remote/${uuid}/${enabled}`, data);
   }
 }
 
-export class IpsecKeyPairs {
-  constructor(private http: any) {}
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    if (Object.keys(params).length === 0) {
-      return this.http.get('/api/ipsec/key_pairs/search_item');
-    }
-    return this.http.post('/api/ipsec/key_pairs/search_item', params);
+export class IpsecKeyPairs extends BaseModule {
+  /**
+   * Execute add item for ipsec key_pairs
+   */
+  async addItem(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/key_pairs/add_item`, data);
   }
 
-  async add(keyPair: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ipsec/key_pairs/add_item', keyPair);
+  /**
+   * Execute del item for ipsec key_pairs
+   */
+  async delItem(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/key_pairs/del_item/${uuid}`, data);
   }
 
+  /**
+   * Get gen key pair for ipsec key_pairs
+   */
+  async genKeyPair(type: string, size: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ipsec/ipsec/key_pairs/gen_key_pair/${type}/${size}`);
+  }
+
+  /**
+   * Get get for ipsec key_pairs
+   */
   async get(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/ipsec/key_pairs/get');
+    return this.http.get(`/api/ipsec/ipsec/key_pairs/get`);
   }
 
-  async getItem(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/ipsec/key_pairs/get_item/${uuid}` : '/api/ipsec/key_pairs/get_item';
-    return this.http.get(path);
+  /**
+   * Get get item for ipsec key_pairs
+   */
+  async getItem(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ipsec/ipsec/key_pairs/get_item/${uuid}`);
   }
 
-  async setItem(uuid: string, keyPair: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ipsec/key_pairs/set_item/${uuid}`, keyPair);
+  /**
+   * Execute set for ipsec key_pairs
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/key_pairs/set`, data);
   }
 
-  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ipsec/key_pairs/del_item/${uuid}`);
-  }
-
-  async generate(type: string, size?: number): Promise<ApiResponse<any>> {
-    const path = size
-      ? `/api/ipsec/key_pairs/gen_key_pair/${type}/${size}`
-      : `/api/ipsec/key_pairs/gen_key_pair/${type}`;
-    return this.http.get(path);
-  }
-}
-
-export class IpsecLeases {
-  constructor(private http: any) {}
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.http.post('/api/ipsec/leases/search', params);
-  }
-
-  async getPools(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/ipsec/leases/pools');
+  /**
+   * Execute set item for ipsec key_pairs
+   */
+  async setItem(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/key_pairs/set_item/${uuid}`, data);
   }
 }
 
-export class IpsecManualSpd {
-  constructor(private http: any) {}
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.http.post('/api/ipsec/manual_spd/search_item', params);
+export class IpsecLeases extends BaseModule {
+  /**
+   * Get pools for ipsec leases
+   */
+  async pools(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ipsec/ipsec/leases/pools`);
   }
 
-  async add(spd: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ipsec/manual_spd/add_item', spd);
+  /**
+   * Get search for ipsec leases
+   */
+  async search(): Promise<ApiResponse<SearchResult>> {
+    return this.http.get(`/api/ipsec/ipsec/leases/search`);
+  }
+}
+
+export class IpsecLegacySubsystem extends BaseModule {
+  /**
+   * Execute apply config for ipsec legacy_subsystem
+   */
+  async applyConfig(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/legacy_subsystem/apply_config`, data);
   }
 
+  /**
+   * Get status for ipsec legacy_subsystem
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/ipsec/ipsec/legacy_subsystem/status`);
+  }
+}
+
+export class IpsecManualSpd extends BaseModule {
+  /**
+   * Execute add for ipsec manual_spd
+   */
+  async add(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/manual_spd/add`, data);
+  }
+
+  /**
+   * Execute del for ipsec manual_spd
+   */
+  async del(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/manual_spd/del/${uuid}`, data);
+  }
+
+  /**
+   * Get get for ipsec manual_spd
+   */
+  async get(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ipsec/ipsec/manual_spd/get/${uuid}`);
+  }
+
+  /**
+   * Execute set for ipsec manual_spd
+   */
+  async set(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/manual_spd/set/${uuid}`, data);
+  }
+
+  /**
+   * Execute toggle for ipsec manual_spd
+   */
+  async toggle(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/manual_spd/toggle/${uuid}/${enabled}`, data);
+  }
+}
+
+export class IpsecPools extends BaseModule {
+  /**
+   * Execute add for ipsec pools
+   */
+  async add(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/pools/add`, data);
+  }
+
+  /**
+   * Execute del for ipsec pools
+   */
+  async del(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/pools/del/${uuid}`, data);
+  }
+
+  /**
+   * Get get for ipsec pools
+   */
+  async get(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ipsec/ipsec/pools/get/${uuid}`);
+  }
+
+  /**
+   * Execute set for ipsec pools
+   */
+  async set(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/pools/set/${uuid}`, data);
+  }
+
+  /**
+   * Execute toggle for ipsec pools
+   */
+  async toggle(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/pools/toggle/${uuid}/${enabled}`, data);
+  }
+}
+
+export class IpsecPreSharedKeys extends BaseModule {
+  /**
+   * Execute add item for ipsec pre_shared_keys
+   */
+  async addItem(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/pre_shared_keys/add_item`, data);
+  }
+
+  /**
+   * Execute del item for ipsec pre_shared_keys
+   */
+  async delItem(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/pre_shared_keys/del_item/${uuid}`, data);
+  }
+
+  /**
+   * Get get for ipsec pre_shared_keys
+   */
   async get(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/ipsec/manual_spd/get');
+    return this.http.get(`/api/ipsec/ipsec/pre_shared_keys/get`);
   }
 
-  async getItem(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/ipsec/manual_spd/get_item/${uuid}` : '/api/ipsec/manual_spd/get_item';
-    return this.http.get(path);
+  /**
+   * Get get item for ipsec pre_shared_keys
+   */
+  async getItem(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ipsec/ipsec/pre_shared_keys/get_item/${uuid}`);
   }
 
-  async set(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ipsec/manual_spd/set', config);
+  /**
+   * Execute set for ipsec pre_shared_keys
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/pre_shared_keys/set`, data);
   }
 
-  async setItem(uuid: string, spd: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ipsec/manual_spd/set_item/${uuid}`, spd);
-  }
-
-  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ipsec/manual_spd/del_item/${uuid}`);
-  }
-
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ipsec/manual_spd/reconfigure');
+  /**
+   * Execute set item for ipsec pre_shared_keys
+   */
+  async setItem(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/pre_shared_keys/set_item/${uuid}`, data);
   }
 }
 
-export class IpsecPools {
-  constructor(private http: any) {}
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.http.post('/api/ipsec/pools/search_item', params);
+export class IpsecSad extends BaseModule {
+  /**
+   * Execute delete for ipsec sad
+   */
+  async delete(id: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/sad/delete/${id}`, data);
   }
 
-  async add(pool: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ipsec/pools/add_item', pool);
+  /**
+   * Get search for ipsec sad
+   */
+  async search(): Promise<ApiResponse<SearchResult>> {
+    return this.http.get(`/api/ipsec/ipsec/sad/search`);
+  }
+}
+
+export class IpsecService extends BaseModule {
+  /**
+   * Execute reconfigure for ipsec service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/ipsec/ipsec/service/reconfigure`, data);
   }
 
+  /**
+   * Execute restart for ipsec service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/ipsec/ipsec/service/restart`, data);
+  }
+
+  /**
+   * Execute start for ipsec service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/ipsec/ipsec/service/start`, data);
+  }
+
+  /**
+   * Get status for ipsec service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/ipsec/ipsec/service/status`);
+  }
+
+  /**
+   * Execute stop for ipsec service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/ipsec/ipsec/service/stop`, data);
+  }
+}
+
+export class IpsecSessions extends BaseModule {
+  /**
+   * Execute connect for ipsec sessions
+   */
+  async connect(id: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/sessions/connect/${id}`, data);
+  }
+
+  /**
+   * Execute disconnect for ipsec sessions
+   */
+  async disconnect(id: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/sessions/disconnect/${id}`, data);
+  }
+
+  /**
+   * Get search phase1 for ipsec sessions
+   */
+  async searchPhase1(): Promise<ApiResponse<SearchResult>> {
+    return this.http.get(`/api/ipsec/ipsec/sessions/search_phase1`);
+  }
+
+  /**
+   * Get search phase2 for ipsec sessions
+   */
+  async searchPhase2(): Promise<ApiResponse<SearchResult>> {
+    return this.http.get(`/api/ipsec/ipsec/sessions/search_phase2`);
+  }
+}
+
+export class IpsecSettings extends BaseModule {
+  /**
+   * Get get for ipsec settings
+   */
   async get(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/ipsec/pools/get');
+    return this.http.get(`/api/ipsec/ipsec/settings/get`);
   }
 
-  async getItem(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/ipsec/pools/get_item/${uuid}` : '/api/ipsec/pools/get_item';
-    return this.http.get(path);
-  }
-
-  async set(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ipsec/pools/set', config);
-  }
-
-  async setItem(uuid: string, pool: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ipsec/pools/set_item/${uuid}`, pool);
-  }
-
-  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ipsec/pools/del_item/${uuid}`);
-  }
-
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ipsec/pools/reconfigure');
+  /**
+   * Execute set for ipsec settings
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/settings/set`, data);
   }
 }
 
-export class IpsecPreSharedKeys {
-  constructor(private http: any) {}
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.http.post('/api/ipsec/pre_shared_keys/search_item', params);
+export class IpsecSpd extends BaseModule {
+  /**
+   * Execute delete for ipsec spd
+   */
+  async delete(id: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/spd/delete/${id}`, data);
   }
 
-  async add(psk: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ipsec/pre_shared_keys/add_item', psk);
-  }
-
-  async get(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/ipsec/pre_shared_keys/get');
-  }
-
-  async getItem(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/ipsec/pre_shared_keys/get_item/${uuid}` : '/api/ipsec/pre_shared_keys/get_item';
-    return this.http.get(path);
-  }
-
-  async set(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ipsec/pre_shared_keys/set', config);
-  }
-
-  async setItem(uuid: string, psk: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ipsec/pre_shared_keys/set_item/${uuid}`, psk);
-  }
-
-  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ipsec/pre_shared_keys/del_item/${uuid}`);
-  }
-
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ipsec/pre_shared_keys/reconfigure');
+  /**
+   * Get search for ipsec spd
+   */
+  async search(): Promise<ApiResponse<SearchResult>> {
+    return this.http.get(`/api/ipsec/ipsec/spd/search`);
   }
 }
 
-export class IpsecSessions {
-  constructor(private http: any) {}
-
-  async searchPhase1(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.http.post('/api/ipsec/sessions/search_phase1', params);
+export class IpsecTunnel extends BaseModule {
+  /**
+   * Execute del phase1 for ipsec tunnel
+   */
+  async delPhase1(ikeid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/tunnel/del_phase1/${ikeid}`, data);
   }
 
-  async searchPhase2(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.http.post('/api/ipsec/sessions/search_phase2', params);
+  /**
+   * Execute del phase2 for ipsec tunnel
+   */
+  async delPhase2(seqid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/tunnel/del_phase2/${seqid}`, data);
   }
 
-  async connect(id: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ipsec/sessions/connect/${id}`);
+  /**
+   * Get search phase1 for ipsec tunnel
+   */
+  async searchPhase1(): Promise<ApiResponse<SearchResult>> {
+    return this.http.get(`/api/ipsec/ipsec/tunnel/search_phase1`);
   }
 
-  async disconnect(id: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ipsec/sessions/disconnect/${id}`);
-  }
-}
-
-export class IpsecService {
-  constructor(private http: any) {}
-
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/ipsec/service/status');
+  /**
+   * Get search phase2 for ipsec tunnel
+   */
+  async searchPhase2(): Promise<ApiResponse<SearchResult>> {
+    return this.http.get(`/api/ipsec/ipsec/tunnel/search_phase2`);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ipsec/service/start');
+  /**
+   * Execute toggle for ipsec tunnel
+   */
+  async toggle(enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/tunnel/toggle/${enabled}`, data);
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ipsec/service/stop');
+  /**
+   * Execute toggle phase1 for ipsec tunnel
+   */
+  async togglePhase1(ikeid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/tunnel/toggle_phase1/${ikeid}/${enabled}`, data);
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ipsec/service/restart');
-  }
-
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ipsec/service/reconfigure');
-  }
-}
-
-export class IpsecTunnel {
-  constructor(private http: any) {}
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.http.post('/api/ipsec/tunnel/search_item', params);
-  }
-
-  async add(tunnel: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ipsec/tunnel/add_item', tunnel);
-  }
-
-  async get(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/ipsec/tunnel/get');
-  }
-
-  async getItem(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/ipsec/tunnel/get_item/${uuid}` : '/api/ipsec/tunnel/get_item';
-    return this.http.get(path);
-  }
-
-  async set(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ipsec/tunnel/set', config);
-  }
-
-  async setItem(uuid: string, tunnel: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ipsec/tunnel/set_item/${uuid}`, tunnel);
-  }
-
-  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ipsec/tunnel/del_item/${uuid}`);
-  }
-
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ipsec/tunnel/reconfigure');
+  /**
+   * Execute toggle phase2 for ipsec tunnel
+   */
+  async togglePhase2(seqid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/tunnel/toggle_phase2/${seqid}/${enabled}`, data);
   }
 }
 
-export class IpsecVti {
-  constructor(private http: any) {}
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.http.post('/api/ipsec/vti/search_item', params);
+export class IpsecVti extends BaseModule {
+  /**
+   * Execute add for ipsec vti
+   */
+  async add(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/vti/add`, data);
   }
 
-  async add(vti: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ipsec/vti/add_item', vti);
+  /**
+   * Execute del for ipsec vti
+   */
+  async del(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/vti/del/${uuid}`, data);
   }
 
-  async get(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/ipsec/vti/get');
+  /**
+   * Get get for ipsec vti
+   */
+  async get(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/ipsec/ipsec/vti/get/${uuid}`);
   }
 
-  async getItem(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/ipsec/vti/get_item/${uuid}` : '/api/ipsec/vti/get_item';
-    return this.http.get(path);
+  /**
+   * Execute set for ipsec vti
+   */
+  async set(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/vti/set/${uuid}`, data);
   }
 
-  async set(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ipsec/vti/set', config);
-  }
-
-  async setItem(uuid: string, vti: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ipsec/vti/set_item/${uuid}`, vti);
-  }
-
-  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/ipsec/vti/del_item/${uuid}`);
-  }
-
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/ipsec/vti/reconfigure');
+  /**
+   * Execute toggle for ipsec vti
+   */
+  async toggle(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/ipsec/ipsec/vti/toggle/${uuid}/${enabled}`, data);
   }
 }
 
-export class IPsecModule extends BaseModule {
+// Main module class
+export class IpsecModule extends BaseModule {
   public readonly connections: IpsecConnections;
-  public readonly children: IpsecChildren;
   public readonly keyPairs: IpsecKeyPairs;
   public readonly leases: IpsecLeases;
+  public readonly legacySubsystem: IpsecLegacySubsystem;
   public readonly manualSpd: IpsecManualSpd;
   public readonly pools: IpsecPools;
   public readonly preSharedKeys: IpsecPreSharedKeys;
-  public readonly sessions: IpsecSessions;
+  public readonly sad: IpsecSad;
   public readonly service: IpsecService;
+  public readonly sessions: IpsecSessions;
+  public readonly settings: IpsecSettings;
+  public readonly spd: IpsecSpd;
   public readonly tunnel: IpsecTunnel;
   public readonly vti: IpsecVti;
 
-  constructor(httpClient: any) {
-    super(httpClient);
-    this.connections = new IpsecConnections(this.http);
-    this.children = new IpsecChildren(this.http);
-    this.keyPairs = new IpsecKeyPairs(this.http);
-    this.leases = new IpsecLeases(this.http);
-    this.manualSpd = new IpsecManualSpd(this.http);
-    this.pools = new IpsecPools(this.http);
-    this.preSharedKeys = new IpsecPreSharedKeys(this.http);
-    this.sessions = new IpsecSessions(this.http);
-    this.service = new IpsecService(this.http);
-    this.tunnel = new IpsecTunnel(this.http);
-    this.vti = new IpsecVti(this.http);
+  constructor(http: any) {
+    super(http);
+    this.connections = new IpsecConnections(http);
+    this.keyPairs = new IpsecKeyPairs(http);
+    this.leases = new IpsecLeases(http);
+    this.legacySubsystem = new IpsecLegacySubsystem(http);
+    this.manualSpd = new IpsecManualSpd(http);
+    this.pools = new IpsecPools(http);
+    this.preSharedKeys = new IpsecPreSharedKeys(http);
+    this.sad = new IpsecSad(http);
+    this.service = new IpsecService(http);
+    this.sessions = new IpsecSessions(http);
+    this.settings = new IpsecSettings(http);
+    this.spd = new IpsecSpd(http);
+    this.tunnel = new IpsecTunnel(http);
+    this.vti = new IpsecVti(http);
   }
 
   // Legacy methods for backward compatibility
-  async isEnabled(): Promise<ApiResponse<any>> {
-    return this.connections.isEnabled();
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/ipsec/service/status');
   }
 
-  async toggleService(enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    return this.connections.toggleService(enabled);
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/ipsec/service/start');
   }
 
-  async searchConnections(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.connections.search(params);
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/ipsec/service/stop');
   }
 
-  async addConnection(connection: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.connections.add(connection);
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/ipsec/service/restart');
   }
 
-  async getConnection(uuid?: string): Promise<ApiResponse<any>> {
-    return this.connections.get(uuid);
-  }
-
-  async updateConnection(uuid: string, connection: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.connections.set(uuid, connection);
-  }
-
-  async deleteConnection(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.connections.delete(uuid);
-  }
-
-  async toggleConnection(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    return this.connections.toggle(uuid, enabled);
-  }
-
-  async searchChildren(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.children.search(params);
-  }
-
-  async addChild(child: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.children.add(child);
-  }
-
-  async getChild(uuid?: string): Promise<ApiResponse<any>> {
-    return this.children.get(uuid);
-  }
-
-  async updateChild(uuid: string, child: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.children.set(uuid, child);
-  }
-
-  async deleteChild(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.children.delete(uuid);
-  }
-
-  async toggleChild(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    return this.children.toggle(uuid, enabled);
-  }
-
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.service.start();
-  }
-
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.service.stop();
-  }
-
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.service.restart();
-  }
-
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.service.reconfigure();
-  }
-
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.service.getStatus();
-  }
-
-  async searchPhase1Sessions(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.sessions.searchPhase1(params);
-  }
-
-  async searchPhase2Sessions(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.sessions.searchPhase2(params);
-  }
-
-  async connectSession(id: string): Promise<ApiResponse<ApiResult>> {
-    return this.sessions.connect(id);
-  }
-
-  async disconnectSession(id: string): Promise<ApiResponse<ApiResult>> {
-    return this.sessions.disconnect(id);
-  }
-
-  async searchLeases(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.leases.search(params);
-  }
-
-  async getPools(): Promise<ApiResponse<any>> {
-    return this.leases.getPools();
-  }
-
-  async generateKeyPair(type: string, size?: number): Promise<ApiResponse<any>> {
-    return this.keyPairs.generate(type, size);
-  }
-
-  async searchKeyPairs(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.keyPairs.search(params);
-  }
-
-  async addKeyPair(keyPair: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.keyPairs.add(keyPair);
-  }
-
-  async getSwanctl(): Promise<ApiResponse<any>> {
-    return this.connections.getSwanctl();
-  }
-
-  // New convenience methods
-  async getAllConnections(): Promise<ApiResponse<any>> {
-    return this.connections.search();
-  }
-
-  async getAllChildren(): Promise<ApiResponse<any>> {
-    return this.children.search();
-  }
-
-  async getAllKeyPairs(): Promise<ApiResponse<any>> {
-    return this.keyPairs.search();
-  }
-
-  async getAllPreSharedKeys(): Promise<ApiResponse<any>> {
-    return this.preSharedKeys.search();
-  }
-
-  async getAllPools(): Promise<ApiResponse<any>> {
-    return this.pools.search();
-  }
-
-  async getAllTunnels(): Promise<ApiResponse<any>> {
-    return this.tunnel.search();
-  }
-
-  async getAllVtis(): Promise<ApiResponse<any>> {
-    return this.vti.search();
-  }
-
-  async enableConnection(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.connections.toggle(uuid, true);
-  }
-
-  async disableConnection(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.connections.toggle(uuid, false);
-  }
-
-  async enableChild(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.children.toggle(uuid, true);
-  }
-
-  async disableChild(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.children.toggle(uuid, false);
-  }
-
-  async createConnection(
-    name: string,
-    local: string,
-    remote: string,
-    description?: string
-  ): Promise<ApiResponse<ApiResult>> {
-    const connection = {
-      enabled: '1',
-      description: description || `IPsec connection ${name}`,
-      local_addrs: local,
-      remote_addrs: remote,
-      version: '2',
-      aggressive: '0',
-    };
-    return this.connections.add(connection);
-  }
-
-  async createPreSharedKey(ident: string, secret: string, description?: string): Promise<ApiResponse<ApiResult>> {
-    const psk = {
-      enabled: '1',
-      ident,
-      secret,
-      description: description || `PSK for ${ident}`,
-    };
-    return this.preSharedKeys.add(psk);
-  }
-
-  async createPool(name: string, addrs: string, description?: string): Promise<ApiResponse<ApiResult>> {
-    const pool = {
-      enabled: '1',
-      name,
-      addrs,
-      description: description || `IP pool ${name}`,
-    };
-    return this.pools.add(pool);
-  }
-
-  async createVti(reqid: string, local: string, remote: string, description?: string): Promise<ApiResponse<ApiResult>> {
-    const vti = {
-      enabled: '1',
-      reqid,
-      local_addr: local,
-      remote_addr: remote,
-      description: description || `VTI ${reqid}: ${local} -> ${remote}`,
-    };
-    return this.vti.add(vti);
-  }
-
-  async getIpsecOverview(): Promise<{
-    status: any;
-    connections: any;
-    children: any;
-    sessions: { phase1: any; phase2: any };
-    leases: any;
-    pools: any;
-    keyPairs: any;
-    preSharedKeys: any;
-    timestamp: string;
-  }> {
-    const [status, connections, children, phase1, phase2, leases, pools, keyPairs, preSharedKeys] =
-      await Promise.allSettled([
-        this.getStatus(),
-        this.getAllConnections(),
-        this.getAllChildren(),
-        this.searchPhase1Sessions(),
-        this.searchPhase2Sessions(),
-        this.searchLeases(),
-        this.getAllPools(),
-        this.getAllKeyPairs(),
-        this.getAllPreSharedKeys(),
-      ]);
-
-    return {
-      status: status.status === 'fulfilled' ? status.value.data : null,
-      connections: connections.status === 'fulfilled' ? connections.value.data : null,
-      children: children.status === 'fulfilled' ? children.value.data : null,
-      sessions: {
-        phase1: phase1.status === 'fulfilled' ? phase1.value.data : null,
-        phase2: phase2.status === 'fulfilled' ? phase2.value.data : null,
-      },
-      leases: leases.status === 'fulfilled' ? leases.value.data : null,
-      pools: pools.status === 'fulfilled' ? pools.value.data : null,
-      keyPairs: keyPairs.status === 'fulfilled' ? keyPairs.value.data : null,
-      preSharedKeys: preSharedKeys.status === 'fulfilled' ? preSharedKeys.value.data : null,
-      timestamp: new Date().toISOString(),
-    };
-  }
-
-  async disconnectAllSessions(): Promise<{
-    results: Array<{ session: string; success: boolean; error?: any }>;
-    summary: { disconnected: number; failed: number };
-  }> {
-    const phase1Sessions = await this.searchPhase1Sessions();
-    const sessions = phase1Sessions.data?.rows || [];
-
-    const results = [];
-    let disconnected = 0;
-    let failed = 0;
-
-    for (const session of sessions) {
-      try {
-        await this.disconnectSession(session.id);
-        results.push({ session: session.id, success: true });
-        disconnected++;
-      } catch (error) {
-        results.push({ session: session.id, success: false, error });
-        failed++;
-      }
-    }
-
-    return {
-      results,
-      summary: { disconnected, failed },
-    };
-  }
-
-  async generateRsaKeyPair(size: number = 2048): Promise<ApiResponse<any>> {
-    return this.keyPairs.generate('rsa', size);
-  }
-
-  async generateEcdsaKeyPair(): Promise<ApiResponse<any>> {
-    return this.keyPairs.generate('ecdsa');
-  }
-
-  async reconfigureAll(): Promise<{
-    results: Array<{ component: string; success: boolean; error?: any }>;
-    summary: { successful: number; failed: number };
-  }> {
-    const components = [
-      { name: 'service', op: () => this.reconfigure() },
-      { name: 'pools', op: () => this.pools.reconfigure() },
-      { name: 'preSharedKeys', op: () => this.preSharedKeys.reconfigure() },
-      { name: 'manualSpd', op: () => this.manualSpd.reconfigure() },
-      { name: 'tunnel', op: () => this.tunnel.reconfigure() },
-      { name: 'vti', op: () => this.vti.reconfigure() },
-    ];
-
-    const results = [];
-    let successful = 0;
-    let failed = 0;
-
-    for (const { name, op } of components) {
-      try {
-        await op();
-        results.push({ component: name, success: true });
-        successful++;
-      } catch (error) {
-        results.push({ component: name, success: false, error });
-        failed++;
-      }
-    }
-
-    return {
-      results,
-      summary: { successful, failed },
-    };
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/ipsec/service/reconfigure');
   }
 }

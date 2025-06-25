@@ -1,61 +1,95 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class TftpGeneral extends BaseModule {
+  /**
+   * Get get for tftp general
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/tftp/tftp/general/get`);
+  }
 
+  /**
+   * Execute set for tftp general
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/tftp/tftp/general/set`, data);
+  }
+}
+
+export class TftpService extends BaseModule {
+  /**
+   * Execute reconfigure for tftp service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/tftp/tftp/service/reconfigure`);
+  }
+
+  /**
+   * Execute restart for tftp service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/tftp/tftp/service/restart`);
+  }
+
+  /**
+   * Execute start for tftp service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/tftp/tftp/service/start`);
+  }
+
+  /**
+   * Get status for tftp service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/tftp/tftp/service/status`);
+  }
+
+  /**
+   * Execute stop for tftp service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/tftp/tftp/service/stop`);
+  }
+}
+
+// Main module class
 export class TftpModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('tftpd', 'status');
+  public readonly general: TftpGeneral;
+  public readonly service: TftpService;
+
+  constructor(http: any) {
+    super(http);
+    this.general = new TftpGeneral(http);
+    this.service = new TftpService(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('tftpd', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/tftp/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('tftpd', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/tftp/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('tftpd', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/tftp/service/stop');
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('tftpd', 'reconfigure');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/tftp/service/restart');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/tftp/general/get');
-  }
-
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/tftp/general/set', config);
-  }
-
-  async getFiles(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/tftp/service/files');
-  }
-
-  async uploadFile(fileData: FormData): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/tftp/service/upload', fileData);
-  }
-
-  async deleteFile(filename: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/tftp/service/delete/${filename}`);
-  }
-
-  async getFileInfo(filename: string): Promise<ApiResponse<any>> {
-    return this.http.get(`/api/tftp/service/file_info/${filename}`);
-  }
-
-  async getStatistics(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/tftp/service/statistics');
-  }
-
-  async getConnections(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/tftp/service/connections');
-  }
-
-  async getLogs(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/tftp/service/logs');
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/tftp/service/reconfigure');
   }
 }

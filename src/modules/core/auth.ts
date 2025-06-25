@@ -1,263 +1,183 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
-
-export class AuthUsers {
-  constructor(private http: any) {}
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    // Support both GET and POST methods as per documentation
-    if (Object.keys(params).length === 0) {
-      return this.http.get('/api/auth/user/search');
-    }
-    return this.http.post('/api/auth/user/search', params);
+// Controller classes
+export class AuthGroup extends BaseModule {
+  /**
+   * Execute add for auth group
+   */
+  async add(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/auth/auth/group/add`, data);
   }
 
-  async add(user: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/auth/user/add', user);
+  /**
+   * Execute del for auth group
+   */
+  async del(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/auth/auth/group/del/${uuid}`, data);
   }
 
-  async get(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/auth/user/get/${uuid}` : '/api/auth/user/get';
-    return this.http.get(path);
+  /**
+   * Get get for auth group
+   */
+  async get(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/auth/auth/group/get/${uuid}`);
   }
 
-  async update(uuid: string, user: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/auth/user/set/${uuid}`, user);
+  /**
+   * Execute set for auth group
+   */
+  async set(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/auth/auth/group/set/${uuid}`, data);
+  }
+}
+
+export class AuthPriv extends BaseModule {
+  /**
+   * Get get for auth priv
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/auth/auth/priv/get`);
   }
 
-  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/auth/user/del/${uuid}`);
+  /**
+   * Get get item for auth priv
+   */
+  async getItem(id: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/auth/auth/priv/get_item/${id}`);
   }
 
-  async addApiKey(username: string): Promise<ApiResponse<any>> {
-    return this.http.post(`/api/auth/user/add_api_key/${username}`);
+  /**
+   * Get search for auth priv
+   */
+  async search(): Promise<ApiResponse<SearchResult>> {
+    return this.http.get(`/api/auth/auth/priv/search`);
   }
 
-  async deleteApiKey(id: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/auth/user/del_api_key/${id}`);
+  /**
+   * Execute set for auth priv
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/auth/auth/priv/set`, data);
   }
 
-  async searchApiKeys(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    // Support both GET and POST methods as per documentation
-    if (Object.keys(params).length === 0) {
-      return this.http.get('/api/auth/user/search_api_key');
-    }
-    return this.http.post('/api/auth/user/search_api_key', params);
+  /**
+   * Execute set item for auth priv
+   */
+  async setItem(id: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/auth/auth/priv/set_item/${id}`, data);
+  }
+}
+
+export class AuthUser extends BaseModule {
+  /**
+   * Execute add for auth user
+   */
+  async add(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/auth/auth/user/add`, data);
   }
 
+  /**
+   * Execute add api key for auth user
+   */
+  async addApiKey(username: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/auth/auth/user/add_api_key/${username}`, data);
+  }
+
+  /**
+   * Execute del for auth user
+   */
+  async del(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/auth/auth/user/del/${uuid}`, data);
+  }
+
+  /**
+   * Execute del api key for auth user
+   */
+  async delApiKey(id: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/auth/auth/user/del_api_key/${id}`, data);
+  }
+
+  /**
+   * Get download for auth user
+   */
   async download(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/auth/user/download');
+    return this.http.get(`/api/auth/auth/user/download`);
   }
 
-  async upload(data: any): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/auth/user/upload', data);
+  /**
+   * Get get for auth user
+   */
+  async get(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/auth/auth/user/get/${uuid}`);
   }
 
+  /**
+   * Get new otp seed for auth user
+   */
   async newOtpSeed(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/auth/user/new_otp_seed');
+    return this.http.get(`/api/auth/auth/user/new_otp_seed`);
+  }
+
+  /**
+   * Get search api key for auth user
+   */
+  async searchApiKey(): Promise<ApiResponse<SearchResult>> {
+    return this.http.get(`/api/auth/auth/user/search_api_key`);
+  }
+
+  /**
+   * Execute set for auth user
+   */
+  async set(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/auth/auth/user/set/${uuid}`, data);
+  }
+
+  /**
+   * Execute upload for auth user
+   */
+  async upload(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/auth/auth/user/upload`, data);
   }
 }
 
-export class AuthGroups {
-  constructor(private http: any) {}
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    // Support both GET and POST methods as per documentation
-    if (Object.keys(params).length === 0) {
-      return this.http.get('/api/auth/group/search');
-    }
-    return this.http.post('/api/auth/group/search', params);
-  }
-
-  async add(group: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/auth/group/add', group);
-  }
-
-  async get(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/auth/group/get/${uuid}` : '/api/auth/group/get';
-    return this.http.get(path);
-  }
-
-  async update(uuid: string, group: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/auth/group/set/${uuid}`, group);
-  }
-
-  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/auth/group/del/${uuid}`);
-  }
-}
-
-export class AuthPrivileges {
-  constructor(private http: any) {}
-
-  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    // Support both GET and POST methods as per documentation
-    if (Object.keys(params).length === 0) {
-      return this.http.get('/api/auth/priv/search');
-    }
-    return this.http.post('/api/auth/priv/search', params);
-  }
-
-  async get(id?: string): Promise<ApiResponse<any>> {
-    const path = id ? `/api/auth/priv/get_item/${id}` : '/api/auth/priv/get';
-    return this.http.get(path);
-  }
-
-  async update(id: string, privilege: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/auth/priv/set_item/${id}`, privilege);
-  }
-
-  async setConfig(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/auth/priv/set', config);
-  }
-}
-
+// Main module class
 export class AuthModule extends BaseModule {
-  public readonly users: AuthUsers;
-  public readonly groups: AuthGroups;
-  public readonly privileges: AuthPrivileges;
+  public readonly group: AuthGroup;
+  public readonly priv: AuthPriv;
+  public readonly user: AuthUser;
 
-  constructor(httpClient: any) {
-    super(httpClient);
-    this.users = new AuthUsers(this.http);
-    this.groups = new AuthGroups(this.http);
-    this.privileges = new AuthPrivileges(this.http);
+  constructor(http: any) {
+    super(http);
+    this.group = new AuthGroup(http);
+    this.priv = new AuthPriv(http);
+    this.user = new AuthUser(http);
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/auth/general/get');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/auth/service/status');
   }
 
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/auth/general/set', config);
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/auth/service/start');
   }
 
-  async searchUsers(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.users.search(params);
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/auth/service/stop');
   }
 
-  async searchGroups(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.groups.search(params);
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/auth/service/restart');
   }
 
-  async searchPrivileges(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.privileges.search(params);
-  }
-
-  async addUser(user: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.users.add(user);
-  }
-
-  async addGroup(group: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.groups.add(group);
-  }
-
-  async getUser(uuid?: string): Promise<ApiResponse<any>> {
-    return this.users.get(uuid);
-  }
-
-  async getGroup(uuid?: string): Promise<ApiResponse<any>> {
-    return this.groups.get(uuid);
-  }
-
-  async updateUser(uuid: string, user: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.users.update(uuid, user);
-  }
-
-  async updateGroup(uuid: string, group: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.groups.update(uuid, group);
-  }
-
-  async deleteUser(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.users.delete(uuid);
-  }
-
-  async deleteGroup(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.groups.delete(uuid);
-  }
-
-  /**
-   * Test authentication by attempting to retrieve current user privileges
-   * This is useful for validating API credentials
-   */
-  async testAuthentication(): Promise<ApiResponse<any>> {
-    return this.privileges.get();
-  }
-
-  /**
-   * Get comprehensive authentication status including users, groups, and privileges
-   */
-  async getAuthenticationStatus(): Promise<{
-    users: any;
-    groups: any;
-    privileges: any;
-    timestamp: string;
-  }> {
-    const [users, groups, privileges] = await Promise.allSettled([
-      this.users.search(),
-      this.groups.search(),
-      this.privileges.search(),
-    ]);
-
-    return {
-      users: users.status === 'fulfilled' ? users.value.data : null,
-      groups: groups.status === 'fulfilled' ? groups.value.data : null,
-      privileges: privileges.status === 'fulfilled' ? privileges.value.data : null,
-      timestamp: new Date().toISOString(),
-    };
-  }
-
-  /**
-   * Create a complete user with group assignment
-   */
-  async createUserWithGroup(userData: Record<string, any>, groupUuid: string): Promise<ApiResponse<ApiResult>> {
-    const userWithGroup = {
-      ...userData,
-      groupid: groupUuid,
-    };
-    return this.users.add(userWithGroup);
-  }
-
-  /**
-   * Generate and retrieve a new OTP seed for a user
-   */
-  async generateUserOtpSeed(): Promise<ApiResponse<any>> {
-    return this.users.newOtpSeed();
-  }
-
-  /**
-   * Get all API keys for a specific user
-   */
-  async getUserApiKeys(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.users.searchApiKeys(params);
-  }
-
-  /**
-   * Create an API key for a user and return the key details
-   */
-  async createUserApiKey(username: string): Promise<ApiResponse<any>> {
-    return this.users.addApiKey(username);
-  }
-
-  /**
-   * Revoke (delete) an API key by its ID
-   */
-  async revokeApiKey(keyId: string): Promise<ApiResponse<ApiResult>> {
-    return this.users.deleteApiKey(keyId);
-  }
-
-  /**
-   * Export all user data for backup purposes
-   */
-  async exportUserData(): Promise<ApiResponse<any>> {
-    return this.users.download();
-  }
-
-  /**
-   * Import user data from a backup
-   */
-  async importUserData(userData: any): Promise<ApiResponse<ApiResult>> {
-    return this.users.upload(userData);
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/auth/service/reconfigure');
   }
 }

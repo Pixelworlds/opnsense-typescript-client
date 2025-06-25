@@ -1,57 +1,102 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
-
-export class ApcupsdModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('apcupsd', 'status');
-  }
-
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('apcupsd', 'start');
-  }
-
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('apcupsd', 'stop');
-  }
-
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('apcupsd', 'restart');
-  }
-
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('apcupsd', 'reconfigure');
-  }
-
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/apcupsd/general/get');
-  }
-
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/apcupsd/general/set', config);
-  }
-
+// Controller classes
+export class ApcupsdService extends BaseModule {
+  /**
+   * Get get ups status for apcupsd service
+   */
   async getUpsStatus(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/apcupsd/service/status');
+    return this.http.get(`/api/apcupsd/apcupsd/service/get_ups_status`);
   }
 
-  async getUpsInfo(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/apcupsd/service/info');
+  /**
+   * Execute reconfigure for apcupsd service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/apcupsd/apcupsd/service/reconfigure`);
   }
 
-  async getUpsBattery(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/apcupsd/service/battery');
+  /**
+   * Execute restart for apcupsd service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/apcupsd/apcupsd/service/restart`);
   }
 
-  async shutdownUps(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/apcupsd/service/shutdown');
+  /**
+   * Execute start for apcupsd service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/apcupsd/apcupsd/service/start`);
   }
 
-  async testBattery(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/apcupsd/service/test');
+  /**
+   * Get status for apcupsd service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/apcupsd/apcupsd/service/status`);
   }
 
-  async calibrateBattery(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/apcupsd/service/calibrate');
+  /**
+   * Execute stop for apcupsd service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/apcupsd/apcupsd/service/stop`);
+  }
+}
+
+export class ApcupsdSettings extends BaseModule {
+  /**
+   * Get get for apcupsd settings
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/apcupsd/apcupsd/settings/get`);
+  }
+
+  /**
+   * Execute set for apcupsd settings
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/apcupsd/apcupsd/settings/set`, data);
+  }
+}
+
+// Main module class
+export class ApcupsdModule extends BaseModule {
+  public readonly service: ApcupsdService;
+  public readonly settings: ApcupsdSettings;
+
+  constructor(http: any) {
+    super(http);
+    this.service = new ApcupsdService(http);
+    this.settings = new ApcupsdSettings(http);
+  }
+
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/apcupsd/service/status');
+  }
+
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/apcupsd/service/start');
+  }
+
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/apcupsd/service/stop');
+  }
+
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/apcupsd/service/restart');
+  }
+
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/apcupsd/service/reconfigure');
   }
 }

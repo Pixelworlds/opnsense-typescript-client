@@ -1,66 +1,102 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class SslhService extends BaseModule {
+  /**
+   * Execute reconfigure for sslh service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/sslh/sslh/service/reconfigure`);
+  }
 
+  /**
+   * Execute restart for sslh service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/sslh/sslh/service/restart`);
+  }
+
+  /**
+   * Execute start for sslh service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/sslh/sslh/service/start`);
+  }
+
+  /**
+   * Get status for sslh service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/sslh/sslh/service/status`);
+  }
+
+  /**
+   * Execute stop for sslh service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/sslh/sslh/service/stop`);
+  }
+}
+
+export class SslhSettings extends BaseModule {
+  /**
+   * Get get for sslh settings
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/sslh/sslh/settings/get`);
+  }
+
+  /**
+   * Get index for sslh settings
+   */
+  async index(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/sslh/sslh/settings/index`);
+  }
+
+  /**
+   * Execute set for sslh settings
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/sslh/sslh/settings/set`, data);
+  }
+}
+
+// Main module class
 export class SslhModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('sslh', 'status');
+  public readonly service: SslhService;
+  public readonly settings: SslhSettings;
+
+  constructor(http: any) {
+    super(http);
+    this.service = new SslhService(http);
+    this.settings = new SslhSettings(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('sslh', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/sslh/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('sslh', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/sslh/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('sslh', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/sslh/service/stop');
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('sslh', 'reconfigure');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/sslh/service/restart');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/sslh/general/get');
-  }
-
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/sslh/general/set', config);
-  }
-
-  async searchRules(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/sslh/settings/search_rule', params);
-  }
-
-  async addRule(rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/sslh/settings/add_rule', rule);
-  }
-
-  async getRule(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/sslh/settings/get_rule/${uuid}` : '/api/sslh/settings/get_rule';
-    return this.http.get(path);
-  }
-
-  async updateRule(uuid: string, rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/sslh/settings/set_rule/${uuid}`, rule);
-  }
-
-  async deleteRule(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/sslh/settings/del_rule/${uuid}`);
-  }
-
-  async toggleRule(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    return this.toggle('/api/sslh/settings/toggle_rule', uuid, enabled);
-  }
-
-  async getStatistics(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/sslh/service/statistics');
-  }
-
-  async getConnections(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/sslh/service/connections');
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/sslh/service/reconfigure');
   }
 }

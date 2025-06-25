@@ -1,85 +1,95 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class ZabbixproxyGeneral extends BaseModule {
+  /**
+   * Get get for zabbixproxy general
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/zabbixproxy/zabbixproxy/general/get`);
+  }
 
+  /**
+   * Execute set for zabbixproxy general
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/zabbixproxy/zabbixproxy/general/set`, data);
+  }
+}
+
+export class ZabbixproxyService extends BaseModule {
+  /**
+   * Execute reconfigure for zabbixproxy service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/zabbixproxy/zabbixproxy/service/reconfigure`);
+  }
+
+  /**
+   * Execute restart for zabbixproxy service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/zabbixproxy/zabbixproxy/service/restart`);
+  }
+
+  /**
+   * Execute start for zabbixproxy service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/zabbixproxy/zabbixproxy/service/start`);
+  }
+
+  /**
+   * Get status for zabbixproxy service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/zabbixproxy/zabbixproxy/service/status`);
+  }
+
+  /**
+   * Execute stop for zabbixproxy service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/zabbixproxy/zabbixproxy/service/stop`);
+  }
+}
+
+// Main module class
 export class ZabbixproxyModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('zabbix_proxy', 'status');
+  public readonly general: ZabbixproxyGeneral;
+  public readonly service: ZabbixproxyService;
+
+  constructor(http: any) {
+    super(http);
+    this.general = new ZabbixproxyGeneral(http);
+    this.service = new ZabbixproxyService(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('zabbix_proxy', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/zabbixproxy/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('zabbix_proxy', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/zabbixproxy/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('zabbix_proxy', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/zabbixproxy/service/stop');
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('zabbix_proxy', 'reconfigure');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/zabbixproxy/service/restart');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/zabbixproxy/general/get');
-  }
-
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/zabbixproxy/general/set', config);
-  }
-
-  async getDatabaseInfo(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/zabbixproxy/service/database_info');
-  }
-
-  async syncDatabase(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/zabbixproxy/service/sync_database');
-  }
-
-  async clearCache(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/zabbixproxy/service/clear_cache');
-  }
-
-  async getHosts(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/zabbixproxy/service/hosts');
-  }
-
-  async getHostDetails(hostId: string): Promise<ApiResponse<any>> {
-    return this.http.get(`/api/zabbixproxy/service/host/${hostId}`);
-  }
-
-  async getStatistics(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/zabbixproxy/service/statistics');
-  }
-
-  async getProxyInfo(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/zabbixproxy/service/proxy_info');
-  }
-
-  async getServerConnection(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/zabbixproxy/service/server_connection');
-  }
-
-  async testConnection(): Promise<ApiResponse<any>> {
-    return this.http.post('/api/zabbixproxy/service/test_connection');
-  }
-
-  async getQueue(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/zabbixproxy/service/queue');
-  }
-
-  async clearQueue(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/zabbixproxy/service/clear_queue');
-  }
-
-  async getConfiguration(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/zabbixproxy/service/configuration');
-  }
-
-  async reloadConfiguration(): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/zabbixproxy/service/reload_config');
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/zabbixproxy/service/reconfigure');
   }
 }

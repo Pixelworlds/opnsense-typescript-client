@@ -1,9 +1,9 @@
 // Common API response types for OPNsense
 export interface ApiResponse<T = any> {
-  result: 'ok' | 'failed';
-  data?: T;
-  message?: string;
-  validations?: Record<string, string>;
+  data: T;
+  status: number;
+  statusText: string;
+  headers: Record<string, string>;
 }
 
 export interface ApiResult {
@@ -37,6 +37,33 @@ export interface ServiceControl {
 export interface ConfigTest {
   result: 'ok' | 'failed';
   message?: string;
+}
+
+export interface ApiError {
+  status?: number;
+  data?: any;
+  request?: any;
+}
+
+// Configuration interface for OPNsense client
+export interface OPNsenseConfig {
+  baseUrl: string;
+  apiKey: string;
+  apiSecret: string;
+  verifySsl?: boolean;
+  timeout?: number;
+  headers?: Record<string, string>;
+  debug?: boolean;
+}
+
+// Request options for HTTP client
+export interface RequestOptions {
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+  path: string;
+  data?: any;
+  params?: Record<string, any>;
+  headers?: Record<string, string>;
+  timeout?: number;
 }
 
 // Generic CRUD operations

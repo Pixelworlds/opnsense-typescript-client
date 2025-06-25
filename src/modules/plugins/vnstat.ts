@@ -1,42 +1,130 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class VnstatGeneral extends BaseModule {
+  /**
+   * Get get for vnstat general
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/vnstat/vnstat/general/get`);
+  }
 
+  /**
+   * Execute set for vnstat general
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/vnstat/vnstat/general/set`, data);
+  }
+}
+
+export class VnstatService extends BaseModule {
+  /**
+   * Get daily for vnstat service
+   */
+  async daily(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/vnstat/vnstat/service/daily`);
+  }
+
+  /**
+   * Get hourly for vnstat service
+   */
+  async hourly(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/vnstat/vnstat/service/hourly`);
+  }
+
+  /**
+   * Get monthly for vnstat service
+   */
+  async monthly(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/vnstat/vnstat/service/monthly`);
+  }
+
+  /**
+   * Execute reconfigure for vnstat service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/vnstat/vnstat/service/reconfigure`);
+  }
+
+  /**
+   * Get resetdb for vnstat service
+   */
+  async resetdb(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/vnstat/vnstat/service/resetdb`);
+  }
+
+  /**
+   * Execute restart for vnstat service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/vnstat/vnstat/service/restart`);
+  }
+
+  /**
+   * Execute start for vnstat service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/vnstat/vnstat/service/start`);
+  }
+
+  /**
+   * Get status for vnstat service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/vnstat/vnstat/service/status`);
+  }
+
+  /**
+   * Execute stop for vnstat service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/vnstat/vnstat/service/stop`);
+  }
+
+  /**
+   * Get yearly for vnstat service
+   */
+  async yearly(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/vnstat/vnstat/service/yearly`);
+  }
+}
+
+// Main module class
 export class VnstatModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('vnstat', 'status');
+  public readonly general: VnstatGeneral;
+  public readonly service: VnstatService;
+
+  constructor(http: any) {
+    super(http);
+    this.general = new VnstatGeneral(http);
+    this.service = new VnstatService(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('vnstat', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/vnstat/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('vnstat', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/vnstat/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('vnstat', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/vnstat/service/stop');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/vnstat/general/get');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/vnstat/service/restart');
   }
 
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/vnstat/general/set', config);
-  }
-
-  async getStatistics(interfaceName?: string): Promise<ApiResponse<any>> {
-    const path = interfaceName ? `/api/vnstat/service/statistics/${interfaceName}` : '/api/vnstat/service/statistics';
-    return this.http.get(path);
-  }
-
-  async getDatabases(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/vnstat/service/databases');
-  }
-
-  async resetDatabase(interfaceName: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/vnstat/service/reset/${interfaceName}`);
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/vnstat/service/reconfigure');
   }
 }

@@ -1,66 +1,148 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class NetsnmpGeneral extends BaseModule {
+  /**
+   * Get get for netsnmp general
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/netsnmp/netsnmp/general/get`);
+  }
 
+  /**
+   * Execute set for netsnmp general
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/netsnmp/netsnmp/general/set`, data);
+  }
+}
+
+export class NetsnmpService extends BaseModule {
+  /**
+   * Execute reconfigure for netsnmp service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/netsnmp/netsnmp/service/reconfigure`);
+  }
+
+  /**
+   * Execute restart for netsnmp service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/netsnmp/netsnmp/service/restart`);
+  }
+
+  /**
+   * Execute start for netsnmp service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/netsnmp/netsnmp/service/start`);
+  }
+
+  /**
+   * Get status for netsnmp service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/netsnmp/netsnmp/service/status`);
+  }
+
+  /**
+   * Execute stop for netsnmp service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/netsnmp/netsnmp/service/stop`);
+  }
+}
+
+export class NetsnmpUser extends BaseModule {
+  /**
+   * Execute add user for netsnmp user
+   */
+  async addUser(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/netsnmp/netsnmp/user/add_user`, data);
+  }
+
+  /**
+   * Execute del user for netsnmp user
+   */
+  async delUser(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/netsnmp/netsnmp/user/del_user/${uuid}`, data);
+  }
+
+  /**
+   * Get get for netsnmp user
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/netsnmp/netsnmp/user/get`);
+  }
+
+  /**
+   * Get get user for netsnmp user
+   */
+  async getUser(uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/netsnmp/netsnmp/user/get_user/${uuid}`);
+  }
+
+  /**
+   * Execute set for netsnmp user
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/netsnmp/netsnmp/user/set`, data);
+  }
+
+  /**
+   * Execute set user for netsnmp user
+   */
+  async setUser(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/netsnmp/netsnmp/user/set_user/${uuid}`, data);
+  }
+
+  /**
+   * Execute toggle user for netsnmp user
+   */
+  async toggleUser(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/netsnmp/netsnmp/user/toggle_user/${uuid}`, data);
+  }
+}
+
+// Main module class
 export class NetsnmpModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('netsnmp', 'status');
+  public readonly general: NetsnmpGeneral;
+  public readonly service: NetsnmpService;
+  public readonly user: NetsnmpUser;
+
+  constructor(http: any) {
+    super(http);
+    this.general = new NetsnmpGeneral(http);
+    this.service = new NetsnmpService(http);
+    this.user = new NetsnmpUser(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('netsnmp', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/netsnmp/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('netsnmp', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/netsnmp/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('netsnmp', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/netsnmp/service/stop');
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('netsnmp', 'reconfigure');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/netsnmp/service/restart');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/netsnmp/general/get');
-  }
-
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/netsnmp/general/set', config);
-  }
-
-  async getUsers(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/netsnmp/user/get');
-  }
-
-  async setUsers(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/netsnmp/user/set', config);
-  }
-
-  async searchUsers(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/netsnmp/user/search_user', params);
-  }
-
-  async addUser(user: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/netsnmp/user/add_user', user);
-  }
-
-  async getUser(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/netsnmp/user/get_user/${uuid}` : '/api/netsnmp/user/get_user';
-    return this.http.get(path);
-  }
-
-  async updateUser(uuid: string, user: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/netsnmp/user/set_user/${uuid}`, user);
-  }
-
-  async deleteUser(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/netsnmp/user/del_user/${uuid}`);
-  }
-
-  async toggleUser(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/netsnmp/user/toggle_user/${uuid}`);
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/netsnmp/service/reconfigure');
   }
 }

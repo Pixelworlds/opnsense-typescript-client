@@ -1,116 +1,148 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class RelaydService extends BaseModule {
+  /**
+   * Execute configtest for relayd service
+   */
+  async configtest(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/relayd/relayd/service/configtest`, data);
+  }
 
+  /**
+   * Execute reconfigure for relayd service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/relayd/relayd/service/reconfigure`);
+  }
+
+  /**
+   * Execute restart for relayd service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/relayd/relayd/service/restart`);
+  }
+
+  /**
+   * Execute start for relayd service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/relayd/relayd/service/start`);
+  }
+
+  /**
+   * Get status for relayd service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/relayd/relayd/service/status`);
+  }
+
+  /**
+   * Execute stop for relayd service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/relayd/relayd/service/stop`);
+  }
+}
+
+export class RelaydSettings extends BaseModule {
+  /**
+   * Get del for relayd settings
+   */
+  async del(nodeType: string, uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/relayd/relayd/settings/del/${nodeType}/${uuid}`);
+  }
+
+  /**
+   * Get dirty for relayd settings
+   */
+  async dirty(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/relayd/relayd/settings/dirty`);
+  }
+
+  /**
+   * Get get for relayd settings
+   */
+  async get(nodeType: string, uuid: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/relayd/relayd/settings/get/${nodeType}/${uuid}`);
+  }
+
+  /**
+   * Execute search for relayd settings
+   */
+  async search(nodeType: string, params?: Record<string, any>): Promise<ApiResponse<SearchResult>> {
+    return this.http.post(`/api/relayd/relayd/settings/search/${nodeType}`, data);
+  }
+
+  /**
+   * Execute set for relayd settings
+   */
+  async set(nodeType: string, uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/relayd/relayd/settings/set/${nodeType}/${uuid}`, data);
+  }
+
+  /**
+   * Execute toggle for relayd settings
+   */
+  async toggle(nodeType: string, uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/relayd/relayd/settings/toggle/${nodeType}/${uuid}/${enabled}`, data);
+  }
+}
+
+export class RelaydStatus extends BaseModule {
+  /**
+   * Get sum for relayd status
+   */
+  async sum(wait: string): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/relayd/relayd/status/sum/${wait}`);
+  }
+
+  /**
+   * Execute toggle for relayd status
+   */
+  async toggle(nodeType: string, id: string, action: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/relayd/relayd/status/toggle/${nodeType}/${id}/${action}`, data);
+  }
+}
+
+// Main module class
 export class RelaydModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('relayd', 'status');
+  public readonly service: RelaydService;
+  public readonly settings: RelaydSettings;
+  public readonly status: RelaydStatus;
+
+  constructor(http: any) {
+    super(http);
+    this.service = new RelaydService(http);
+    this.settings = new RelaydSettings(http);
+    this.status = new RelaydStatus(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('relayd', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/relayd/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('relayd', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/relayd/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('relayd', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/relayd/service/stop');
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('relayd', 'reconfigure');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/relayd/service/restart');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/relayd/general/get');
-  }
-
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/relayd/general/set', config);
-  }
-
-  async searchVirtualServers(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/relayd/settings/search_virtualserver', params);
-  }
-
-  async addVirtualServer(server: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/relayd/settings/add_virtualserver', server);
-  }
-
-  async getVirtualServer(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/relayd/settings/get_virtualserver/${uuid}` : '/api/relayd/settings/get_virtualserver';
-    return this.http.get(path);
-  }
-
-  async updateVirtualServer(uuid: string, server: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/relayd/settings/set_virtualserver/${uuid}`, server);
-  }
-
-  async deleteVirtualServer(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/relayd/settings/del_virtualserver/${uuid}`);
-  }
-
-  async toggleVirtualServer(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    return this.toggle('/api/relayd/settings/toggle_virtualserver', uuid, enabled);
-  }
-
-  async searchTables(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/relayd/settings/search_tablecheck', params);
-  }
-
-  async addTable(table: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/relayd/settings/add_tablecheck', table);
-  }
-
-  async getTable(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/relayd/settings/get_tablecheck/${uuid}` : '/api/relayd/settings/get_tablecheck';
-    return this.http.get(path);
-  }
-
-  async updateTable(uuid: string, table: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/relayd/settings/set_tablecheck/${uuid}`, table);
-  }
-
-  async deleteTable(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/relayd/settings/del_tablecheck/${uuid}`);
-  }
-
-  async toggleTable(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    return this.toggle('/api/relayd/settings/toggle_tablecheck', uuid, enabled);
-  }
-
-  async searchHosts(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
-    return this.search('/api/relayd/settings/search_host', params);
-  }
-
-  async addHost(host: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/relayd/settings/add_host', host);
-  }
-
-  async getHost(uuid?: string): Promise<ApiResponse<any>> {
-    const path = uuid ? `/api/relayd/settings/get_host/${uuid}` : '/api/relayd/settings/get_host';
-    return this.http.get(path);
-  }
-
-  async updateHost(uuid: string, host: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/relayd/settings/set_host/${uuid}`, host);
-  }
-
-  async deleteHost(uuid: string): Promise<ApiResponse<ApiResult>> {
-    return this.http.post(`/api/relayd/settings/del_host/${uuid}`);
-  }
-
-  async toggleHost(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
-    return this.toggle('/api/relayd/settings/toggle_host', uuid, enabled);
-  }
-
-  async getStatistics(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/relayd/service/statistics');
-  }
-
-  async getHostStatus(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/relayd/service/host_status');
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/relayd/service/reconfigure');
   }
 }

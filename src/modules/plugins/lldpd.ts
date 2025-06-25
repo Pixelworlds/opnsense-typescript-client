@@ -1,41 +1,102 @@
 import { BaseModule } from '../base';
+import type {
+  ApiResponse,
+  ApiResult,
+  SearchResult,
+  ServiceStatus,
+  ServiceControl
+} from '../../types/common';
 
-import type { ApiResponse, ApiResult } from '../../types';
+// Controller classes
+export class LldpdGeneral extends BaseModule {
+  /**
+   * Get get for lldpd general
+   */
+  async get(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/lldpd/lldpd/general/get`);
+  }
 
+  /**
+   * Execute set for lldpd general
+   */
+  async set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/lldpd/lldpd/general/set`, data);
+  }
+}
+
+export class LldpdService extends BaseModule {
+  /**
+   * Get neighbor for lldpd service
+   */
+  async neighbor(): Promise<ApiResponse<any>> {
+    return this.http.get(`/api/lldpd/lldpd/service/neighbor`);
+  }
+
+  /**
+   * Execute reconfigure for lldpd service
+   */
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/lldpd/lldpd/service/reconfigure`);
+  }
+
+  /**
+   * Execute restart for lldpd service
+   */
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/lldpd/lldpd/service/restart`);
+  }
+
+  /**
+   * Execute start for lldpd service
+   */
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/lldpd/lldpd/service/start`);
+  }
+
+  /**
+   * Get status for lldpd service
+   */
+  async status(): Promise<ApiResponse<ServiceStatus>> {
+    return this.http.get(`/api/lldpd/lldpd/service/status`);
+  }
+
+  /**
+   * Execute stop for lldpd service
+   */
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.http.post(`/api/lldpd/lldpd/service/stop`);
+  }
+}
+
+// Main module class
 export class LldpdModule extends BaseModule {
-  async getStatus(): Promise<ApiResponse<any>> {
-    return this.serviceAction('lldpd', 'status');
+  public readonly general: LldpdGeneral;
+  public readonly service: LldpdService;
+
+  constructor(http: any) {
+    super(http);
+    this.general = new LldpdGeneral(http);
+    this.service = new LldpdService(http);
   }
 
-  async start(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('lldpd', 'start');
+  // Legacy methods for backward compatibility
+  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
+    return this.service?.status() || this.http.get('/api/lldpd/service/status');
   }
 
-  async stop(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('lldpd', 'stop');
+  async start(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.start() || this.http.post('/api/lldpd/service/start');
   }
 
-  async restart(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('lldpd', 'restart');
+  async stop(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.stop() || this.http.post('/api/lldpd/service/stop');
   }
 
-  async reconfigure(): Promise<ApiResponse<ApiResult>> {
-    return this.serviceAction('lldpd', 'reconfigure');
+  async restart(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.restart() || this.http.post('/api/lldpd/service/restart');
   }
 
-  async getGeneral(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/lldpd/general/get');
-  }
-
-  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
-    return this.http.post('/api/lldpd/general/set', config);
-  }
-
-  async getNeighbors(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/lldpd/service/neighbors');
-  }
-
-  async getLocalChassis(): Promise<ApiResponse<any>> {
-    return this.http.get('/api/lldpd/service/chassis');
+  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+    return this.service?.reconfigure() || this.http.post('/api/lldpd/service/reconfigure');
   }
 }
