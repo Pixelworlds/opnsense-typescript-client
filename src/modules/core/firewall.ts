@@ -86,6 +86,18 @@ export class FirewallRules {
   async getInterfaceList(): Promise<ApiResponse<any>> {
     return this.http.get('/api/firewall/filter/get_interface_list');
   }
+
+  async apply(): Promise<ApiResponse<ApiResult>> {
+    return this.http.post('/api/firewall/filter/apply');
+  }
+
+  async savepoint(): Promise<ApiResponse<ApiResult>> {
+    return this.http.post('/api/firewall/filter/savepoint');
+  }
+
+  async cancelRollback(rollbackRevision: number): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/filter/cancel_rollback/${rollbackRevision}`);
+  }
 }
 
 export class FirewallAliases {
@@ -163,16 +175,282 @@ export class FirewallAliases {
   }
 }
 
+export class FirewallGroups {
+  constructor(private http: any) {}
+
+  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
+    const defaultParams = {
+      current: 1,
+      rowCount: 100,
+      sort: {},
+      searchPhrase: '',
+    };
+    return this.http.post('/api/firewall/group/search_item', { ...defaultParams, ...params });
+  }
+
+  async add(group: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post('/api/firewall/group/add_item', group);
+  }
+
+  async get(uuid?: string): Promise<ApiResponse<any>> {
+    const path = uuid ? `/api/firewall/group/get_item/${uuid}` : '/api/firewall/group/get';
+    return this.http.get(path);
+  }
+
+  async update(uuid: string, group: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/group/set_item/${uuid}`, group);
+  }
+
+  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/group/del_item/${uuid}`);
+  }
+
+  async toggle(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
+    const path =
+      enabled !== undefined
+        ? `/api/firewall/group/toggle_item/${uuid}/${enabled ? '1' : '0'}`
+        : `/api/firewall/group/toggle_item/${uuid}`;
+    return this.http.post(path);
+  }
+
+  async reconfigure(): Promise<ApiResponse<ApiResult>> {
+    return this.http.post('/api/firewall/group/reconfigure');
+  }
+}
+
+export class FirewallSourceNat {
+  constructor(private http: any) {}
+
+  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
+    const defaultParams = {
+      current: 1,
+      rowCount: 100,
+      sort: {},
+      searchPhrase: '',
+    };
+    return this.http.post('/api/firewall/source_nat/search_rule', { ...defaultParams, ...params });
+  }
+
+  async add(rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post('/api/firewall/source_nat/add_rule', rule);
+  }
+
+  async get(uuid?: string): Promise<ApiResponse<any>> {
+    const path = uuid ? `/api/firewall/source_nat/get_rule/${uuid}` : '/api/firewall/source_nat/get_rule';
+    return this.http.get(path);
+  }
+
+  async update(uuid: string, rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/source_nat/set_rule/${uuid}`, rule);
+  }
+
+  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/source_nat/del_rule/${uuid}`);
+  }
+
+  async toggle(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
+    const path =
+      enabled !== undefined
+        ? `/api/firewall/source_nat/toggle_rule/${uuid}/${enabled ? '1' : '0'}`
+        : `/api/firewall/source_nat/toggle_rule/${uuid}`;
+    return this.http.post(path);
+  }
+
+  async moveBefore(selectedUuid: string, targetUuid: string): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/source_nat/move_rule_before/${selectedUuid}/${targetUuid}`);
+  }
+}
+
+export class FirewallOneToOneNat {
+  constructor(private http: any) {}
+
+  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
+    const defaultParams = {
+      current: 1,
+      rowCount: 100,
+      sort: {},
+      searchPhrase: '',
+    };
+    return this.http.post('/api/firewall/nat_onetoone/search_rule', { ...defaultParams, ...params });
+  }
+
+  async add(rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post('/api/firewall/nat_onetoone/add_rule', rule);
+  }
+
+  async get(uuid?: string): Promise<ApiResponse<any>> {
+    const path = uuid ? `/api/firewall/nat_onetoone/get_rule/${uuid}` : '/api/firewall/nat_onetoone/get_rule';
+    return this.http.get(path);
+  }
+
+  async update(uuid: string, rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/nat_onetoone/set_rule/${uuid}`, rule);
+  }
+
+  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/nat_onetoone/del_rule/${uuid}`);
+  }
+
+  async toggle(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
+    const path =
+      enabled !== undefined
+        ? `/api/firewall/nat_onetoone/toggle_rule/${uuid}/${enabled ? '1' : '0'}`
+        : `/api/firewall/nat_onetoone/toggle_rule/${uuid}`;
+    return this.http.post(path);
+  }
+
+  async moveBefore(selectedUuid: string, targetUuid: string): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/nat_onetoone/move_rule_before/${selectedUuid}/${targetUuid}`);
+  }
+}
+
+export class FirewallDestinationNat {
+  constructor(private http: any) {}
+
+  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
+    const defaultParams = {
+      current: 1,
+      rowCount: 100,
+      sort: {},
+      searchPhrase: '',
+    };
+    return this.http.post('/api/firewall/nat_destination/search_rule', { ...defaultParams, ...params });
+  }
+
+  async add(rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post('/api/firewall/nat_destination/add_rule', rule);
+  }
+
+  async get(uuid?: string): Promise<ApiResponse<any>> {
+    const path = uuid ? `/api/firewall/nat_destination/get_rule/${uuid}` : '/api/firewall/nat_destination/get_rule';
+    return this.http.get(path);
+  }
+
+  async update(uuid: string, rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/nat_destination/set_rule/${uuid}`, rule);
+  }
+
+  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/nat_destination/del_rule/${uuid}`);
+  }
+
+  async toggle(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
+    const path =
+      enabled !== undefined
+        ? `/api/firewall/nat_destination/toggle_rule/${uuid}/${enabled ? '1' : '0'}`
+        : `/api/firewall/nat_destination/toggle_rule/${uuid}`;
+    return this.http.post(path);
+  }
+
+  async moveBefore(selectedUuid: string, targetUuid: string): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/nat_destination/move_rule_before/${selectedUuid}/${targetUuid}`);
+  }
+}
+
+export class FirewallCategories {
+  constructor(private http: any) {}
+
+  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
+    const defaultParams = {
+      current: 1,
+      rowCount: 100,
+      sort: {},
+      searchPhrase: '',
+    };
+    return this.http.post('/api/firewall/category/search_item', { ...defaultParams, ...params });
+  }
+
+  async add(category: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post('/api/firewall/category/add_item', category);
+  }
+
+  async get(uuid?: string): Promise<ApiResponse<any>> {
+    const path = uuid ? `/api/firewall/category/get_item/${uuid}` : '/api/firewall/category/get';
+    return this.http.get(path);
+  }
+
+  async update(uuid: string, category: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/category/set_item/${uuid}`, category);
+  }
+
+  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/category/del_item/${uuid}`);
+  }
+
+  async toggle(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
+    const path =
+      enabled !== undefined
+        ? `/api/firewall/category/toggle_item/${uuid}/${enabled ? '1' : '0'}`
+        : `/api/firewall/category/toggle_item/${uuid}`;
+    return this.http.post(path);
+  }
+}
+
+export class FirewallNpt {
+  constructor(private http: any) {}
+
+  async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
+    const defaultParams = {
+      current: 1,
+      rowCount: 100,
+      sort: {},
+      searchPhrase: '',
+    };
+    return this.http.post('/api/firewall/npt/search_rule', { ...defaultParams, ...params });
+  }
+
+  async add(rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post('/api/firewall/npt/add_rule', rule);
+  }
+
+  async get(uuid?: string): Promise<ApiResponse<any>> {
+    const path = uuid ? `/api/firewall/npt/get_rule/${uuid}` : '/api/firewall/npt/get_rule';
+    return this.http.get(path);
+  }
+
+  async update(uuid: string, rule: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/npt/set_rule/${uuid}`, rule);
+  }
+
+  async delete(uuid: string): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/npt/del_rule/${uuid}`);
+  }
+
+  async toggle(uuid: string, enabled?: boolean): Promise<ApiResponse<ApiResult>> {
+    const path =
+      enabled !== undefined
+        ? `/api/firewall/npt/toggle_rule/${uuid}/${enabled ? '1' : '0'}`
+        : `/api/firewall/npt/toggle_rule/${uuid}`;
+    return this.http.post(path);
+  }
+
+  async moveBefore(selectedUuid: string, targetUuid: string): Promise<ApiResponse<ApiResult>> {
+    return this.http.post(`/api/firewall/npt/move_rule_before/${selectedUuid}/${targetUuid}`);
+  }
+}
+
 export class FirewallModule extends BaseModule {
   public readonly rules: FirewallRules;
   public readonly aliases: FirewallAliases;
   public readonly aliasUtils: FirewallAliasUtils;
+  public readonly groups: FirewallGroups;
+  public readonly sourceNat: FirewallSourceNat;
+  public readonly oneToOneNat: FirewallOneToOneNat;
+  public readonly destinationNat: FirewallDestinationNat;
+  public readonly categories: FirewallCategories;
+  public readonly npt: FirewallNpt;
 
   constructor(httpClient: any) {
     super(httpClient);
     this.rules = new FirewallRules(this.http);
     this.aliases = new FirewallAliases(this.http);
     this.aliasUtils = new FirewallAliasUtils(this.http);
+    this.groups = new FirewallGroups(this.http);
+    this.sourceNat = new FirewallSourceNat(this.http);
+    this.oneToOneNat = new FirewallOneToOneNat(this.http);
+    this.destinationNat = new FirewallDestinationNat(this.http);
+    this.categories = new FirewallCategories(this.http);
+    this.npt = new FirewallNpt(this.http);
   }
 
   async apply(rollbackRevision?: number): Promise<ApiResponse<ApiResult>> {

@@ -1,17 +1,16 @@
-export { SystemModule } from './system';
-export { FirmwareModule } from './firmware';
-export { FirewallModule } from './firewall';
-export { DiagnosticsModule } from './diagnostics';
-export { InterfacesModule } from './interfaces';
-export { ServiceModule } from './service';
-export { CaptivePortalModule } from './captive-portal';
-export { OpenVPNModule } from './openvpn';
-export { IPsecModule } from './ipsec';
 export { AuthModule } from './auth';
-export { TrustModule } from './trust';
+export { CaptivePortalModule } from './captive-portal';
 export { CronModule } from './cron';
-export { BackupModule } from './backup';
+export { DiagnosticsModule } from './diagnostics';
+export { FirewallModule } from './firewall';
+export { FirmwareModule } from './firmware';
+export { InterfacesModule } from './interfaces';
+export { IPsecModule } from './ipsec';
 export { MonitModule } from './monit';
+export { OpenVPNModule } from './openvpn';
+export { ServiceModule } from './service';
+export { SystemModule } from './system';
+export { TrustModule } from './trust';
 
 export { CoreModule } from './core';
 export { Dhcpv4Module } from './dhcpv4';
@@ -27,14 +26,6 @@ export { TrafficshaperModule } from './trafficshaper';
 export { UnboundModule } from './unbound';
 export { WireguardModule } from './wireguard';
 
-export type {
-  FirewallRules,
-  FirewallAliases,
-  FirewallAliasUtils
-} from './firewall';
+export type { FirewallAliases, FirewallAliasUtils, FirewallRules } from './firewall';
 
-export type {
-  AuthUsers,
-  AuthGroups,
-  AuthPrivileges
-} from './auth';
+export type { AuthGroups, AuthPrivileges, AuthUsers } from './auth';

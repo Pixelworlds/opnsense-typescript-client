@@ -6,6 +6,10 @@ export class AuthUsers {
   constructor(private http: any) {}
 
   async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
+    // Support both GET and POST methods as per documentation
+    if (Object.keys(params).length === 0) {
+      return this.http.get('/api/auth/user/search');
+    }
     return this.http.post('/api/auth/user/search', params);
   }
 
@@ -35,6 +39,10 @@ export class AuthUsers {
   }
 
   async searchApiKeys(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
+    // Support both GET and POST methods as per documentation
+    if (Object.keys(params).length === 0) {
+      return this.http.get('/api/auth/user/search_api_key');
+    }
     return this.http.post('/api/auth/user/search_api_key', params);
   }
 
@@ -47,7 +55,7 @@ export class AuthUsers {
   }
 
   async newOtpSeed(): Promise<ApiResponse<any>> {
-    return this.http.post('/api/auth/user/new_otp_seed');
+    return this.http.get('/api/auth/user/new_otp_seed');
   }
 }
 
@@ -55,6 +63,10 @@ export class AuthGroups {
   constructor(private http: any) {}
 
   async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
+    // Support both GET and POST methods as per documentation
+    if (Object.keys(params).length === 0) {
+      return this.http.get('/api/auth/group/search');
+    }
     return this.http.post('/api/auth/group/search', params);
   }
 
@@ -80,6 +92,10 @@ export class AuthPrivileges {
   constructor(private http: any) {}
 
   async search(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
+    // Support both GET and POST methods as per documentation
+    if (Object.keys(params).length === 0) {
+      return this.http.get('/api/auth/priv/search');
+    }
     return this.http.post('/api/auth/priv/search', params);
   }
 
@@ -159,5 +175,89 @@ export class AuthModule extends BaseModule {
 
   async deleteGroup(uuid: string): Promise<ApiResponse<ApiResult>> {
     return this.groups.delete(uuid);
+  }
+
+  /**
+   * Test authentication by attempting to retrieve current user privileges
+   * This is useful for validating API credentials
+   */
+  async testAuthentication(): Promise<ApiResponse<any>> {
+    return this.privileges.get();
+  }
+
+  /**
+   * Get comprehensive authentication status including users, groups, and privileges
+   */
+  async getAuthenticationStatus(): Promise<{
+    users: any;
+    groups: any;
+    privileges: any;
+    timestamp: string;
+  }> {
+    const [users, groups, privileges] = await Promise.allSettled([
+      this.users.search(),
+      this.groups.search(),
+      this.privileges.search(),
+    ]);
+
+    return {
+      users: users.status === 'fulfilled' ? users.value.data : null,
+      groups: groups.status === 'fulfilled' ? groups.value.data : null,
+      privileges: privileges.status === 'fulfilled' ? privileges.value.data : null,
+      timestamp: new Date().toISOString(),
+    };
+  }
+
+  /**
+   * Create a complete user with group assignment
+   */
+  async createUserWithGroup(userData: Record<string, any>, groupUuid: string): Promise<ApiResponse<ApiResult>> {
+    const userWithGroup = {
+      ...userData,
+      groupid: groupUuid,
+    };
+    return this.users.add(userWithGroup);
+  }
+
+  /**
+   * Generate and retrieve a new OTP seed for a user
+   */
+  async generateUserOtpSeed(): Promise<ApiResponse<any>> {
+    return this.users.newOtpSeed();
+  }
+
+  /**
+   * Get all API keys for a specific user
+   */
+  async getUserApiKeys(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
+    return this.users.searchApiKeys(params);
+  }
+
+  /**
+   * Create an API key for a user and return the key details
+   */
+  async createUserApiKey(username: string): Promise<ApiResponse<any>> {
+    return this.users.addApiKey(username);
+  }
+
+  /**
+   * Revoke (delete) an API key by its ID
+   */
+  async revokeApiKey(keyId: string): Promise<ApiResponse<ApiResult>> {
+    return this.users.deleteApiKey(keyId);
+  }
+
+  /**
+   * Export all user data for backup purposes
+   */
+  async exportUserData(): Promise<ApiResponse<any>> {
+    return this.users.download();
+  }
+
+  /**
+   * Import user data from a backup
+   */
+  async importUserData(userData: any): Promise<ApiResponse<ApiResult>> {
+    return this.users.upload(userData);
   }
 }
