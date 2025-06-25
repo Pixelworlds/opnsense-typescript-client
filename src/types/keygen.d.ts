@@ -17,7 +17,6 @@ export type Curve25519Point = Float64Array & {
 };
 
 export interface WireguardCryptoConfig {
-  // Reserved for future configuration options
 }
 
 export type RandomSource = 'crypto';
