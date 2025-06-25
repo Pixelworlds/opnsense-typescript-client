@@ -251,39 +251,6 @@ deploy_npm:
     name: npm-production
     url: https://www.npmjs.com/package/@richard-stovall/opnsense-typescript-client
 
-deploy_gitlab_registry:
-  <<: *node_template
-  stage: deploy
-  dependencies:
-    - build
-    - package_tarball
-  script:
-    - |
-      echo "Deploying to GitLab Package Registry..."
-
-      # Configure GitLab registry authentication
-      echo "@${CI_PROJECT_ROOT_NAMESPACE}:registry=${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/npm/" >> .npmrc
-      echo "${CI_API_V4_URL#https:}/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}" >> .npmrc
-
-      # Update package name for GitLab registry
-      node -e "
-        const pkg = require('./package.json');
-        pkg.name = '@${CI_PROJECT_ROOT_NAMESPACE}/${CI_PROJECT_NAME}';
-        require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));
-      "
-
-      # Publish to GitLab registry
-      npm publish
-
-      echo "Successfully published to GitLab Package Registry"
-  rules:
-    - if: $CI_COMMIT_BRANCH == "master"
-    - if: $CI_COMMIT_BRANCH == "main"
-    - if: $CI_COMMIT_TAG
-  environment:
-    name: gitlab-registry
-    url: ${CI_PROJECT_URL}/-/packages
-
 # Performance monitoring
 bundle_analysis:
   <<: *node_template
