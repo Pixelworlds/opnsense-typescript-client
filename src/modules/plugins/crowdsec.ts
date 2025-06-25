@@ -7,6 +7,18 @@ export class CrowdsecModule extends BaseModule {
     return this.http.get('/api/crowdsec/service/status');
   }
 
+  async start(): Promise<ApiResponse<ApiResult>> {
+    return this.serviceAction('crowdsec', 'start');
+  }
+
+  async stop(): Promise<ApiResponse<ApiResult>> {
+    return this.serviceAction('crowdsec', 'stop');
+  }
+
+  async restart(): Promise<ApiResponse<ApiResult>> {
+    return this.serviceAction('crowdsec', 'restart');
+  }
+
   async reload(): Promise<ApiResponse<ApiResult>> {
     return this.http.post('/api/crowdsec/service/reload');
   }

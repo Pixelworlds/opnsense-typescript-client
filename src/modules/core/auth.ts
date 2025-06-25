@@ -108,4 +108,56 @@ export class AuthModule extends BaseModule {
     this.groups = new AuthGroups(this.http);
     this.privileges = new AuthPrivileges(this.http);
   }
+
+  async getGeneral(): Promise<ApiResponse<any>> {
+    return this.http.get('/api/auth/general/get');
+  }
+
+  async setGeneral(config: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.http.post('/api/auth/general/set', config);
+  }
+
+  async searchUsers(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
+    return this.users.search(params);
+  }
+
+  async searchGroups(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
+    return this.groups.search(params);
+  }
+
+  async searchPrivileges(params: Record<string, any> = {}): Promise<ApiResponse<any>> {
+    return this.privileges.search(params);
+  }
+
+  async addUser(user: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.users.add(user);
+  }
+
+  async addGroup(group: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.groups.add(group);
+  }
+
+  async getUser(uuid?: string): Promise<ApiResponse<any>> {
+    return this.users.get(uuid);
+  }
+
+  async getGroup(uuid?: string): Promise<ApiResponse<any>> {
+    return this.groups.get(uuid);
+  }
+
+  async updateUser(uuid: string, user: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.users.update(uuid, user);
+  }
+
+  async updateGroup(uuid: string, group: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+    return this.groups.update(uuid, group);
+  }
+
+  async deleteUser(uuid: string): Promise<ApiResponse<ApiResult>> {
+    return this.users.delete(uuid);
+  }
+
+  async deleteGroup(uuid: string): Promise<ApiResponse<ApiResult>> {
+    return this.groups.delete(uuid);
+  }
 }
