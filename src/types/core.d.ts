@@ -1,286 +1,143 @@
-export namespace Core {
-  export interface BaseResponse {
-    result: string;
-    status: string;
-  }
+import type {
+      ApiResponse,
+      ApiResult,
+      SearchResult,
+      BaseRecord,
+      ServiceStatus,
+      ServiceControl,
+      ConfigTest,
+      CrudOperations,
+      ServiceOperations,
+      SettingsOperations
+    } from './common';
 
-  export interface ErrorResponse {
-    result: string;
-    status: string;
-    message?: string;
-  }
+// Controller interfaces
+export interface CoreBackupController {
+  /** Get backups for core backup */
+  backups(): Promise<ApiResponse<any>>;
+  /** Get delete backup for core backup */
+  deleteBackup(): Promise<ApiResponse<any>>;
+  /** Get diff for core backup */
+  diff(): Promise<ApiResponse<any>>;
+  /** Get download for core backup */
+  download(): Promise<ApiResponse<any>>;
+  /** Get providers for core backup */
+  providers(): Promise<ApiResponse<any>>;
+  /** Get revert backup for core backup */
+  revertBackup(): Promise<ApiResponse<any>>;
+}
+export interface CoreDashboardController {
+  /** Get get dashboard for core dashboard */
+  getDashboard(): Promise<ApiResponse<any>>;
+  /** Get picture for core dashboard */
+  picture(): Promise<ApiResponse<any>>;
+  /** Get product info feed for core dashboard */
+  productInfoFeed(): Promise<ApiResponse<any>>;
+  /** Execute restore defaults for core dashboard */
+  restoreDefaults(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute save widgets for core dashboard */
+  saveWidgets(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+}
+export interface CoreHasyncController {
+  /** Get get for core hasync */
+  get(): Promise<ApiResponse<any>>;
+  /** Execute reconfigure for core hasync */
+  reconfigure(): Promise<ApiResponse<ServiceControl>>;
+  /** Execute set for core hasync */
+  set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+}
+export interface CoreHasync_statusController {
+  /** Get remote service for core hasync_status */
+  remoteService(): Promise<ApiResponse<any>>;
+  /** Execute restart for core hasync_status */
+  restart(): Promise<ApiResponse<ServiceControl>>;
+  /** Execute restart all for core hasync_status */
+  restartAll(): Promise<ApiResponse<ApiResult>>;
+  /** Get services for core hasync_status */
+  services(): Promise<ApiResponse<any>>;
+  /** Execute start for core hasync_status */
+  start(): Promise<ApiResponse<ServiceControl>>;
+  /** Execute stop for core hasync_status */
+  stop(): Promise<ApiResponse<ServiceControl>>;
+  /** Get version for core hasync_status */
+  version(): Promise<ApiResponse<any>>;
+}
+export interface CoreMenuController {
+  /** Get search for core menu */
+  search(): Promise<ApiResponse<SearchResult>>;
+  /** Get tree for core menu */
+  tree(): Promise<ApiResponse<any>>;
+}
+export interface CoreServiceController {
+  /** Execute restart for core service */
+  restart(): Promise<ApiResponse<ServiceControl>>;
+  /** Get search for core service */
+  search(): Promise<ApiResponse<SearchResult>>;
+  /** Execute start for core service */
+  start(): Promise<ApiResponse<ServiceControl>>;
+  /** Execute stop for core service */
+  stop(): Promise<ApiResponse<ServiceControl>>;
+}
+export interface CoreSnapshotsController {
+  /** Execute activate for core snapshots */
+  activate(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute add for core snapshots */
+  add(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute del for core snapshots */
+  del(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Get get for core snapshots */
+  get(uuid: string): Promise<ApiResponse<any>>;
+  /** Get is supported for core snapshots */
+  isSupported(): Promise<ApiResponse<any>>;
+  /** Get search for core snapshots */
+  search(): Promise<ApiResponse<SearchResult>>;
+  /** Execute set for core snapshots */
+  set(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+}
+export interface CoreSystemController {
+  /** Execute dismiss status for core system */
+  dismissStatus(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute halt for core system */
+  halt(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute reboot for core system */
+  reboot(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Get status for core system */
+  status(): Promise<ApiResponse<ServiceStatus>>;
+}
+export interface CoreTunablesController {
+  /** Execute add item for core tunables */
+  addItem(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute del item for core tunables */
+  delItem(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Get get for core tunables */
+  get(): Promise<ApiResponse<any>>;
+  /** Get get item for core tunables */
+  getItem(uuid: string): Promise<ApiResponse<any>>;
+  /** Execute reconfigure for core tunables */
+  reconfigure(): Promise<ApiResponse<ServiceControl>>;
+  /** Execute reset for core tunables */
+  reset(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute set for core tunables */
+  set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute set item for core tunables */
+  setItem(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+}
 
-  export namespace Backup {
-    export interface BackupItem {
-      id: string;
-      name: string;
-      date: string;
-      size: number;
-      host: string;
-    }
+// Main module interface
+export interface CoreModule {
+  backup: CoreBackupController;
+  dashboard: CoreDashboardController;
+  hasync: CoreHasyncController;
+  hasync_status: CoreHasync_statusController;
+  menu: CoreMenuController;
+  service: CoreServiceController;
+  snapshots: CoreSnapshotsController;
+  system: CoreSystemController;
+  tunables: CoreTunablesController;
+}
 
-    export interface BackupListResponse extends BaseResponse {
-      backups: BackupItem[];
-    }
-
-    export interface BackupDiffRequest {
-      host: string;
-      backup1: string;
-      backup2: string;
-    }
-
-    export interface BackupDiffResponse extends BaseResponse {
-      diff: string;
-    }
-
-    export interface ProvidersResponse extends BaseResponse {
-      providers: string[];
-    }
-  }
-
-  export namespace Dashboard {
-    export interface Widget {
-      id: string;
-      title: string;
-      type: string;
-      position: {
-        x: number;
-        y: number;
-        width: number;
-        height: number;
-      };
-      settings: Record<string, any>;
-    }
-
-    export interface DashboardConfig {
-      widgets: Widget[];
-      layout: string;
-    }
-
-    export interface DashboardResponse extends BaseResponse {
-      dashboard: DashboardConfig;
-    }
-
-    export interface ProductInfoFeed {
-      version: string;
-      updates: any[];
-      notifications: any[];
-    }
-
-    export interface SaveWidgetsRequest {
-      widgets: Widget[];
-    }
-  }
-
-  export namespace HASync {
-    export interface HASyncConfig {
-      enabled: boolean;
-      peerip: string;
-      username: string;
-      password: string;
-      synchronizeusers: boolean;
-      synchronizerules: boolean;
-      synchronizenat: boolean;
-      synchronizealiases: boolean;
-      synchronizeschedules: boolean;
-      synchronizelimiters: boolean;
-      synchronizevirtualip: boolean;
-    }
-
-    export interface HASyncResponse extends BaseResponse {
-      hasync: HASyncConfig;
-    }
-  }
-
-  export namespace HASyncStatus {
-    export interface ServiceInfo {
-      id: string;
-      name: string;
-      status: 'running' | 'stopped' | 'unknown';
-      description: string;
-    }
-
-    export interface ServicesResponse extends BaseResponse {
-      services: ServiceInfo[];
-    }
-
-    export interface VersionResponse extends BaseResponse {
-      version: string;
-      platform: string;
-    }
-
-    export type ServiceAction = 'start' | 'stop' | 'restart';
-  }
-
-  export namespace Menu {
-    export interface MenuItem {
-      id: string;
-      title: string;
-      url: string;
-      cssClass?: string;
-      children?: MenuItem[];
-    }
-
-    export interface MenuTreeResponse extends BaseResponse {
-      menu: MenuItem[];
-    }
-
-    export interface MenuSearchRequest {
-      query: string;
-    }
-
-    export interface MenuSearchResponse extends BaseResponse {
-      results: MenuItem[];
-    }
-  }
-
-  export namespace Service {
-    export interface ServiceInfo {
-      id: string;
-      name: string;
-      status: 'running' | 'stopped' | 'unknown';
-      description: string;
-      locked: boolean;
-    }
-
-    export interface ServiceSearchRequest {
-      searchPhrase?: string;
-      current?: number;
-      rowCount?: number;
-      sort?: Record<string, string>;
-    }
-
-    export interface ServiceSearchResponse extends BaseResponse {
-      current: number;
-      rowCount: number;
-      total: number;
-      rows: ServiceInfo[];
-    }
-  }
-
-  export namespace Snapshots {
-    export interface SnapshotInfo {
-      uuid: string;
-      name: string;
-      description: string;
-      timestamp: string;
-      size: number;
-      active: boolean;
-    }
-
-    export interface SnapshotResponse extends BaseResponse {
-      snapshot: SnapshotInfo;
-    }
-
-    export interface SnapshotSearchRequest {
-      searchPhrase?: string;
-      current?: number;
-      rowCount?: number;
-    }
-
-    export interface SnapshotSearchResponse extends BaseResponse {
-      current: number;
-      rowCount: number;
-      total: number;
-      rows: SnapshotInfo[];
-    }
-
-    export interface AddSnapshotRequest {
-      name: string;
-      description?: string;
-    }
-
-    export interface SupportResponse extends BaseResponse {
-      supported: boolean;
-    }
-  }
-
-  export namespace System {
-    export interface SystemStatus {
-      uptime: string;
-      datetime: string;
-      loadavg: number[];
-      cpu_usage: number;
-      memory_usage: number;
-      disk_usage: Record<string, number>;
-      temperature: number;
-      interfaces: Record<string, any>;
-    }
-
-    export interface StatusResponse extends BaseResponse {
-      system: SystemStatus;
-    }
-
-    export interface StatusMessage {
-      id: string;
-      message: string;
-      type: 'info' | 'warning' | 'error';
-      timestamp: string;
-    }
-
-    export interface DismissStatusRequest {
-      id: string;
-    }
-  }
-
-  export namespace Tunables {
-    export interface TunableItem {
-      uuid: string;
-      tunable: string;
-      value: string;
-      comment: string;
-      enabled: boolean;
-    }
-
-    export interface TunableResponse extends BaseResponse {
-      tunable: TunableItem;
-    }
-
-    export interface TunableSearchRequest {
-      searchPhrase?: string;
-      current?: number;
-      rowCount?: number;
-    }
-
-    export interface TunableSearchResponse extends BaseResponse {
-      current: number;
-      rowCount: number;
-      total: number;
-      rows: TunableItem[];
-    }
-
-    export interface AddTunableRequest {
-      tunable: string;
-      value: string;
-      comment?: string;
-      enabled?: boolean;
-    }
-
-    export interface SetTunableRequest {
-      tunable?: string;
-      value?: string;
-      comment?: string;
-      enabled?: boolean;
-    }
-  }
-
-  export interface SystemStatus {
-    date?: string;
-    uptime?: string;
-    load_average?: string;
-    cpu_usage?: string;
-    memory_usage?: string;
-    disk_usage?: string;
-    temperature?: string;
-    [key: string]: any;
-  }
-
-  export interface ServiceStatus {
-    name: string;
-    enabled?: boolean;
-    running?: boolean;
-    locked?: boolean;
-    description?: string;
-    [key: string]: any;
-  }
+// Record interfaces
+export interface CoreRecord extends BaseRecord {
+ 
+  [key: string]: any;
 }

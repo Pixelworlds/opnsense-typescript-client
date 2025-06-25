@@ -1,121 +1,71 @@
-export namespace Auth {
-  export interface BaseResponse {
-    result: string;
-    status: string;
-  }
+import type {
+      ApiResponse,
+      ApiResult,
+      SearchResult,
+      BaseRecord,
+      ServiceStatus,
+      ServiceControl,
+      ConfigTest,
+      CrudOperations,
+      ServiceOperations,
+      SettingsOperations
+    } from './common';
 
-  export interface ErrorResponse {
-    result: string;
-    status: string;
-    message?: string;
-  }
+// Controller interfaces
+export interface AuthGroupController {
+  /** Execute add for auth group */
+  add(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute del for auth group */
+  del(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Get get for auth group */
+  get(uuid: string): Promise<ApiResponse<any>>;
+  /** Execute set for auth group */
+  set(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+}
+export interface AuthPrivController {
+  /** Get get for auth priv */
+  get(): Promise<ApiResponse<any>>;
+  /** Get get item for auth priv */
+  getItem(): Promise<ApiResponse<any>>;
+  /** Get search for auth priv */
+  search(): Promise<ApiResponse<SearchResult>>;
+  /** Execute set for auth priv */
+  set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute set item for auth priv */
+  setItem(): Promise<ApiResponse<ApiResult>>;
+}
+export interface AuthUserController {
+  /** Execute add for auth user */
+  add(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute add api key for auth user */
+  addApiKey(): Promise<ApiResponse<ApiResult>>;
+  /** Execute del for auth user */
+  del(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute del api key for auth user */
+  delApiKey(): Promise<ApiResponse<ApiResult>>;
+  /** Get download for auth user */
+  download(): Promise<ApiResponse<any>>;
+  /** Get get for auth user */
+  get(uuid: string): Promise<ApiResponse<any>>;
+  /** Get new otp seed for auth user */
+  newOtpSeed(): Promise<ApiResponse<any>>;
+  /** Get search api key for auth user */
+  searchApiKey(): Promise<ApiResponse<SearchResult>>;
+  /** Execute set for auth user */
+  set(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute upload for auth user */
+  upload(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+}
 
-  export namespace User {
-    export interface UserInfo {
-      uuid?: string;
-      enabled: boolean;
-      username: string;
-      password?: string;
-      full_name: string;
-      email: string;
-      comment: string;
-      expires: string;
-      groups: string[];
-      privileges: string[];
-      shell: '/bin/sh' | '/bin/csh' | '/bin/tcsh' | '/usr/local/bin/bash';
-      home_directory: string;
-      uid: number;
-      landing_page: string;
-      otp_seed: string;
-      api_keys: APIKey[];
-      created: string;
-      last_login: string;
-    }
+// Main module interface
+export interface AuthModule {
+  group: AuthGroupController;
+  priv: AuthPrivController;
+  user: AuthUserController;
+}
 
-    export interface APIKey {
-      id: string;
-      key: string;
-      secret: string;
-      created: string;
-      last_used?: string;
-    }
-
-    export interface UserResponse extends BaseResponse {
-      user: UserInfo;
-    }
-
-    export interface UserSearchRequest {
-      searchPhrase?: string;
-      current?: number;
-      rowCount?: number;
-      sort?: Record<string, string>;
-    }
-
-    export interface UserSearchResponse extends BaseResponse {
-      current: number;
-      rowCount: number;
-      total: number;
-      rows: UserInfo[];
-    }
-
-    export interface AddUserRequest {
-      user: Partial<UserInfo>;
-    }
-
-    export interface SetUserRequest {
-      user: Partial<UserInfo>;
-    }
-
-    export interface AddAPIKeyRequest {
-      username: string;
-    }
-
-    export interface AddAPIKeyResponse extends BaseResponse {
-      api_key: APIKey;
-    }
-
-    export interface DeleteAPIKeyRequest {
-      id: string;
-    }
-  }
-
-  export namespace Group {
-    export interface GroupInfo {
-      uuid?: string;
-      name: string;
-      description: string;
-      privileges: string[];
-      members: string[];
-      created: string;
-    }
-
-    export interface GroupResponse extends BaseResponse {
-      group: GroupInfo;
-    }
-
-    export interface GroupSearchRequest {
-      searchPhrase?: string;
-      current?: number;
-      rowCount?: number;
-      sort?: Record<string, string>;
-    }
-
-    export interface GroupSearchResponse extends BaseResponse {
-      current: number;
-      rowCount: number;
-      total: number;
-      rows: GroupInfo[];
-    }
-
-    export interface AddGroupRequest {
-      group: Partial<GroupInfo>;
-    }
-
-    export interface SetGroupRequest {
-      group: Partial<GroupInfo>;
-    }
-  }
-
-  export type UserShell = '/bin/sh' | '/bin/csh' | '/bin/tcsh' | '/usr/local/bin/bash';
-  export type PrivilegeScope = 'system' | 'interface' | 'firewall' | 'vpn' | 'service' | 'diagnostic';
+// Record interfaces
+export interface AuthRecord extends BaseRecord {
+ 
+  [key: string]: any;
 }

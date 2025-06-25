@@ -1,123 +1,79 @@
-export namespace Firmware {
-  export interface BaseResponse {
-    result: string;
-    status: string;
-  }
+import type {
+      ApiResponse,
+      ApiResult,
+      SearchResult,
+      BaseRecord,
+      ServiceStatus,
+      ServiceControl,
+      ConfigTest,
+      CrudOperations,
+      ServiceOperations,
+      SettingsOperations
+    } from './common';
 
-  export interface ErrorResponse {
-    result: string;
-    status: string;
-    message?: string;
-  }
+// Controller interfaces
+export interface FirmwareFirmwareController {
+  /** Execute audit for core firmware */
+  audit(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute changelog for core firmware */
+  changelog(): Promise<ApiResponse<ApiResult>>;
+  /** Execute check for core firmware */
+  check(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute connection for core firmware */
+  connection(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Get get for core firmware */
+  get(): Promise<ApiResponse<any>>;
+  /** Get getOptions for core firmware */
+  getoptions(): Promise<ApiResponse<any>>;
+  /** Execute health for core firmware */
+  health(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Get info for core firmware */
+  info(): Promise<ApiResponse<any>>;
+  /** Execute log for core firmware */
+  log(): Promise<ApiResponse<ApiResult>>;
+  /** Execute poweroff for core firmware */
+  poweroff(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute reboot for core firmware */
+  reboot(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute resyncPlugins for core firmware */
+  resyncplugins(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Get running for core firmware */
+  running(): Promise<ApiResponse<any>>;
+  /** Execute set for core firmware */
+  set(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute status for core firmware */
+  status(): Promise<ApiResponse<ApiResult>>;
+  /** Execute syncPlugins for core firmware */
+  syncplugins(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute update for core firmware */
+  update(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Execute upgrade for core firmware */
+  upgrade(data?: Record<string, any>): Promise<ApiResponse<ApiResult>>;
+  /** Get upgradestatus for core firmware */
+  upgradestatus(): Promise<ApiResponse<ServiceStatus>>;
+  /** Execute details for core firmware */
+  details(): Promise<ApiResponse<ApiResult>>;
+  /** Execute install for core firmware */
+  install(): Promise<ApiResponse<ApiResult>>;
+  /** Execute license for core firmware */
+  license(): Promise<ApiResponse<ApiResult>>;
+  /** Execute lock for core firmware */
+  lock(): Promise<ApiResponse<ApiResult>>;
+  /** Execute remove for core firmware */
+  remove(): Promise<ApiResponse<ApiResult>>;
+  /** Execute reinstall for core firmware */
+  reinstall(): Promise<ApiResponse<ApiResult>>;
+  /** Execute unlock for core firmware */
+  unlock(): Promise<ApiResponse<ApiResult>>;
+}
 
-  export interface FirmwareInfo {
-    product_name: string;
-    product_version: string;
-    product_arch: string;
-    product_flavour: string;
-    product_mirror: string;
-    product_check_url: string;
-    product_copyright_url: string;
-    product_email: string;
-    product_website: string;
-  }
+// Main module interface
+export interface FirmwareModule {
+  firmware: FirmwareFirmwareController;
+}
 
-  export interface FirmwareInfoResponse extends BaseResponse {
-    firmware: FirmwareInfo;
-  }
-
-  export interface UpdateInfo {
-    has_update: boolean;
-    status_msg: string;
-    update_size: string;
-    download_size: string;
-    sets: string[];
-    upgrade_needs_reboot: boolean;
-    new_packages: PackageInfo[];
-    reinstall_packages: PackageInfo[];
-    remove_packages: PackageInfo[];
-    upgrade_packages: PackageInfo[];
-    downgrade_packages: PackageInfo[];
-  }
-
-  export interface UpdateCheckResponse extends BaseResponse {
-    status_msg?: string;
-    updates?: UpdateInfo;
-  }
-
-  export interface PackageInfo {
-    name: string;
-    version: string;
-    comment: string;
-    flatsize: number;
-    locked: boolean;
-    automatic: boolean;
-    license: string;
-    repository: string;
-    categories: string[];
-    www: string;
-    maintainer: string;
-    prefix: string;
-    vital: boolean;
-    provided: boolean;
-    path: string;
-    conflict: boolean;
-  }
-
-  export interface PackageSearchResponse extends BaseResponse {
-    packages: PackageInfo[];
-  }
-
-  export interface PackageDetailsResponse extends BaseResponse {
-    package: PackageInfo;
-  }
-
-  export interface ConnectionStatus {
-    connected: boolean;
-    message?: string;
-  }
-
-  export interface ConnectionResponse extends BaseResponse {
-    connection: ConnectionStatus;
-  }
-
-  export interface FirmwareStatus {
-    status: 'none' | 'running' | 'done' | 'error';
-    log: string[];
-    progress?: number;
-  }
-
-  export interface StatusResponse extends BaseResponse {
-    firmware_status: FirmwareStatus;
-  }
-
-  export interface ChangelogResponse extends BaseResponse {
-    changelog: string;
-  }
-
-  export interface AuditInfo {
-    vulnerable_packages: PackageInfo[];
-    total_vulnerable: number;
-    audit_message: string;
-  }
-
-  export interface AuditResponse extends BaseResponse {
-    audit: AuditInfo;
-  }
-
-  export interface UpdateRequest {
-    type?: 'upgrade' | 'update';
-    subscription?: string;
-  }
-
-  export interface UpgradeRequest {
-    upgrade_action?: 'all' | 'packages';
-    subscription?: string;
-  }
-
-  export interface PackageActionRequest {
-    package: string;
-  }
-
-  export type PackageAction = 'install' | 'remove' | 'lock' | 'unlock';
+// Record interfaces
+export interface FirmwareRecord extends BaseRecord {
+ 
+  [key: string]: any;
 }
