@@ -1,6 +1,6 @@
 import { HttpClient } from './http-client';
 import {
-    AuthModule, BackupModule, CaptivePortalModule, CoreModule, CronModule, Dhcpv4Module, Dhcpv6Module, DhcrelayModule,
+    AuthModule, CaptivePortalModule, CoreModule, CronModule, Dhcpv4Module, Dhcpv6Module, DhcrelayModule,
     DiagnosticsModule, DnsmasqModule, FirewallModule, FirmwareModule, IdsModule, InterfacesModule, IPsecModule,
     KeaModule, MonitModule, OpenVPNModule, RoutesModule, RoutingModule, ServiceModule, SyslogModule, SystemModule,
     TrafficshaperModule, TrustModule, UnboundModule, WireguardModule
@@ -44,7 +44,6 @@ export class OPNsenseClient {
   public readonly auth: AuthModule;
   public readonly trust: TrustModule;
   public readonly cron: CronModule;
-  public readonly backup: BackupModule;
   public readonly monit: MonitModule;
   public readonly core: CoreModule;
   public readonly dhcpv4: Dhcpv4Module;
@@ -145,7 +144,6 @@ export class OPNsenseClient {
     this.auth = new AuthModule(this.http);
     this.trust = new TrustModule(this.http);
     this.cron = new CronModule(this.http);
-    this.backup = new BackupModule(this.http);
     this.monit = new MonitModule(this.http);
     this.core = new CoreModule(this.http);
     this.dhcpv4 = new Dhcpv4Module(this.http);
@@ -345,7 +343,7 @@ export class OPNsenseClient {
    * ```
    */
   async createBackup(): Promise<ApiResponse<any>> {
-    return this.backup.download();
+    return this.core.backup.downloadBackup('');
   }
 
   /**
