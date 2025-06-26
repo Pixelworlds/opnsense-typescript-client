@@ -1,11 +1,5 @@
+import type { ApiResponse, ApiResult, ServiceControl, ServiceStatus } from '../../types/common';
 import { BaseModule } from '../base';
-import type {
-  ApiResponse,
-  ApiResult,
-  SearchResult,
-  ServiceStatus,
-  ServiceControl
-} from '../../types/common';
 
 // Controller classes
 export class MonitService extends BaseModule {
@@ -19,21 +13,21 @@ export class MonitService extends BaseModule {
   /**
    * Execute reconfigure for monit service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/monit/monit/service/reconfigure`, data);
   }
 
   /**
    * Execute restart for monit service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/monit/monit/service/restart`, data);
   }
 
   /**
    * Execute start for monit service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/monit/monit/service/start`, data);
   }
 
@@ -47,7 +41,7 @@ export class MonitService extends BaseModule {
   /**
    * Execute stop for monit service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/monit/monit/service/stop`, data);
   }
 }
@@ -200,26 +194,5 @@ export class MonitModule extends BaseModule {
     this.service = new MonitService(http);
     this.settings = new MonitSettings(http);
     this.status = new MonitStatus(http);
-  }
-
-  // Legacy methods for backward compatibility
-  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
-    return this.service?.status() || this.http.get('/api/monit/service/status');
-  }
-
-  async start(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.start() || this.http.post('/api/monit/service/start');
-  }
-
-  async stop(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.stop() || this.http.post('/api/monit/service/stop');
-  }
-
-  async restart(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.restart() || this.http.post('/api/monit/service/restart');
-  }
-
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.reconfigure() || this.http.post('/api/monit/service/reconfigure');
   }
 }

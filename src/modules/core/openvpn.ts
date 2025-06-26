@@ -1,11 +1,5 @@
+import type { ApiResponse, ApiResult, SearchResult, ServiceControl } from '../../types/common';
 import { BaseModule } from '../base';
-import type {
-  ApiResponse,
-  ApiResult,
-  SearchResult,
-  ServiceStatus,
-  ServiceControl
-} from '../../types/common';
 
 // Controller classes
 export class OpenvpnClientOverwrites extends BaseModule {
@@ -40,7 +34,14 @@ export class OpenvpnClientOverwrites extends BaseModule {
   /**
    * Execute toggle for openvpn client_overwrites
    */
-  async toggle(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+  override async toggle(path: string, uuid: string, enabled?: boolean): Promise<ApiResponse<any>> {
+    return super.toggle('/api/openvpn/openvpn/client_overwrites/toggle', uuid, enabled);
+  }
+
+  /**
+   * Execute toggle for openvpn client_overwrites with data
+   */
+  async toggleWithData(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
     return this.http.post(`/api/openvpn/openvpn/client_overwrites/toggle/${uuid}/${enabled}`, data);
   }
 }
@@ -156,7 +157,14 @@ export class OpenvpnInstances extends BaseModule {
   /**
    * Execute toggle for openvpn instances
    */
-  async toggle(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+  override async toggle(path: string, uuid: string, enabled?: boolean): Promise<ApiResponse<any>> {
+    return super.toggle('/api/openvpn/openvpn/instances/toggle', uuid, enabled);
+  }
+
+  /**
+   * Execute toggle for openvpn instances with data
+   */
+  async toggleWithData(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
     return this.http.post(`/api/openvpn/openvpn/instances/toggle/${uuid}/${enabled}`, data);
   }
 }
@@ -172,7 +180,7 @@ export class OpenvpnService extends BaseModule {
   /**
    * Execute reconfigure for openvpn service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/openvpn/openvpn/service/reconfigure`, data);
   }
 
@@ -225,26 +233,5 @@ export class OpenvpnModule extends BaseModule {
     this.export = new OpenvpnExport(http);
     this.instances = new OpenvpnInstances(http);
     this.service = new OpenvpnService(http);
-  }
-
-  // Legacy methods for backward compatibility
-  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
-    return this.service?.status() || this.http.get('/api/openvpn/service/status');
-  }
-
-  async start(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.start() || this.http.post('/api/openvpn/service/start');
-  }
-
-  async stop(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.stop() || this.http.post('/api/openvpn/service/stop');
-  }
-
-  async restart(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.restart() || this.http.post('/api/openvpn/service/restart');
-  }
-
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.reconfigure() || this.http.post('/api/openvpn/service/reconfigure');
   }
 }
