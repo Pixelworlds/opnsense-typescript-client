@@ -239,21 +239,21 @@ export class BindService extends BaseModule {
   /**
    * Execute reconfigure for bind service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/bind/bind/service/reconfigure`);
   }
 
   /**
    * Execute restart for bind service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/bind/bind/service/restart`);
   }
 
   /**
    * Execute start for bind service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/bind/bind/service/start`);
   }
 
@@ -267,7 +267,7 @@ export class BindService extends BaseModule {
   /**
    * Execute stop for bind service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/bind/bind/service/stop`);
   }
 }

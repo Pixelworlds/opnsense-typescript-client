@@ -12,21 +12,21 @@ export class StunnelService extends BaseModule {
   /**
    * Execute reconfigure for stunnel service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/stunnel/stunnel/service/reconfigure`);
   }
 
   /**
    * Execute restart for stunnel service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/stunnel/stunnel/service/restart`);
   }
 
   /**
    * Execute start for stunnel service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/stunnel/stunnel/service/start`);
   }
 
@@ -40,7 +40,7 @@ export class StunnelService extends BaseModule {
   /**
    * Execute stop for stunnel service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/stunnel/stunnel/service/stop`);
   }
 }

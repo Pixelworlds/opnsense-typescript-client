@@ -12,28 +12,28 @@ export class TincService extends BaseModule {
   /**
    * Execute reconfigure for tinc service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/tinc/tinc/service/reconfigure`);
   }
 
   /**
    * Execute restart for tinc service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/tinc/tinc/service/restart`);
   }
 
   /**
    * Execute start for tinc service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/tinc/tinc/service/start`);
   }
 
   /**
    * Execute stop for tinc service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/tinc/tinc/service/stop`);
   }
 }

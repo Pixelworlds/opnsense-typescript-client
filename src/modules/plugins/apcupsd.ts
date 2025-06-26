@@ -19,21 +19,21 @@ export class ApcupsdService extends BaseModule {
   /**
    * Execute reconfigure for apcupsd service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/apcupsd/apcupsd/service/reconfigure`);
   }
 
   /**
    * Execute restart for apcupsd service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/apcupsd/apcupsd/service/restart`);
   }
 
   /**
    * Execute start for apcupsd service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/apcupsd/apcupsd/service/start`);
   }
 
@@ -47,7 +47,7 @@ export class ApcupsdService extends BaseModule {
   /**
    * Execute stop for apcupsd service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/apcupsd/apcupsd/service/stop`);
   }
 }

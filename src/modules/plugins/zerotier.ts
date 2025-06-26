@@ -1,11 +1,5 @@
+import type { ApiResponse, ApiResult, ServiceStatus } from '../../types/common';
 import { BaseModule } from '../base';
-import type {
-  ApiResponse,
-  ApiResult,
-  SearchResult,
-  ServiceStatus,
-  ServiceControl
-} from '../../types/common';
 
 // Controller classes
 export class ZerotierNetwork extends BaseModule {
@@ -40,8 +34,8 @@ export class ZerotierNetwork extends BaseModule {
   /**
    * Get search for zerotier network
    */
-  async search(): Promise<ApiResponse<SearchResult>> {
-    return this.http.get(`/api/zerotier/zerotier/network/search`);
+  override async search<T = any>(path?: string, searchParams: Record<string, any> = {}): Promise<ApiResponse<T>> {
+    return super.search<T>(path || '/api/zerotier/zerotier/network/search', searchParams);
   }
 
   /**
@@ -54,7 +48,16 @@ export class ZerotierNetwork extends BaseModule {
   /**
    * Execute toggle for zerotier network
    */
-  async toggle(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+  override async toggle(path: string, uuid: string, enabled?: boolean): Promise<ApiResponse<any>> {
+    // This module has a different toggle implementation that doesn't use enabled parameter
+    // Use toggleNetwork for the specific functionality
+    return this.toggleNetwork(uuid);
+  }
+
+  /**
+   * Execute toggle network for zerotier network
+   */
+  async toggleNetwork(uuid: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
     return this.http.post(`/api/zerotier/zerotier/network/toggle/${uuid}`, data);
   }
 }
@@ -92,5 +95,4 @@ export class ZerotierModule extends BaseModule {
     this.network = new ZerotierNetwork(http);
     this.settings = new ZerotierSettings(http);
   }
-
 }

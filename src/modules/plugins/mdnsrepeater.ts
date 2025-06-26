@@ -12,21 +12,21 @@ export class MdnsrepeaterService extends BaseModule {
   /**
    * Execute reconfigure for mdnsrepeater service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/mdnsrepeater/mdnsrepeater/service/reconfigure`);
   }
 
   /**
    * Execute restart for mdnsrepeater service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/mdnsrepeater/mdnsrepeater/service/restart`);
   }
 
   /**
    * Execute start for mdnsrepeater service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/mdnsrepeater/mdnsrepeater/service/start`);
   }
 
@@ -40,7 +40,7 @@ export class MdnsrepeaterService extends BaseModule {
   /**
    * Execute stop for mdnsrepeater service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/mdnsrepeater/mdnsrepeater/service/stop`);
   }
 }

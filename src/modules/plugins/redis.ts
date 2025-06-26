@@ -12,7 +12,7 @@ export class RedisService extends BaseModule {
   /**
    * Execute reconfigure for redis service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/redis/redis/service/reconfigure`);
   }
 
@@ -26,14 +26,14 @@ export class RedisService extends BaseModule {
   /**
    * Execute restart for redis service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/redis/redis/service/restart`);
   }
 
   /**
    * Execute start for redis service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/redis/redis/service/start`);
   }
 
@@ -47,7 +47,7 @@ export class RedisService extends BaseModule {
   /**
    * Execute stop for redis service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/redis/redis/service/stop`);
   }
 }

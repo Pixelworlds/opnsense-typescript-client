@@ -28,21 +28,21 @@ export class NetsnmpService extends BaseModule {
   /**
    * Execute reconfigure for netsnmp service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/netsnmp/netsnmp/service/reconfigure`);
   }
 
   /**
    * Execute restart for netsnmp service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/netsnmp/netsnmp/service/restart`);
   }
 
   /**
    * Execute start for netsnmp service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/netsnmp/netsnmp/service/start`);
   }
 
@@ -56,7 +56,7 @@ export class NetsnmpService extends BaseModule {
   /**
    * Execute stop for netsnmp service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/netsnmp/netsnmp/service/stop`);
   }
 }

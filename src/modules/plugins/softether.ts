@@ -28,21 +28,21 @@ export class SoftetherService extends BaseModule {
   /**
    * Execute reconfigure for softether service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/softether/softether/service/reconfigure`);
   }
 
   /**
    * Execute restart for softether service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/softether/softether/service/restart`);
   }
 
   /**
    * Execute start for softether service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/softether/softether/service/start`);
   }
 
@@ -56,7 +56,7 @@ export class SoftetherService extends BaseModule {
   /**
    * Execute stop for softether service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/softether/softether/service/stop`);
   }
 }

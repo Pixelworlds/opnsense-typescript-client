@@ -12,21 +12,21 @@ export class WazuhagentService extends BaseModule {
   /**
    * Execute reconfigure for wazuhagent service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/wazuhagent/wazuhagent/service/reconfigure`);
   }
 
   /**
    * Execute restart for wazuhagent service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/wazuhagent/wazuhagent/service/restart`);
   }
 
   /**
    * Execute start for wazuhagent service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/wazuhagent/wazuhagent/service/start`);
   }
 
@@ -40,7 +40,7 @@ export class WazuhagentService extends BaseModule {
   /**
    * Execute stop for wazuhagent service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/wazuhagent/wazuhagent/service/stop`);
   }
 }

@@ -28,21 +28,21 @@ export class CollectdService extends BaseModule {
   /**
    * Execute reconfigure for collectd service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/collectd/collectd/service/reconfigure`);
   }
 
   /**
    * Execute restart for collectd service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/collectd/collectd/service/restart`);
   }
 
   /**
    * Execute start for collectd service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/collectd/collectd/service/start`);
   }
 
@@ -56,7 +56,7 @@ export class CollectdService extends BaseModule {
   /**
    * Execute stop for collectd service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/collectd/collectd/service/stop`);
   }
 }

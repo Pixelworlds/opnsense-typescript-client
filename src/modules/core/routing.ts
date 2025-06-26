@@ -40,7 +40,7 @@ export class RoutingSettings extends BaseModule {
   /**
    * Execute reconfigure for routing settings
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/routing/routing/settings/reconfigure`, data);
   }
 

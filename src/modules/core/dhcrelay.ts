@@ -12,7 +12,7 @@ export class DhcrelayService extends BaseModule {
   /**
    * Execute reconfigure for dhcrelay service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/dhcrelay/dhcrelay/service/reconfigure`, data);
   }
 }

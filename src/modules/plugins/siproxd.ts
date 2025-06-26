@@ -86,14 +86,14 @@ export class SiproxdService extends BaseModule {
   /**
    * Execute reconfigure for siproxd service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/siproxd/siproxd/service/reconfigure`);
   }
 
   /**
    * Execute restart for siproxd service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/siproxd/siproxd/service/restart`);
   }
 
@@ -107,7 +107,7 @@ export class SiproxdService extends BaseModule {
   /**
    * Execute start for siproxd service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/siproxd/siproxd/service/start`);
   }
 
@@ -121,7 +121,7 @@ export class SiproxdService extends BaseModule {
   /**
    * Execute stop for siproxd service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/siproxd/siproxd/service/stop`);
   }
 }

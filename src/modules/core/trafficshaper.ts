@@ -19,7 +19,7 @@ export class TrafficshaperService extends BaseModule {
   /**
    * Execute reconfigure for trafficshaper service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/trafficshaper/trafficshaper/service/reconfigure`, data);
   }
 

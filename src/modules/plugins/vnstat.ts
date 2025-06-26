@@ -49,7 +49,7 @@ export class VnstatService extends BaseModule {
   /**
    * Execute reconfigure for vnstat service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/vnstat/vnstat/service/reconfigure`);
   }
 
@@ -63,14 +63,14 @@ export class VnstatService extends BaseModule {
   /**
    * Execute restart for vnstat service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/vnstat/vnstat/service/restart`);
   }
 
   /**
    * Execute start for vnstat service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/vnstat/vnstat/service/start`);
   }
 
@@ -84,7 +84,7 @@ export class VnstatService extends BaseModule {
   /**
    * Execute stop for vnstat service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/vnstat/vnstat/service/stop`);
   }
 

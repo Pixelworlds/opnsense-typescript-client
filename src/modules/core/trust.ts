@@ -156,8 +156,8 @@ export class TrustCrl extends BaseModule {
   /**
    * Get search for trust crl
    */
-  async search(): Promise<ApiResponse<SearchResult>> {
-    return this.http.get(`/api/trust/trust/crl/search`);
+  override async search<T = any>(path?: string, searchParams: Record<string, any> = {}): Promise<ApiResponse<T>> {
+    return super.search<T>(path || '/api/trust/trust/crl/search', searchParams);
   }
 
   /**
@@ -179,7 +179,7 @@ export class TrustSettings extends BaseModule {
   /**
    * Execute reconfigure for trust settings
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/trust/trust/settings/reconfigure`, data);
   }
 

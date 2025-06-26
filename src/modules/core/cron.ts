@@ -12,7 +12,7 @@ export class CronService extends BaseModule {
   /**
    * Execute reconfigure for cron service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/cron/cron/service/reconfigure`, data);
   }
 }

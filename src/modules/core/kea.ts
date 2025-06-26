@@ -142,8 +142,8 @@ export class KeaLeases4 extends BaseModule {
   /**
    * Get search for kea leases4
    */
-  async search(): Promise<ApiResponse<SearchResult>> {
-    return this.http.get(`/api/kea/kea/leases4/search`);
+  override async search<T = any>(path?: string, searchParams: Record<string, any> = {}): Promise<ApiResponse<T>> {
+    return super.search<T>(path || '/api/kea/kea/leases4/search', searchParams);
   }
 }
 
@@ -151,21 +151,21 @@ export class KeaService extends BaseModule {
   /**
    * Execute reconfigure for kea service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/kea/kea/service/reconfigure`, data);
   }
 
   /**
    * Execute restart for kea service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/kea/kea/service/restart`, data);
   }
 
   /**
    * Execute start for kea service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/kea/kea/service/start`, data);
   }
 
@@ -179,7 +179,7 @@ export class KeaService extends BaseModule {
   /**
    * Execute stop for kea service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/kea/kea/service/stop`, data);
   }
 }

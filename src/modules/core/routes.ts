@@ -49,7 +49,7 @@ export class RoutesRoutes extends BaseModule {
   /**
    * Execute reconfigure for routes routes
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/routes/routes/routes/reconfigure`, data);
   }
 

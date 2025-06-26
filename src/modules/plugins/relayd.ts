@@ -1,11 +1,5 @@
+import type { ApiResponse, ApiResult, SearchResult, ServiceControl, ServiceStatus } from '../../types/common';
 import { BaseModule } from '../base';
-import type {
-  ApiResponse,
-  ApiResult,
-  SearchResult,
-  ServiceStatus,
-  ServiceControl
-} from '../../types/common';
 
 // Controller classes
 export class RelaydService extends BaseModule {
@@ -19,21 +13,21 @@ export class RelaydService extends BaseModule {
   /**
    * Execute reconfigure for relayd service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/relayd/relayd/service/reconfigure`);
   }
 
   /**
    * Execute restart for relayd service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/relayd/relayd/service/restart`);
   }
 
   /**
    * Execute start for relayd service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/relayd/relayd/service/start`);
   }
 
@@ -47,7 +41,7 @@ export class RelaydService extends BaseModule {
   /**
    * Execute stop for relayd service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/relayd/relayd/service/stop`);
   }
 }
@@ -77,8 +71,17 @@ export class RelaydSettings extends BaseModule {
   /**
    * Execute search for relayd settings
    */
-  async search(nodeType: string, params?: Record<string, any>): Promise<ApiResponse<SearchResult>> {
-    return this.http.post(`/api/relayd/relayd/settings/search/${nodeType}`, data);
+  override async search<T = any>(path: string, searchParams: Record<string, any> = {}): Promise<ApiResponse<T>> {
+    // This module has a different search implementation
+    // Use searchByNodeType for the specific functionality
+    return super.search<T>(path, searchParams);
+  }
+
+  /**
+   * Execute search by node type for relayd settings
+   */
+  async searchByNodeType(nodeType: string, params?: Record<string, any>): Promise<ApiResponse<SearchResult>> {
+    return this.http.post(`/api/relayd/relayd/settings/search/${nodeType}`, params);
   }
 
   /**
@@ -91,7 +94,21 @@ export class RelaydSettings extends BaseModule {
   /**
    * Execute toggle for relayd settings
    */
-  async toggle(nodeType: string, uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+  override async toggle(path: string, uuid: string, enabled?: boolean): Promise<ApiResponse<any>> {
+    // This module has a different toggle implementation
+    // Use toggleNode for the specific functionality
+    return super.toggle(path, uuid, enabled);
+  }
+
+  /**
+   * Execute toggle node for relayd settings
+   */
+  async toggleNode(
+    nodeType: string,
+    uuid: string,
+    enabled?: boolean,
+    data?: Record<string, any>
+  ): Promise<ApiResponse<ApiResult>> {
     return this.http.post(`/api/relayd/relayd/settings/toggle/${nodeType}/${uuid}/${enabled}`, data);
   }
 }
@@ -107,7 +124,21 @@ export class RelaydStatus extends BaseModule {
   /**
    * Execute toggle for relayd status
    */
-  async toggle(nodeType: string, id: string, action: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+  override async toggle(path: string, uuid: string, enabled?: boolean): Promise<ApiResponse<any>> {
+    // This module has a different toggle implementation
+    // Use toggleStatus for the specific functionality
+    return super.toggle(path, uuid, enabled);
+  }
+
+  /**
+   * Execute toggle status for relayd status
+   */
+  async toggleStatus(
+    nodeType: string,
+    id: string,
+    action: string,
+    data?: Record<string, any>
+  ): Promise<ApiResponse<ApiResult>> {
     return this.http.post(`/api/relayd/relayd/status/toggle/${nodeType}/${id}/${action}`, data);
   }
 }
@@ -124,5 +155,4 @@ export class RelaydModule extends BaseModule {
     this.settings = new RelaydSettings(http);
     this.status = new RelaydStatus(http);
   }
-
 }

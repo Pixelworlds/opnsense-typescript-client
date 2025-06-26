@@ -1,11 +1,5 @@
+import type { ApiResponse, ApiResult, ServiceControl, ServiceStatus } from '../../types/common';
 import { BaseModule } from '../base';
-import type {
-  ApiResponse,
-  ApiResult,
-  SearchResult,
-  ServiceStatus,
-  ServiceControl
-} from '../../types/common';
 
 // Controller classes
 export class CoreBackup extends BaseModule {
@@ -100,7 +94,7 @@ export class CoreHasync extends BaseModule {
   /**
    * Execute reconfigure for core hasync
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/core/core/hasync/reconfigure`, data);
   }
 
@@ -123,7 +117,7 @@ export class CoreHasyncStatus extends BaseModule {
   /**
    * Execute restart for core hasync_status
    */
-  async restart(service: string, service_id: string): Promise<ApiResponse<ServiceControl>> {
+  async restart(service: string, service_id: string, data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/core/core/hasync_status/restart/${service}/${service_id}`, data);
   }
 
@@ -144,14 +138,14 @@ export class CoreHasyncStatus extends BaseModule {
   /**
    * Execute start for core hasync_status
    */
-  async start(service: string, service_id: string): Promise<ApiResponse<ServiceControl>> {
+  async start(service: string, service_id: string, data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/core/core/hasync_status/start/${service}/${service_id}`, data);
   }
 
   /**
    * Execute stop for core hasync_status
    */
-  async stop(service: string, service_id: string): Promise<ApiResponse<ServiceControl>> {
+  async stop(service: string, service_id: string, data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/core/core/hasync_status/stop/${service}/${service_id}`, data);
   }
 
@@ -167,8 +161,8 @@ export class CoreMenu extends BaseModule {
   /**
    * Get search for core menu
    */
-  async search(): Promise<ApiResponse<SearchResult>> {
-    return this.http.get(`/api/core/core/menu/search`);
+  override async search<T = any>(path?: string, searchParams: Record<string, any> = {}): Promise<ApiResponse<T>> {
+    return super.search<T>(path || '/api/core/core/menu/search', searchParams);
   }
 
   /**
@@ -183,28 +177,28 @@ export class CoreService extends BaseModule {
   /**
    * Execute restart for core service
    */
-  async restart(name: string, id: string): Promise<ApiResponse<ServiceControl>> {
+  async restart(name: string, id: string, data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/core/core/service/restart/${name}/${id}`, data);
   }
 
   /**
    * Get search for core service
    */
-  async search(): Promise<ApiResponse<SearchResult>> {
-    return this.http.get(`/api/core/core/service/search`);
+  override async search<T = any>(path?: string, searchParams: Record<string, any> = {}): Promise<ApiResponse<T>> {
+    return super.search<T>(path || '/api/core/core/service/search', searchParams);
   }
 
   /**
    * Execute start for core service
    */
-  async start(name: string, id: string): Promise<ApiResponse<ServiceControl>> {
+  async start(name: string, id: string, data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/core/core/service/start/${name}/${id}`, data);
   }
 
   /**
    * Execute stop for core service
    */
-  async stop(name: string, id: string): Promise<ApiResponse<ServiceControl>> {
+  async stop(name: string, id: string, data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/core/core/service/stop/${name}/${id}`, data);
   }
 }
@@ -248,8 +242,8 @@ export class CoreSnapshots extends BaseModule {
   /**
    * Get search for core snapshots
    */
-  async search(): Promise<ApiResponse<SearchResult>> {
-    return this.http.get(`/api/core/core/snapshots/search`);
+  override async search<T = any>(path?: string, searchParams: Record<string, any> = {}): Promise<ApiResponse<T>> {
+    return super.search<T>(path || '/api/core/core/snapshots/search', searchParams);
   }
 
   /**
@@ -322,7 +316,7 @@ export class CoreTunables extends BaseModule {
   /**
    * Execute reconfigure for core tunables
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/core/core/tunables/reconfigure`, data);
   }
 
@@ -372,5 +366,4 @@ export class CoreModule extends BaseModule {
     this.system = new CoreSystem(http);
     this.tunables = new CoreTunables(http);
   }
-
 }

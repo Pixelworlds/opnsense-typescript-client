@@ -1,11 +1,5 @@
+import type { ApiResponse, ApiResult, ServiceControl, ServiceStatus } from '../../types/common';
 import { BaseModule } from '../base';
-import type {
-  ApiResponse,
-  ApiResult,
-  SearchResult,
-  ServiceStatus,
-  ServiceControl
-} from '../../types/common';
 
 // Controller classes
 export class AcmeclientAccounts extends BaseModule {
@@ -47,7 +41,14 @@ export class AcmeclientAccounts extends BaseModule {
   /**
    * Execute toggle for acmeclient accounts
    */
-  async toggle(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+  override async toggle(path: string, uuid: string, enabled?: boolean): Promise<ApiResponse<any>> {
+    return super.toggle('/api/acmeclient/acmeclient/accounts/toggle', uuid, enabled);
+  }
+
+  /**
+   * Execute toggle with data for acmeclient accounts
+   */
+  async toggleWithData(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
     return this.http.post(`/api/acmeclient/acmeclient/accounts/toggle/${uuid}/${enabled}`, data);
   }
 
@@ -119,7 +120,14 @@ export class AcmeclientActions extends BaseModule {
   /**
    * Execute toggle for acmeclient actions
    */
-  async toggle(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+  override async toggle(path: string, uuid: string, enabled?: boolean): Promise<ApiResponse<any>> {
+    return super.toggle('/api/acmeclient/acmeclient/actions/toggle', uuid, enabled);
+  }
+
+  /**
+   * Execute toggle with data for acmeclient actions
+   */
+  async toggleWithData(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
     return this.http.post(`/api/acmeclient/acmeclient/actions/toggle/${uuid}/${enabled}`, data);
   }
 
@@ -198,7 +206,14 @@ export class AcmeclientCertificates extends BaseModule {
   /**
    * Execute toggle for acmeclient certificates
    */
-  async toggle(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+  override async toggle(path: string, uuid: string, enabled?: boolean): Promise<ApiResponse<any>> {
+    return super.toggle('/api/acmeclient/acmeclient/certificates/toggle', uuid, enabled);
+  }
+
+  /**
+   * Execute toggle with data for acmeclient certificates
+   */
+  async toggleWithData(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
     return this.http.post(`/api/acmeclient/acmeclient/certificates/toggle/${uuid}/${enabled}`, data);
   }
 
@@ -221,7 +236,7 @@ export class AcmeclientService extends BaseModule {
   /**
    * Execute reconfigure for acmeclient service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/acmeclient/acmeclient/service/reconfigure`);
   }
 
@@ -235,7 +250,7 @@ export class AcmeclientService extends BaseModule {
   /**
    * Execute restart for acmeclient service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/acmeclient/acmeclient/service/restart`);
   }
 
@@ -249,7 +264,7 @@ export class AcmeclientService extends BaseModule {
   /**
    * Execute start for acmeclient service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/acmeclient/acmeclient/service/start`);
   }
 
@@ -263,7 +278,7 @@ export class AcmeclientService extends BaseModule {
   /**
    * Execute stop for acmeclient service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/acmeclient/acmeclient/service/stop`);
   }
 }
@@ -344,7 +359,14 @@ export class AcmeclientValidations extends BaseModule {
   /**
    * Execute toggle for acmeclient validations
    */
-  async toggle(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+  override async toggle(path: string, uuid: string, enabled?: boolean): Promise<ApiResponse<any>> {
+    return super.toggle('/api/acmeclient/acmeclient/validations/toggle', uuid, enabled);
+  }
+
+  /**
+   * Execute toggle with data for acmeclient validations
+   */
+  async toggleWithData(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
     return this.http.post(`/api/acmeclient/acmeclient/validations/toggle/${uuid}/${enabled}`, data);
   }
 
@@ -374,5 +396,4 @@ export class AcmeclientModule extends BaseModule {
     this.settings = new AcmeclientSettings(http);
     this.validations = new AcmeclientValidations(http);
   }
-
 }

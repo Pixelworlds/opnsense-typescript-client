@@ -1,11 +1,5 @@
+import type { ApiResponse, ApiResult, SearchResult, ServiceControl, ServiceStatus } from '../../types/common';
 import { BaseModule } from '../base';
-import type {
-  ApiResponse,
-  ApiResult,
-  SearchResult,
-  ServiceStatus,
-  ServiceControl
-} from '../../types/common';
 
 // Controller classes
 export class IpsecConnections extends BaseModule {
@@ -159,7 +153,16 @@ export class IpsecConnections extends BaseModule {
   /**
    * Execute toggle for ipsec connections
    */
-  async toggle(enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+  override async toggle(path: string, uuid: string, enabled?: boolean): Promise<ApiResponse<any>> {
+    // This method has a different signature than the standard toggle
+    // Using a custom method instead
+    return this.toggleConnections(enabled);
+  }
+
+  /**
+   * Execute toggle connections for ipsec connections
+   */
+  async toggleConnections(enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
     return this.http.post(`/api/ipsec/ipsec/connections/toggle/${enabled}`, data);
   }
 
@@ -254,7 +257,7 @@ export class IpsecLeases extends BaseModule {
   /**
    * Get search for ipsec leases
    */
-  async search(): Promise<ApiResponse<SearchResult>> {
+  override async search<T = any>(path?: string, searchParams: Record<string, any> = {}): Promise<ApiResponse<T>> {
     return this.http.get(`/api/ipsec/ipsec/leases/search`);
   }
 }
@@ -307,7 +310,14 @@ export class IpsecManualSpd extends BaseModule {
   /**
    * Execute toggle for ipsec manual_spd
    */
-  async toggle(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+  override async toggle(path: string, uuid: string, enabled?: boolean): Promise<ApiResponse<any>> {
+    return super.toggle('/api/ipsec/ipsec/manual_spd/toggle', uuid, enabled);
+  }
+
+  /**
+   * Execute toggle with data for ipsec manual_spd
+   */
+  async toggleWithData(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
     return this.http.post(`/api/ipsec/ipsec/manual_spd/toggle/${uuid}/${enabled}`, data);
   }
 }
@@ -344,7 +354,14 @@ export class IpsecPools extends BaseModule {
   /**
    * Execute toggle for ipsec pools
    */
-  async toggle(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+  override async toggle(path: string, uuid: string, enabled?: boolean): Promise<ApiResponse<any>> {
+    return super.toggle('/api/ipsec/ipsec/pools/toggle', uuid, enabled);
+  }
+
+  /**
+   * Execute toggle with data for ipsec pools
+   */
+  async toggleWithData(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
     return this.http.post(`/api/ipsec/ipsec/pools/toggle/${uuid}/${enabled}`, data);
   }
 }
@@ -404,7 +421,7 @@ export class IpsecSad extends BaseModule {
   /**
    * Get search for ipsec sad
    */
-  async search(): Promise<ApiResponse<SearchResult>> {
+  override async search<T = any>(path?: string, searchParams: Record<string, any> = {}): Promise<ApiResponse<T>> {
     return this.http.get(`/api/ipsec/ipsec/sad/search`);
   }
 }
@@ -413,21 +430,21 @@ export class IpsecService extends BaseModule {
   /**
    * Execute reconfigure for ipsec service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/ipsec/ipsec/service/reconfigure`, data);
   }
 
   /**
    * Execute restart for ipsec service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/ipsec/ipsec/service/restart`, data);
   }
 
   /**
    * Execute start for ipsec service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/ipsec/ipsec/service/start`, data);
   }
 
@@ -441,7 +458,7 @@ export class IpsecService extends BaseModule {
   /**
    * Execute stop for ipsec service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/ipsec/ipsec/service/stop`, data);
   }
 }
@@ -503,7 +520,7 @@ export class IpsecSpd extends BaseModule {
   /**
    * Get search for ipsec spd
    */
-  async search(): Promise<ApiResponse<SearchResult>> {
+  override async search<T = any>(path?: string, searchParams: Record<string, any> = {}): Promise<ApiResponse<T>> {
     return this.http.get(`/api/ipsec/ipsec/spd/search`);
   }
 }
@@ -540,7 +557,16 @@ export class IpsecTunnel extends BaseModule {
   /**
    * Execute toggle for ipsec tunnel
    */
-  async toggle(enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+  override async toggle(path: string, uuid: string, enabled?: boolean): Promise<ApiResponse<any>> {
+    // This module has a different toggle implementation
+    // Use toggleTunnel for the specific functionality
+    return this.toggleTunnel(enabled);
+  }
+
+  /**
+   * Execute toggle tunnel for ipsec tunnel
+   */
+  async toggleTunnel(enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
     return this.http.post(`/api/ipsec/ipsec/tunnel/toggle/${enabled}`, data);
   }
 
@@ -591,7 +617,14 @@ export class IpsecVti extends BaseModule {
   /**
    * Execute toggle for ipsec vti
    */
-  async toggle(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+  override async toggle(path: string, uuid: string, enabled?: boolean): Promise<ApiResponse<any>> {
+    return super.toggle('/api/ipsec/ipsec/vti/toggle', uuid, enabled);
+  }
+
+  /**
+   * Execute toggle with data for ipsec vti
+   */
+  async toggleWithData(uuid: string, enabled?: boolean, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
     return this.http.post(`/api/ipsec/ipsec/vti/toggle/${uuid}/${enabled}`, data);
   }
 }
@@ -630,5 +663,4 @@ export class IpsecModule extends BaseModule {
     this.tunnel = new IpsecTunnel(http);
     this.vti = new IpsecVti(http);
   }
-
 }

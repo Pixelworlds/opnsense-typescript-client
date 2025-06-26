@@ -12,8 +12,8 @@ export class DnsmasqLeases extends BaseModule {
   /**
    * Get search for dnsmasq leases
    */
-  async search(): Promise<ApiResponse<SearchResult>> {
-    return this.http.get(`/api/dnsmasq/dnsmasq/leases/search`);
+  override async search<T = any>(path?: string, searchParams: Record<string, any> = {}): Promise<ApiResponse<T>> {
+    return super.search<T>(path || '/api/dnsmasq/dnsmasq/leases/search', searchParams);
   }
 }
 
@@ -21,21 +21,21 @@ export class DnsmasqService extends BaseModule {
   /**
    * Execute reconfigure for dnsmasq service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/dnsmasq/dnsmasq/service/reconfigure`, data);
   }
 
   /**
    * Execute restart for dnsmasq service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/dnsmasq/dnsmasq/service/restart`, data);
   }
 
   /**
    * Execute start for dnsmasq service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/dnsmasq/dnsmasq/service/start`, data);
   }
 
@@ -49,7 +49,7 @@ export class DnsmasqService extends BaseModule {
   /**
    * Execute stop for dnsmasq service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/dnsmasq/dnsmasq/service/stop`, data);
   }
 }

@@ -21,21 +21,21 @@ export class NutService extends BaseModule {
   /**
    * Execute reconfigure for nut service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/nut/nut/service/reconfigure`);
   }
 
   /**
    * Execute restart for nut service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/nut/nut/service/restart`);
   }
 
   /**
    * Execute start for nut service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/nut/nut/service/start`);
   }
 
@@ -49,7 +49,7 @@ export class NutService extends BaseModule {
   /**
    * Execute stop for nut service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/nut/nut/service/stop`);
   }
 }

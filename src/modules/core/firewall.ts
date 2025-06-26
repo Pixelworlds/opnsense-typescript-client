@@ -96,7 +96,7 @@ export class FirewallAlias extends BaseModule {
   /**
    * Execute reconfigure for firewall alias
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/firewall/firewall/alias/reconfigure`, data);
   }
 
@@ -367,7 +367,7 @@ export class FirewallGroup extends BaseModule {
   /**
    * Execute reconfigure for firewall group
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/firewall/firewall/group/reconfigure`, data);
   }
 

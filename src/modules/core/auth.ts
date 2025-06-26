@@ -1,11 +1,5 @@
+import type { ApiResponse, ApiResult, SearchResult } from '../../types/common';
 import { BaseModule } from '../base';
-import type {
-  ApiResponse,
-  ApiResult,
-  SearchResult,
-  ServiceStatus,
-  ServiceControl
-} from '../../types/common';
 
 // Controller classes
 export class AuthGroup extends BaseModule {
@@ -56,8 +50,8 @@ export class AuthPriv extends BaseModule {
   /**
    * Get search for auth priv
    */
-  async search(): Promise<ApiResponse<SearchResult>> {
-    return this.http.get(`/api/auth/auth/priv/search`);
+  override async search<T = any>(path?: string, searchParams: Record<string, any> = {}): Promise<ApiResponse<T>> {
+    return super.search<T>(path || '/api/auth/auth/priv/search', searchParams);
   }
 
   /**
@@ -159,5 +153,4 @@ export class AuthModule extends BaseModule {
     this.priv = new AuthPriv(http);
     this.user = new AuthUser(http);
   }
-
 }
