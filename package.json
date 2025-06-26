@@ -1,6 +1,6 @@
 {
   "name": "@richard-stovall/opnsense-typescript-client",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "TypeScript client for OPNsense API",
   "repository": {
     "type": "git",
