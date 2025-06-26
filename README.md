@@ -492,7 +492,7 @@ Contributions are welcome! The refactored architecture makes it easy to add new 
 
 This project includes comprehensive testing utilities in the `testing/` folder:
 
-### Quick Validation
+### Quick Validation with Bun
 ```bash
 # Test basic client functionality
 bun testing/test-client.ts
@@ -502,6 +502,9 @@ bun testing/module-validator.ts
 
 # Demonstrate complete coverage
 bun testing/demo-test.ts
+
+# Run all tests with Bun's native test runner
+bun test
 ```
 
 ### Live API Testing
@@ -519,22 +522,44 @@ See [`testing/README.md`](testing/README.md) for complete testing documentation.
 
 ### Development Setup
 
+This project uses **Bun** as the preferred runtime for development:
+
 ```bash
 # Clone the repository
 git clone https://github.com/your-repo/opnsense-typescript-client.git
 
-# Install dependencies
+# Install dependencies with Bun (preferred)
+bun install
+
+# Or use other package managers
 npm install
+yarn install
+pnpm install
 
 # Build the project
-npm run build
+bun run build
 
 # Run tests
-npm test
+bun test
 
-# Start development mode
-npm run dev
+# Start development mode with hot reload
+bun --hot run dev
+
+# Type checking
+bun run type-check
+
+# Linting
+bun run lint
 ```
+
+### Bun Runtime Benefits
+
+This project is optimized for Bun:
+- Faster installation and builds
+- Built-in TypeScript support
+- Hot reload during development
+- Native test runner
+- Better performance for development tools
 
 ## License
 
