@@ -2,6 +2,14 @@
   "name": "@richard-stovall/opnsense-typescript-client",
   "version": "0.1.5",
   "description": "TypeScript client for OPNsense API",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pixelworlds/opnsense-typescript-client.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Pixelworlds/opnsense-typescript-client/issues"
+  },
+  "homepage": "https://github.com/Pixelworlds/opnsense-typescript-client#readme",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
