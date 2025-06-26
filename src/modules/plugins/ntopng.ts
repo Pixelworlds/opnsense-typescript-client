@@ -35,21 +35,21 @@ export class NtopngService extends BaseModule {
   /**
    * Execute reconfigure for ntopng service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/ntopng/ntopng/service/reconfigure`);
   }
 
   /**
    * Execute restart for ntopng service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/ntopng/ntopng/service/restart`);
   }
 
   /**
    * Execute start for ntopng service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/ntopng/ntopng/service/start`);
   }
 
@@ -63,7 +63,7 @@ export class NtopngService extends BaseModule {
   /**
    * Execute stop for ntopng service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/ntopng/ntopng/service/stop`);
   }
 }

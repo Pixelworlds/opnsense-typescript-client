@@ -63,21 +63,21 @@ export class DyndnsService extends BaseModule {
   /**
    * Execute reconfigure for dyndns service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/dyndns/dyndns/service/reconfigure`);
   }
 
   /**
    * Execute restart for dyndns service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/dyndns/dyndns/service/restart`);
   }
 
   /**
    * Execute start for dyndns service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/dyndns/dyndns/service/start`);
   }
 
@@ -91,7 +91,7 @@ export class DyndnsService extends BaseModule {
   /**
    * Execute stop for dyndns service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/dyndns/dyndns/service/stop`);
   }
 }

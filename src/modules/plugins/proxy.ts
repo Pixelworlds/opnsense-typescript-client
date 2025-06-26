@@ -26,7 +26,7 @@ export class ProxyService extends BaseModule {
   /**
    * Execute reconfigure for proxy service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/proxy/proxy/service/reconfigure`);
   }
 
@@ -68,7 +68,7 @@ export class ProxyService extends BaseModule {
   /**
    * Execute stop for proxy service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/proxy/proxy/service/stop`);
   }
 }

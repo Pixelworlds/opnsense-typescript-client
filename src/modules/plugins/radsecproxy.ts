@@ -232,21 +232,21 @@ export class RadsecproxyService extends BaseModule {
   /**
    * Execute reconfigure for radsecproxy service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/radsecproxy/radsecproxy/service/reconfigure`);
   }
 
   /**
    * Execute restart for radsecproxy service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/radsecproxy/radsecproxy/service/restart`);
   }
 
   /**
    * Execute start for radsecproxy service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/radsecproxy/radsecproxy/service/start`);
   }
 
@@ -260,7 +260,7 @@ export class RadsecproxyService extends BaseModule {
   /**
    * Execute stop for radsecproxy service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/radsecproxy/radsecproxy/service/stop`);
   }
 }

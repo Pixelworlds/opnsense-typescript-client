@@ -51,21 +51,21 @@ export class CicapService extends BaseModule {
   /**
    * Execute reconfigure for cicap service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/cicap/cicap/service/reconfigure`);
   }
 
   /**
    * Execute restart for cicap service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/cicap/cicap/service/restart`);
   }
 
   /**
    * Execute start for cicap service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/cicap/cicap/service/start`);
   }
 
@@ -79,7 +79,7 @@ export class CicapService extends BaseModule {
   /**
    * Execute stop for cicap service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/cicap/cicap/service/stop`);
   }
 }

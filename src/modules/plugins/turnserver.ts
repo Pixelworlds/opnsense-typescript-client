@@ -12,21 +12,21 @@ export class TurnserverService extends BaseModule {
   /**
    * Execute reconfigure for turnserver service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/turnserver/turnserver/service/reconfigure`);
   }
 
   /**
    * Execute restart for turnserver service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/turnserver/turnserver/service/restart`);
   }
 
   /**
    * Execute start for turnserver service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/turnserver/turnserver/service/start`);
   }
 
@@ -40,7 +40,7 @@ export class TurnserverService extends BaseModule {
   /**
    * Execute stop for turnserver service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/turnserver/turnserver/service/stop`);
   }
 }

@@ -459,21 +459,21 @@ export class PostfixService extends BaseModule {
   /**
    * Execute reconfigure for postfix service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/postfix/postfix/service/reconfigure`);
   }
 
   /**
    * Execute restart for postfix service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/postfix/postfix/service/restart`);
   }
 
   /**
    * Execute start for postfix service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/postfix/postfix/service/start`);
   }
 
@@ -487,7 +487,7 @@ export class PostfixService extends BaseModule {
   /**
    * Execute stop for postfix service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/postfix/postfix/service/stop`);
   }
 }

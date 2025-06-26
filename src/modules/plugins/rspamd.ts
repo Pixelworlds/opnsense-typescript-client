@@ -12,21 +12,21 @@ export class RspamdService extends BaseModule {
   /**
    * Execute reconfigure for rspamd service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/rspamd/rspamd/service/reconfigure`);
   }
 
   /**
    * Execute restart for rspamd service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/rspamd/rspamd/service/restart`);
   }
 
   /**
    * Execute start for rspamd service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/rspamd/rspamd/service/start`);
   }
 
@@ -40,7 +40,7 @@ export class RspamdService extends BaseModule {
   /**
    * Execute stop for rspamd service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/rspamd/rspamd/service/stop`);
   }
 }

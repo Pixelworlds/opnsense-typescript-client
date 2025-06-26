@@ -28,21 +28,21 @@ export class MuninnodeService extends BaseModule {
   /**
    * Execute reconfigure for muninnode service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/muninnode/muninnode/service/reconfigure`);
   }
 
   /**
    * Execute restart for muninnode service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/muninnode/muninnode/service/restart`);
   }
 
   /**
    * Execute start for muninnode service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/muninnode/muninnode/service/start`);
   }
 
@@ -56,7 +56,7 @@ export class MuninnodeService extends BaseModule {
   /**
    * Execute stop for muninnode service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/muninnode/muninnode/service/stop`);
   }
 }

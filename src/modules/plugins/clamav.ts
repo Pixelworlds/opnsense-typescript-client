@@ -35,21 +35,21 @@ export class ClamavService extends BaseModule {
   /**
    * Execute reconfigure for clamav service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/clamav/clamav/service/reconfigure`);
   }
 
   /**
    * Execute restart for clamav service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/clamav/clamav/service/restart`);
   }
 
   /**
    * Execute start for clamav service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/clamav/clamav/service/start`);
   }
 
@@ -63,7 +63,7 @@ export class ClamavService extends BaseModule {
   /**
    * Execute stop for clamav service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/clamav/clamav/service/stop`);
   }
 

@@ -204,21 +204,21 @@ export class DnscryptproxyService extends BaseModule {
   /**
    * Execute reconfigure for dnscryptproxy service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/dnscryptproxy/dnscryptproxy/service/reconfigure`);
   }
 
   /**
    * Execute restart for dnscryptproxy service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/dnscryptproxy/dnscryptproxy/service/restart`);
   }
 
   /**
    * Execute start for dnscryptproxy service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/dnscryptproxy/dnscryptproxy/service/start`);
   }
 
@@ -232,7 +232,7 @@ export class DnscryptproxyService extends BaseModule {
   /**
    * Execute stop for dnscryptproxy service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/dnscryptproxy/dnscryptproxy/service/stop`);
   }
 }

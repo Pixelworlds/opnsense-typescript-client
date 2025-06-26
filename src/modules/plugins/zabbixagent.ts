@@ -12,21 +12,21 @@ export class ZabbixagentService extends BaseModule {
   /**
    * Execute reconfigure for zabbixagent service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/zabbixagent/zabbixagent/service/reconfigure`);
   }
 
   /**
    * Execute restart for zabbixagent service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/zabbixagent/zabbixagent/service/restart`);
   }
 
   /**
    * Execute start for zabbixagent service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/zabbixagent/zabbixagent/service/start`);
   }
 
@@ -40,7 +40,7 @@ export class ZabbixagentService extends BaseModule {
   /**
    * Execute stop for zabbixagent service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/zabbixagent/zabbixagent/service/stop`);
   }
 }

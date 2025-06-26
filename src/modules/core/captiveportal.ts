@@ -1,11 +1,5 @@
+import type { ApiResponse, ApiResult, SearchResult, ServiceControl } from '../../types/common';
 import { BaseModule } from '../base';
-import type {
-  ApiResponse,
-  ApiResult,
-  SearchResult,
-  ServiceStatus,
-  ServiceControl
-} from '../../types/common';
 
 // Controller classes
 export class CaptiveportalAccess extends BaseModule {
@@ -49,7 +43,7 @@ export class CaptiveportalService extends BaseModule {
   /**
    * Execute reconfigure for captiveportal service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/captiveportal/captiveportal/service/reconfigure`, data);
   }
 
@@ -93,8 +87,11 @@ export class CaptiveportalSession extends BaseModule {
   /**
    * Get search for captiveportal session
    */
-  async search(): Promise<ApiResponse<SearchResult>> {
-    return this.http.get(`/api/captiveportal/captiveportal/session/search`);
+  override async search<T = any>(
+    path: string = '/api/captiveportal/captiveportal/session/search',
+    searchParams: Record<string, any> = {}
+  ): Promise<ApiResponse<T>> {
+    return super.search<T>(path, searchParams);
   }
 
   /**
@@ -160,7 +157,11 @@ export class CaptiveportalVoucher extends BaseModule {
   /**
    * Execute drop expired vouchers for captiveportal voucher
    */
-  async dropExpiredVouchers(provider: string, group: string, data?: Record<string, any>): Promise<ApiResponse<ApiResult>> {
+  async dropExpiredVouchers(
+    provider: string,
+    group: string,
+    data?: Record<string, any>
+  ): Promise<ApiResponse<ApiResult>> {
     return this.http.post(`/api/captiveportal/captiveportal/voucher/drop_expired_vouchers/${provider}/${group}`, data);
   }
 
@@ -223,5 +224,4 @@ export class CaptiveportalModule extends BaseModule {
     this.settings = new CaptiveportalSettings(http);
     this.voucher = new CaptiveportalVoucher(http);
   }
-
 }

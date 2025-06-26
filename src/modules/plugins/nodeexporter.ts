@@ -28,21 +28,21 @@ export class NodeexporterService extends BaseModule {
   /**
    * Execute reconfigure for nodeexporter service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/nodeexporter/nodeexporter/service/reconfigure`);
   }
 
   /**
    * Execute restart for nodeexporter service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/nodeexporter/nodeexporter/service/restart`);
   }
 
   /**
    * Execute start for nodeexporter service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/nodeexporter/nodeexporter/service/start`);
   }
 
@@ -56,7 +56,7 @@ export class NodeexporterService extends BaseModule {
   /**
    * Execute stop for nodeexporter service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/nodeexporter/nodeexporter/service/stop`);
   }
 }

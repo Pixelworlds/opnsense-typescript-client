@@ -873,21 +873,21 @@ export class QuaggaService extends BaseModule {
   /**
    * Execute reconfigure for quagga service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/quagga/quagga/service/reconfigure`);
   }
 
   /**
    * Execute restart for quagga service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/quagga/quagga/service/restart`);
   }
 
   /**
    * Execute start for quagga service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/quagga/quagga/service/start`);
   }
 
@@ -901,7 +901,7 @@ export class QuaggaService extends BaseModule {
   /**
    * Execute stop for quagga service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/quagga/quagga/service/stop`);
   }
 }

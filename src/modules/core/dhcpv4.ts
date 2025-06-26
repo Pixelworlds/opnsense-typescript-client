@@ -28,21 +28,21 @@ export class Dhcpv4Service extends BaseModule {
   /**
    * Execute reconfigure for dhcpv4 service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/dhcpv4/dhcpv4/service/reconfigure`, data);
   }
 
   /**
    * Execute restart for dhcpv4 service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/dhcpv4/dhcpv4/service/restart`, data);
   }
 
   /**
    * Execute start for dhcpv4 service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/dhcpv4/dhcpv4/service/start`, data);
   }
 
@@ -56,7 +56,7 @@ export class Dhcpv4Service extends BaseModule {
   /**
    * Execute stop for dhcpv4 service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/dhcpv4/dhcpv4/service/stop`, data);
   }
 }

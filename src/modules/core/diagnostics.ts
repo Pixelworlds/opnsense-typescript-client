@@ -348,7 +348,7 @@ export class DiagnosticsNetflow extends BaseModule {
   /**
    * Execute reconfigure for diagnostics netflow
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/diagnostics/diagnostics/netflow/reconfigure`, data);
   }
 
@@ -464,14 +464,14 @@ export class DiagnosticsPacketCapture extends BaseModule {
   /**
    * Execute start for diagnostics packet_capture
    */
-  async start(jobid: string): Promise<ApiResponse<ServiceControl>> {
+  async start(jobid: string, data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/diagnostics/diagnostics/packet_capture/start/${jobid}`, data);
   }
 
   /**
    * Execute stop for diagnostics packet_capture
    */
-  async stop(jobid: string): Promise<ApiResponse<ServiceControl>> {
+  async stop(jobid: string, data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/diagnostics/diagnostics/packet_capture/stop/${jobid}`, data);
   }
 
@@ -515,14 +515,14 @@ export class DiagnosticsPing extends BaseModule {
   /**
    * Execute start for diagnostics ping
    */
-  async start(jobid: string): Promise<ApiResponse<ServiceControl>> {
+  async start(jobid: string, data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/diagnostics/diagnostics/ping/start/${jobid}`, data);
   }
 
   /**
    * Execute stop for diagnostics ping
    */
-  async stop(jobid: string): Promise<ApiResponse<ServiceControl>> {
+  async stop(jobid: string, data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/diagnostics/diagnostics/ping/stop/${jobid}`, data);
   }
 }

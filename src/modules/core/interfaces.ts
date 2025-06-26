@@ -47,7 +47,7 @@ export class InterfacesGifSettings extends BaseModule {
   /**
    * Execute reconfigure for interfaces gif_settings
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/interfaces/interfaces/gif_settings/reconfigure`, data);
   }
 
@@ -105,7 +105,7 @@ export class InterfacesGreSettings extends BaseModule {
   /**
    * Execute reconfigure for interfaces gre_settings
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/interfaces/interfaces/gre_settings/reconfigure`, data);
   }
 
@@ -156,7 +156,7 @@ export class InterfacesLaggSettings extends BaseModule {
   /**
    * Execute reconfigure for interfaces lagg_settings
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/interfaces/interfaces/lagg_settings/reconfigure`, data);
   }
 
@@ -207,7 +207,7 @@ export class InterfacesLoopbackSettings extends BaseModule {
   /**
    * Execute reconfigure for interfaces loopback_settings
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/interfaces/interfaces/loopback_settings/reconfigure`, data);
   }
 
@@ -258,7 +258,7 @@ export class InterfacesNeighborSettings extends BaseModule {
   /**
    * Execute reconfigure for interfaces neighbor_settings
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/interfaces/interfaces/neighbor_settings/reconfigure`, data);
   }
 
@@ -346,7 +346,7 @@ export class InterfacesVipSettings extends BaseModule {
   /**
    * Execute reconfigure for interfaces vip_settings
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/interfaces/interfaces/vip_settings/reconfigure`, data);
   }
 
@@ -397,7 +397,7 @@ export class InterfacesVlanSettings extends BaseModule {
   /**
    * Execute reconfigure for interfaces vlan_settings
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/interfaces/interfaces/vlan_settings/reconfigure`, data);
   }
 
@@ -448,7 +448,7 @@ export class InterfacesVxlanSettings extends BaseModule {
   /**
    * Execute reconfigure for interfaces vxlan_settings
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/interfaces/interfaces/vxlan_settings/reconfigure`, data);
   }
 

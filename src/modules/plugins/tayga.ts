@@ -28,21 +28,21 @@ export class TaygaService extends BaseModule {
   /**
    * Execute reconfigure for tayga service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/tayga/tayga/service/reconfigure`);
   }
 
   /**
    * Execute restart for tayga service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/tayga/tayga/service/restart`);
   }
 
   /**
    * Execute start for tayga service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/tayga/tayga/service/start`);
   }
 
@@ -56,7 +56,7 @@ export class TaygaService extends BaseModule {
   /**
    * Execute stop for tayga service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/tayga/tayga/service/stop`);
   }
 }

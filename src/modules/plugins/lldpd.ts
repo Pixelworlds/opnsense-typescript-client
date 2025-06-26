@@ -35,21 +35,21 @@ export class LldpdService extends BaseModule {
   /**
    * Execute reconfigure for lldpd service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/lldpd/lldpd/service/reconfigure`);
   }
 
   /**
    * Execute restart for lldpd service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/lldpd/lldpd/service/restart`);
   }
 
   /**
    * Execute start for lldpd service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/lldpd/lldpd/service/start`);
   }
 
@@ -63,7 +63,7 @@ export class LldpdService extends BaseModule {
   /**
    * Execute stop for lldpd service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/lldpd/lldpd/service/stop`);
   }
 }

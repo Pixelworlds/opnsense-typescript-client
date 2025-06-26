@@ -40,7 +40,7 @@ export class IdsService extends BaseModule {
   /**
    * Execute reconfigure for ids service
    */
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
+  async reconfigure(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/ids/ids/service/reconfigure`, data);
   }
 
@@ -54,14 +54,14 @@ export class IdsService extends BaseModule {
   /**
    * Execute restart for ids service
    */
-  async restart(): Promise<ApiResponse<ServiceControl>> {
+  async restart(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/ids/ids/service/restart`, data);
   }
 
   /**
    * Execute start for ids service
    */
-  async start(): Promise<ApiResponse<ServiceControl>> {
+  async start(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/ids/ids/service/start`, data);
   }
 
@@ -75,7 +75,7 @@ export class IdsService extends BaseModule {
   /**
    * Execute stop for ids service
    */
-  async stop(): Promise<ApiResponse<ServiceControl>> {
+  async stop(data?: Record<string, any>): Promise<ApiResponse<ServiceControl>> {
     return this.http.post(`/api/ids/ids/service/stop`, data);
   }
 
@@ -204,7 +204,7 @@ export class IdsSettings extends BaseModule {
    * Execute search installed rules for ids settings
    */
   async searchInstalledRules(params?: Record<string, any>): Promise<ApiResponse<SearchResult>> {
-    return this.http.post(`/api/ids/ids/settings/search_installed_rules`, data);
+    return this.http.get(`/api/ids/ids/settings/search_installed_rules`);
   }
 
   /**
