@@ -107,24 +107,4 @@ export class StunnelModule extends BaseModule {
     this.services = new StunnelServices(http);
   }
 
-  // Legacy methods for backward compatibility
-  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
-    return this.service?.status() || this.http.get('/api/stunnel/service/status');
-  }
-
-  async start(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.start() || this.http.post('/api/stunnel/service/start');
-  }
-
-  async stop(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.stop() || this.http.post('/api/stunnel/service/stop');
-  }
-
-  async restart(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.restart() || this.http.post('/api/stunnel/service/restart');
-  }
-
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.reconfigure() || this.http.post('/api/stunnel/service/reconfigure');
-  }
 }

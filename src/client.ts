@@ -7,15 +7,15 @@ import {
 } from './modules/core';
 import {
     AcmeclientModule, ApcupsdModule, BindModule, CaddyModule, ChronyModule, CicapModule, ClamavModule, CollectdModule,
-    CrowdsecModule, DechwModule, DiagnosticsModule as PluginDiagnosticsModule, DmidecodeModule, DnscryptproxyModule,
-    DyndnsModule, FreeradiusModule, FtpproxyModule, GridexampleModule, HaproxyModule, HelloworldModule, HwprobeModule,
-    IperfModule, LldpdModule, MaltrailModule, MdnsrepeaterModule, MuninnodeModule, NdproxyModule, NetdataModule,
-    NetsnmpModule, NginxModule, NodeexporterModule, NrpeModule, NtopngModule, NutModule, OpenconnectModule,
-    PostfixModule, ProxyModule, ProxyssoModule, PuppetagentModule, QemuguestagentModule, QuaggaModule,
-    RadsecproxyModule, RedisModule, RelaydModule, RspamdModule, ShadowsocksModule, SiproxdModule, SmartModule,
-    SoftetherModule, SslhModule, StunnelModule, TailscaleModule, TaygaModule, TelegrafModule, TftpModule, TincModule,
-    TorModule, TurnserverModule, UdpbroadcastrelayModule, VnstatModule, WazuhagentModule, WolModule, ZabbixagentModule,
-    ZabbixproxyModule, ZerotierModule
+    CrowdsecModule, DechwModule, DiagnosticsPluginModule, DmidecodeModule, DnscryptproxyModule, DyndnsModule,
+    FreeradiusModule, FtpproxyModule, GridexampleModule, HaproxyModule, HelloworldModule, HwprobeModule, IperfModule,
+    LldpdModule, MaltrailModule, MdnsrepeaterModule, MuninnodeModule, NdproxyModule, NetdataModule, NetsnmpModule,
+    NginxModule, NodeexporterModule, NrpeModule, NtopngModule, NutModule, OpenconnectModule, PostfixModule, ProxyModule,
+    ProxyssoModule, PuppetagentModule, QemuguestagentModule, QuaggaModule, RadsecproxyModule, RedisModule, RelaydModule,
+    RspamdModule, ShadowsocksModule, SiproxdModule, SmartModule, SoftetherModule, SslhModule, StunnelModule,
+    TailscaleModule, TaygaModule, TelegrafModule, TftpModule, TincModule, TorModule, TurnserverModule,
+    UdpbroadcastrelayModule, VnstatModule, WazuhagentModule, WolModule, ZabbixagentModule, ZabbixproxyModule,
+    ZerotierModule
 } from './modules/plugins';
 
 import type { ApiResponse, ApiResult, OPNsenseConfig } from './types';
@@ -61,7 +61,7 @@ export class OPNsenseClient {
     collectd: CollectdModule;
     crowdsec: CrowdsecModule;
     dechw: DechwModule;
-    diagnostics: PluginDiagnosticsModule;
+    diagnostics: DiagnosticsPluginModule;
     dmidecode: DmidecodeModule;
     dnscryptproxy: DnscryptproxyModule;
     dyndns: DyndnsModule;
@@ -158,7 +158,7 @@ export class OPNsenseClient {
       collectd: new CollectdModule(this.http),
       crowdsec: new CrowdsecModule(this.http),
       dechw: new DechwModule(this.http),
-      diagnostics: new PluginDiagnosticsModule(this.http),
+      diagnostics: new DiagnosticsPluginModule(this.http),
       dmidecode: new DmidecodeModule(this.http),
       dnscryptproxy: new DnscryptproxyModule(this.http),
       dyndns: new DyndnsModule(this.http),

@@ -107,24 +107,4 @@ export class VnstatModule extends BaseModule {
     this.service = new VnstatService(http);
   }
 
-  // Legacy methods for backward compatibility
-  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
-    return this.service?.status() || this.http.get('/api/vnstat/service/status');
-  }
-
-  async start(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.start() || this.http.post('/api/vnstat/service/start');
-  }
-
-  async stop(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.stop() || this.http.post('/api/vnstat/service/stop');
-  }
-
-  async restart(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.restart() || this.http.post('/api/vnstat/service/restart');
-  }
-
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.reconfigure() || this.http.post('/api/vnstat/service/reconfigure');
-  }
 }

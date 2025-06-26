@@ -79,24 +79,4 @@ export class RedisModule extends BaseModule {
     this.settings = new RedisSettings(http);
   }
 
-  // Legacy methods for backward compatibility
-  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
-    return this.service?.status() || this.http.get('/api/redis/service/status');
-  }
-
-  async start(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.start() || this.http.post('/api/redis/service/start');
-  }
-
-  async stop(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.stop() || this.http.post('/api/redis/service/stop');
-  }
-
-  async restart(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.restart() || this.http.post('/api/redis/service/restart');
-  }
-
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.reconfigure() || this.http.post('/api/redis/service/reconfigure');
-  }
 }

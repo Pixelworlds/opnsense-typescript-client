@@ -72,24 +72,4 @@ export class TaygaModule extends BaseModule {
     this.service = new TaygaService(http);
   }
 
-  // Legacy methods for backward compatibility
-  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
-    return this.service?.status() || this.http.get('/api/tayga/service/status');
-  }
-
-  async start(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.start() || this.http.post('/api/tayga/service/start');
-  }
-
-  async stop(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.stop() || this.http.post('/api/tayga/service/stop');
-  }
-
-  async restart(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.restart() || this.http.post('/api/tayga/service/restart');
-  }
-
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.reconfigure() || this.http.post('/api/tayga/service/reconfigure');
-  }
 }

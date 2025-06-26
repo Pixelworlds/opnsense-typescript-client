@@ -79,24 +79,4 @@ export class Dhcpv6Module extends BaseModule {
     this.service = new Dhcpv6Service(http);
   }
 
-  // Legacy methods for backward compatibility
-  async getStatus(): Promise<ApiResponse<ServiceStatus>> {
-    return this.service?.status() || this.http.get('/api/dhcpv6/service/status');
-  }
-
-  async start(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.start() || this.http.post('/api/dhcpv6/service/start');
-  }
-
-  async stop(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.stop() || this.http.post('/api/dhcpv6/service/stop');
-  }
-
-  async restart(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.restart() || this.http.post('/api/dhcpv6/service/restart');
-  }
-
-  async reconfigure(): Promise<ApiResponse<ServiceControl>> {
-    return this.service?.reconfigure() || this.http.post('/api/dhcpv6/service/reconfigure');
-  }
 }
