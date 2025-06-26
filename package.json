@@ -10,6 +10,7 @@
     "url": "https://github.com/Pixelworlds/opnsense-typescript-client/issues"
   },
   "homepage": "https://github.com/Pixelworlds/opnsense-typescript-client#readme",
+  "author": "Richard Stovall <richard@pixelworlds.com>",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
