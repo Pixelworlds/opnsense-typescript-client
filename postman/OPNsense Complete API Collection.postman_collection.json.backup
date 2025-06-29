@@ -2070,13 +2070,13 @@
           "name": "Routes",
           "item": [
             {
-              "name": "Add Route - IPv4",
+              "name": "Addroute",
               "request": {
                 "method": "POST",
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"route\": {\n    \"network\": \"192.168.100.0/24\",\n    \"gateway\": \"WAN_DHCP\",\n    \"description\": \"Route to remote office network via WAN gateway\",\n    \"disabled\": \"0\"\n  }\n}",
+                  "raw": "{}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2094,141 +2094,12 @@
                     "addroute"
                   ]
                 },
-                "description": "Create new IPv4 static route with gateway reference"
+                "description": "Execute addroute for routes routes"
               },
               "response": []
             },
             {
-              "name": "Add Route - IPv6",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"route\": {\n    \"network\": \"2001:db8::/32\",\n    \"gateway\": \"WAN_DHCP6\",\n    \"description\": \"IPv6 route to partner network\",\n    \"disabled\": \"0\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/routes/routes/addroute",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "routes",
-                    "routes",
-                    "addroute"
-                  ]
-                },
-                "description": "Example: Create IPv6 static route with IPv6 gateway"
-              },
-              "response": []
-            },
-            {
-              "name": "Add Route - VPN Network",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"route\": {\n    \"network\": \"10.10.0.0/16\",\n    \"gateway\": \"VPN_GATEWAY\",\n    \"description\": \"Route to branch office via VPN tunnel\",\n    \"disabled\": \"0\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/routes/routes/addroute",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "routes",
-                    "routes",
-                    "addroute"
-                  ]
-                },
-                "description": "Example: Create route for private network via VPN gateway"
-              },
-              "response": []
-            },
-            {
-              "name": "Get Routes",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{opnsense_base_url}}/routes/routes/get",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "routes",
-                    "routes",
-                    "get"
-                  ]
-                },
-                "description": "Get all static routes configuration"
-              },
-              "response": []
-            },
-            {
-              "name": "Get Route",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{opnsense_base_url}}/routes/routes/getroute/{{uuid}}",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "routes",
-                    "routes",
-                    "getroute",
-                    "{{uuid}}"
-                  ]
-                },
-                "description": "Get specific static route configuration by UUID"
-              },
-              "response": []
-            },
-            {
-              "name": "Set Route",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"route\": {\n    \"network\": \"192.168.200.0/24\",\n    \"gateway\": \"OPT1_STATICV4\",\n    \"description\": \"Updated route to DMZ network\",\n    \"disabled\": \"0\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/routes/routes/setroute/{{uuid}}",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "routes",
-                    "routes",
-                    "setroute",
-                    "{{uuid}}"
-                  ]
-                },
-                "description": "Update existing static route configuration"
-              },
-              "response": []
-            },
-            {
-              "name": "Delete Route",
+              "name": "Delroute",
               "request": {
                 "method": "POST",
                 "header": [],
@@ -2253,67 +2124,48 @@
                     "{{uuid}}"
                   ]
                 },
-                "description": "Delete static route by UUID"
+                "description": "Execute delroute for routes routes"
               },
               "response": []
             },
             {
-              "name": "Toggle Route",
+              "name": "Get",
               "request": {
-                "method": "POST",
+                "method": "GET",
                 "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
                 "url": {
-                  "raw": "{{opnsense_base_url}}/routes/routes/toggleroute/{{uuid}}/{{disabled}}",
+                  "raw": "{{opnsense_base_url}}/routes/routes/get",
                   "host": [
                     "{{opnsense_base_url}}"
                   ],
                   "path": [
                     "routes",
                     "routes",
-                    "toggleroute",
-                    "{{uuid}}",
-                    "{{disabled}}"
+                    "get"
                   ]
                 },
-                "description": "Enable or disable static route (disabled: 0 or 1)"
+                "description": "Get get for routes routes"
               },
               "response": []
             },
             {
-              "name": "Set Routes",
+              "name": "Getroute",
               "request": {
-                "method": "POST",
+                "method": "GET",
                 "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"staticroutes\": {\n    \"route\": {\n      \"example-uuid-1\": {\n        \"network\": \"192.168.150.0/24\",\n        \"gateway\": \"WAN_DHCP\",\n        \"description\": \"Production network route\",\n        \"disabled\": \"0\"\n      },\n      \"example-uuid-2\": {\n        \"network\": \"10.20.0.0/16\",\n        \"gateway\": \"VPN_GATEWAY\",\n        \"description\": \"Development network via VPN\",\n        \"disabled\": \"0\"\n      }\n    }\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
                 "url": {
-                  "raw": "{{opnsense_base_url}}/routes/routes/set",
+                  "raw": "{{opnsense_base_url}}/routes/routes/getroute/{{uuid}}",
                   "host": [
                     "{{opnsense_base_url}}"
                   ],
                   "path": [
                     "routes",
                     "routes",
-                    "set"
+                    "getroute",
+                    "{{uuid}}"
                   ]
                 },
-                "description": "Set multiple static routes configuration at once"
+                "description": "Get getroute for routes routes"
               },
               "response": []
             },
@@ -2342,7 +2194,97 @@
                     "reconfigure"
                   ]
                 },
-                "description": "Apply static routes configuration changes to the system"
+                "description": "Execute reconfigure for routes routes"
+              },
+              "response": []
+            },
+            {
+              "name": "Set",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/routes/routes/set",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "routes",
+                    "routes",
+                    "set"
+                  ]
+                },
+                "description": "Execute set for routes routes"
+              },
+              "response": []
+            },
+            {
+              "name": "Setroute",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/routes/routes/setroute/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "routes",
+                    "routes",
+                    "setroute",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Execute setroute for routes routes"
+              },
+              "response": []
+            },
+            {
+              "name": "Toggleroute",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/routes/routes/toggleroute/{{uuid}}/{{disabled}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "routes",
+                    "routes",
+                    "toggleroute",
+                    "{{uuid}}",
+                    "{{disabled}}"
+                  ]
+                },
+                "description": "Execute toggleroute for routes routes"
               },
               "response": []
             }
@@ -2358,13 +2300,13 @@
           "name": "Settings",
           "item": [
             {
-              "name": "Add Gateway - Primary ISP",
+              "name": "Add Gateway",
               "request": {
                 "method": "POST",
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"gateway\": {\n    \"name\": \"ISP_PRIMARY_GW\",\n    \"description\": \"Primary ISP Gateway with monitoring and load balancing\",\n    \"interface\": \"wan\",\n    \"ipprotocol\": \"inet\",\n    \"gateway\": \"192.168.1.1\",\n    \"disabled\": \"0\",\n    \"defaultgw\": \"1\",\n    \"monitor_ip\": \"8.8.8.8\",\n    \"monitor_disable\": \"0\",\n    \"monitor_noroute\": \"0\",\n    \"force_down\": \"0\",\n    \"priority\": \"10\",\n    \"weight\": \"3\",\n    \"latencylow\": \"200\",\n    \"latencyhigh\": \"500\",\n    \"losslow\": \"5\",\n    \"losshigh\": \"20\",\n    \"interval\": \"1\"\n  }\n}",
+                  "raw": "{}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2382,141 +2324,12 @@
                     "add_gateway"
                   ]
                 },
-                "description": "Create primary gateway with comprehensive monitoring and load balancing settings"
+                "description": "Execute add gateway for routing settings"
               },
               "response": []
             },
             {
-              "name": "Add Gateway - Backup ISP",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"gateway\": {\n    \"name\": \"BACKUP_ISP_GW\",\n    \"description\": \"Backup ISP Gateway - Lower Priority\",\n    \"interface\": \"wan2\",\n    \"ipprotocol\": \"inet\",\n    \"gateway\": \"10.0.0.1\",\n    \"disabled\": \"0\",\n    \"defaultgw\": \"0\",\n    \"monitor_ip\": \"1.1.1.1\",\n    \"monitor_disable\": \"0\",\n    \"priority\": \"50\",\n    \"weight\": \"1\",\n    \"latencylow\": \"300\",\n    \"latencyhigh\": \"800\",\n    \"losslow\": \"10\",\n    \"losshigh\": \"30\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/routing/settings/add_gateway",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "routing",
-                    "settings",
-                    "add_gateway"
-                  ]
-                },
-                "description": "Example: Create backup gateway with lower priority for failover"
-              },
-              "response": []
-            },
-            {
-              "name": "Add Gateway - IPv6",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"gateway\": {\n    \"name\": \"IPV6_PRIMARY_GW\",\n    \"description\": \"Primary IPv6 Gateway\",\n    \"interface\": \"wan\",\n    \"ipprotocol\": \"inet6\",\n    \"gateway\": \"2001:db8::1\",\n    \"disabled\": \"0\",\n    \"defaultgw\": \"1\",\n    \"monitor_ip\": \"2001:4860:4860::8888\",\n    \"priority\": \"15\",\n    \"weight\": \"2\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/routing/settings/add_gateway",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "routing",
-                    "settings",
-                    "add_gateway"
-                  ]
-                },
-                "description": "Example: Create IPv6 gateway with Google DNS monitoring"
-              },
-              "response": []
-            },
-            {
-              "name": "Get Gateway Settings",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{opnsense_base_url}}/routing/settings/get",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "routing",
-                    "settings",
-                    "get"
-                  ]
-                },
-                "description": "Get all gateway configuration settings"
-              },
-              "response": []
-            },
-            {
-              "name": "Get Gateway",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{opnsense_base_url}}/routing/settings/get_gateway/{{uuid}}",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "routing",
-                    "settings",
-                    "get_gateway",
-                    "{{uuid}}"
-                  ]
-                },
-                "description": "Get specific gateway configuration by UUID"
-              },
-              "response": []
-            },
-            {
-              "name": "Set Gateway",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"gateway\": {\n    \"name\": \"UPDATED_ISP_GW\",\n    \"description\": \"Updated ISP Gateway with new monitoring\",\n    \"priority\": \"20\",\n    \"weight\": \"4\",\n    \"monitor_ip\": \"9.9.9.9\",\n    \"latencylow\": \"150\",\n    \"latencyhigh\": \"400\",\n    \"losslow\": \"3\",\n    \"losshigh\": \"15\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/routing/settings/set_gateway/{{uuid}}",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "routing",
-                    "settings",
-                    "set_gateway",
-                    "{{uuid}}"
-                  ]
-                },
-                "description": "Update existing gateway configuration"
-              },
-              "response": []
-            },
-            {
-              "name": "Delete Gateway",
+              "name": "Del Gateway",
               "request": {
                 "method": "POST",
                 "header": [],
@@ -2541,7 +2354,156 @@
                     "{{uuid}}"
                   ]
                 },
-                "description": "Delete gateway configuration by UUID"
+                "description": "Execute del gateway for routing settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Get",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{opnsense_base_url}}/routing/settings/get",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "routing",
+                    "settings",
+                    "get"
+                  ]
+                },
+                "description": "Get get for routing settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Gateway",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{opnsense_base_url}}/routing/settings/get_gateway/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "routing",
+                    "settings",
+                    "get_gateway",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Get get gateway for routing settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Reconfigure",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/routing/settings/reconfigure",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "routing",
+                    "settings",
+                    "reconfigure"
+                  ]
+                },
+                "description": "Execute reconfigure for routing settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Search Gateway",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{opnsense_base_url}}/routing/settings/search_gateway",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "routing",
+                    "settings",
+                    "search_gateway"
+                  ]
+                },
+                "description": "Get search gateway for routing settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Set",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/routing/settings/set",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "routing",
+                    "settings",
+                    "set"
+                  ]
+                },
+                "description": "Execute set for routing settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Set Gateway",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/routing/settings/set_gateway/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "routing",
+                    "settings",
+                    "set_gateway",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Execute set gateway for routing settings"
               },
               "response": []
             },
@@ -2572,85 +2534,7 @@
                     "{{enabled}}"
                   ]
                 },
-                "description": "Enable or disable gateway by UUID (enabled: 1 or 0)"
-              },
-              "response": []
-            },
-            {
-              "name": "Search Gateways",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{opnsense_base_url}}/routing/settings/search_gateway",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "routing",
-                    "settings",
-                    "search_gateway"
-                  ]
-                },
-                "description": "Search and list all configured gateways with status information"
-              },
-              "response": []
-            },
-            {
-              "name": "Set Gateway Settings",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"gateways\": {\n    \"gateway_item\": {\n      \"example-uuid-1\": {\n        \"name\": \"MAIN_ISP_GW\",\n        \"description\": \"Primary ISP with monitoring\",\n        \"interface\": \"wan\",\n        \"priority\": \"10\",\n        \"weight\": \"3\",\n        \"disabled\": \"0\"\n      },\n      \"example-uuid-2\": {\n        \"name\": \"BACKUP_ISP_GW\",\n        \"description\": \"Backup ISP for failover\",\n        \"interface\": \"wan2\",\n        \"priority\": \"50\",\n        \"weight\": \"1\",\n        \"disabled\": \"0\"\n      }\n    }\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/routing/settings/set",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "routing",
-                    "settings",
-                    "set"
-                  ]
-                },
-                "description": "Set multiple gateway configurations at once"
-              },
-              "response": []
-            },
-            {
-              "name": "Reconfigure",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/routing/settings/reconfigure",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "routing",
-                    "settings",
-                    "reconfigure"
-                  ]
-                },
-                "description": "Apply gateway configuration changes and reload routing tables"
+                "description": "Execute toggle gateway for routing settings"
               },
               "response": []
             }
@@ -6560,13 +6444,13 @@
           "name": "Instances",
           "item": [
             {
-              "name": "Add Instance - Server Configuration",
+              "name": "Add",
               "request": {
                 "method": "POST",
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"instance\": {\n    \"enabled\": \"1\",\n    \"role\": \"server\",\n    \"description\": \"Corporate VPN Server\",\n    \"dev_type\": \"tun\",\n    \"proto\": \"UDP4\",\n    \"port\": \"1194\",\n    \"topology\": \"subnet\",\n    \"tunnel_network\": \"10.8.0.0/24\",\n    \"local\": \"192.168.1.1\",\n    \"cert\": \"server-certificate-ref\",\n    \"ca\": \"ca-certificate-ref\",\n    \"auth\": \"SHA256\",\n    \"cipher\": \"AES-256-GCM\",\n    \"data_ciphers\": \"AES-256-GCM:AES-128-GCM:CHACHA20-POLY1305\",\n    \"ecdh_curve\": \"prime256v1\",\n    \"keepalive_interval\": \"10\",\n    \"keepalive_timeout\": \"60\",\n    \"verbosity_level\": \"3\",\n    \"verify_client_cert\": \"require\"\n  }\n}",
+                  "raw": "{}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -6584,36 +6468,7 @@
                     "add"
                   ]
                 },
-                "description": "Create new OpenVPN server instance with modern security settings"
-              },
-              "response": []
-            },
-            {
-              "name": "Add Instance - Client Configuration",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"instance\": {\n    \"enabled\": \"1\",\n    \"role\": \"client\",\n    \"description\": \"Remote Office Client\",\n    \"dev_type\": \"tun\",\n    \"proto\": \"UDP4\",\n    \"remote\": \"vpn.company.com\",\n    \"port\": \"1194\",\n    \"cert\": \"client-certificate-ref\",\n    \"ca\": \"ca-certificate-ref\",\n    \"auth\": \"SHA256\",\n    \"cipher\": \"AES-256-GCM\",\n    \"verbosity_level\": \"2\",\n    \"redirect_gateway\": \"def1\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/openvpn/instances/add",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "openvpn",
-                    "instances",
-                    "add"
-                  ]
-                },
-                "description": "Example: Create OpenVPN client instance for remote office connectivity"
+                "description": "Execute add for openvpn instances"
               },
               "response": []
             },
@@ -6624,7 +6479,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"static_key\": {\n    \"enabled\": \"1\",\n    \"description\": \"Pre-shared static key for legacy connections\",\n    \"key\": \"-----BEGIN OpenVPN Static key V1-----\\n[Base64 encoded 2048-bit key content]\\n-----END OpenVPN Static key V1-----\"\n  }\n}",
+                  "raw": "{}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -6642,63 +6497,12 @@
                     "add_static_key"
                   ]
                 },
-                "description": "Create static key for pre-shared key authentication"
+                "description": "Execute add static key for openvpn instances"
               },
               "response": []
             },
             {
-              "name": "Get Instance",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{opnsense_base_url}}/openvpn/instances/get/{{uuid}}",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "openvpn",
-                    "instances",
-                    "get",
-                    "{{uuid}}"
-                  ]
-                },
-                "description": "Get specific OpenVPN instance configuration by UUID"
-              },
-              "response": []
-            },
-            {
-              "name": "Set Instance",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"instance\": {\n    \"enabled\": \"1\",\n    \"description\": \"Updated server configuration\",\n    \"port\": \"1195\",\n    \"verbosity_level\": \"4\",\n    \"keepalive_interval\": \"15\",\n    \"keepalive_timeout\": \"90\",\n    \"cipher\": \"AES-256-GCM\",\n    \"auth\": \"SHA384\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/openvpn/instances/set/{{uuid}}",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "openvpn",
-                    "instances",
-                    "set",
-                    "{{uuid}}"
-                  ]
-                },
-                "description": "Update existing OpenVPN instance configuration"
-              },
-              "response": []
-            },
-            {
-              "name": "Delete Instance",
+              "name": "Del",
               "request": {
                 "method": "POST",
                 "header": [],
@@ -6723,12 +6527,165 @@
                     "{{uuid}}"
                   ]
                 },
-                "description": "Delete OpenVPN instance by UUID"
+                "description": "Execute del for openvpn instances"
               },
               "response": []
             },
             {
-              "name": "Toggle Instance",
+              "name": "Del Static Key",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/openvpn/instances/del_static_key/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "openvpn",
+                    "instances",
+                    "del_static_key",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Execute del static key for openvpn instances"
+              },
+              "response": []
+            },
+            {
+              "name": "Gen Key",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{opnsense_base_url}}/openvpn/instances/gen_key/{{type}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "openvpn",
+                    "instances",
+                    "gen_key",
+                    "{{type}}"
+                  ]
+                },
+                "description": "Get gen key for openvpn instances"
+              },
+              "response": []
+            },
+            {
+              "name": "Get",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{opnsense_base_url}}/openvpn/instances/get/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "openvpn",
+                    "instances",
+                    "get",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Get get for openvpn instances"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Static Key",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{opnsense_base_url}}/openvpn/instances/get_static_key/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "openvpn",
+                    "instances",
+                    "get_static_key",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Get get static key for openvpn instances"
+              },
+              "response": []
+            },
+            {
+              "name": "Set",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/openvpn/instances/set/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "openvpn",
+                    "instances",
+                    "set",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Execute set for openvpn instances"
+              },
+              "response": []
+            },
+            {
+              "name": "Set Static Key",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/openvpn/instances/set_static_key/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "openvpn",
+                    "instances",
+                    "set_static_key",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Execute set static key for openvpn instances"
+              },
+              "response": []
+            },
+            {
+              "name": "Toggle",
               "request": {
                 "method": "POST",
                 "header": [],
@@ -6754,109 +6711,7 @@
                     "{{enabled}}"
                   ]
                 },
-                "description": "Enable or disable OpenVPN instance (enabled: 1 or 0)"
-              },
-              "response": []
-            },
-            {
-              "name": "Generate Key",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{opnsense_base_url}}/openvpn/instances/gen_key/{{type}}",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "openvpn",
-                    "instances",
-                    "gen_key",
-                    "{{type}}"
-                  ]
-                },
-                "description": "Generate cryptographic key (type: static for static keys)"
-              },
-              "response": []
-            },
-            {
-              "name": "Get Static Key",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{opnsense_base_url}}/openvpn/instances/get_static_key/{{uuid}}",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "openvpn",
-                    "instances",
-                    "get_static_key",
-                    "{{uuid}}"
-                  ]
-                },
-                "description": "Get specific static key configuration by UUID"
-              },
-              "response": []
-            },
-            {
-              "name": "Set Static Key",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"static_key\": {\n    \"enabled\": \"1\",\n    \"description\": \"Updated static key for backup tunnel\",\n    \"key\": \"-----BEGIN OpenVPN Static key V1-----\\n[Updated Base64 encoded 2048-bit key content]\\n-----END OpenVPN Static key V1-----\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/openvpn/instances/set_static_key/{{uuid}}",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "openvpn",
-                    "instances",
-                    "set_static_key",
-                    "{{uuid}}"
-                  ]
-                },
-                "description": "Update existing static key configuration"
-              },
-              "response": []
-            },
-            {
-              "name": "Delete Static Key",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/openvpn/instances/del_static_key/{{uuid}}",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "openvpn",
-                    "instances",
-                    "del_static_key",
-                    "{{uuid}}"
-                  ]
-                },
-                "description": "Delete static key by UUID"
+                "description": "Execute toggle for openvpn instances"
               },
               "response": []
             }
@@ -7065,13 +6920,42 @@
           "name": "Connections",
           "item": [
             {
+              "name": "Add Child",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/ipsec/connections/add_child",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "ipsec",
+                    "connections",
+                    "add_child"
+                  ]
+                },
+                "description": "Execute add child for ipsec connections"
+              },
+              "response": []
+            },
+            {
               "name": "Add Connection",
               "request": {
                 "method": "POST",
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"connection\": {\n    \"enabled\": \"1\",\n    \"description\": \"Site-to-site VPN to branch office\",\n    \"version\": \"2\",\n    \"unique\": \"replace\",\n    \"proposals\": \"aes256-sha256-modp2048,aes128-sha256-modp2048\",\n    \"reauth_time\": \"3600\",\n    \"rekey_time\": \"28800\",\n    \"dpd_delay\": \"30\",\n    \"dpd_timeout\": \"120\",\n    \"mobike\": \"1\"\n  }\n}",
+                  "raw": "{}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -7089,36 +6973,7 @@
                     "add_connection"
                   ]
                 },
-                "description": "Create new IPsec connection with IKEv2, authentication, and dead peer detection"
-              },
-              "response": []
-            },
-            {
-              "name": "Add Connection - IKEv1 Legacy",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"connection\": {\n    \"enabled\": \"1\",\n    \"description\": \"Legacy IKEv1 connection for older equipment\",\n    \"version\": \"1\",\n    \"unique\": \"keep\",\n    \"proposals\": \"aes128-sha1-modp1024,3des-sha1-modp1024\",\n    \"aggressive\": \"1\",\n    \"reauth_time\": \"86400\",\n    \"rekey_time\": \"3600\",\n    \"dpd_delay\": \"60\",\n    \"dpd_timeout\": \"300\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/ipsec/connections/add_connection",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "ipsec",
-                    "connections",
-                    "add_connection"
-                  ]
-                },
-                "description": "Example: Create IKEv1 connection for legacy equipment compatibility"
+                "description": "Execute add connection for ipsec connections"
               },
               "response": []
             },
@@ -7129,7 +6984,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"local\": {\n    \"enabled\": \"1\",\n    \"auth\": \"pubkey\",\n    \"id\": \"C=US, O=Company, CN=vpn.company.com\",\n    \"certs\": \"server_certificate\",\n    \"send_certreq\": \"1\",\n    \"send_cert\": \"always\"\n  }\n}",
+                  "raw": "{}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -7147,36 +7002,7 @@
                     "add_local"
                   ]
                 },
-                "description": "Create local IPsec endpoint with certificate-based authentication"
-              },
-              "response": []
-            },
-            {
-              "name": "Add Local - PSK Auth",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"local\": {\n    \"enabled\": \"1\",\n    \"auth\": \"psk\",\n    \"id\": \"vpn-gateway-local\",\n    \"round\": \"0\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/ipsec/connections/add_local",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "ipsec",
-                    "connections",
-                    "add_local"
-                  ]
-                },
-                "description": "Example: Create local endpoint with pre-shared key authentication"
+                "description": "Execute add local for ipsec connections"
               },
               "response": []
             },
@@ -7187,7 +7013,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"remote\": {\n    \"enabled\": \"1\",\n    \"auth\": \"pubkey\",\n    \"id\": \"C=US, O=RemoteCompany, CN=remote-vpn.company.com\",\n    \"ca\": \"root_ca_certificate\",\n    \"revocation\": \"strict\"\n  }\n}",
+                  "raw": "{}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -7205,18 +7031,39 @@
                     "add_remote"
                   ]
                 },
-                "description": "Create remote IPsec endpoint with certificate validation and CRL checking"
+                "description": "Execute add remote for ipsec connections"
               },
               "response": []
             },
             {
-              "name": "Add Remote - EAP Authentication",
+              "name": "Connection Exists",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{opnsense_base_url}}/ipsec/connections/connection_exists/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "ipsec",
+                    "connections",
+                    "connection_exists",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Get connection exists for ipsec connections"
+              },
+              "response": []
+            },
+            {
+              "name": "Del Child",
               "request": {
                 "method": "POST",
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"remote\": {\n    \"enabled\": \"1\",\n    \"auth\": \"eap-tls\",\n    \"id\": \"mobile-client\",\n    \"eap_id\": \"%any\",\n    \"ca\": \"client_ca_certificate\",\n    \"send_certreq\": \"1\"\n  }\n}",
+                  "raw": "{}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -7224,28 +7071,29 @@
                   }
                 },
                 "url": {
-                  "raw": "{{opnsense_base_url}}/ipsec/connections/add_remote",
+                  "raw": "{{opnsense_base_url}}/ipsec/connections/del_child/{{uuid}}",
                   "host": [
                     "{{opnsense_base_url}}"
                   ],
                   "path": [
                     "ipsec",
                     "connections",
-                    "add_remote"
+                    "del_child",
+                    "{{uuid}}"
                   ]
                 },
-                "description": "Example: Create remote endpoint for mobile clients with EAP-TLS authentication"
+                "description": "Execute del child for ipsec connections"
               },
               "response": []
             },
             {
-              "name": "Add Child",
+              "name": "Del Connection",
               "request": {
                 "method": "POST",
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"child\": {\n    \"enabled\": \"1\",\n    \"mode\": \"tunnel\",\n    \"policies\": \"1\",\n    \"esp_proposals\": \"aes256-sha256,aes128-sha256\",\n    \"local_ts\": \"192.168.1.0/24\",\n    \"remote_ts\": \"192.168.10.0/24\",\n    \"life_time\": \"3600\",\n    \"life_bytes\": \"0\",\n    \"life_packets\": \"0\",\n    \"rekey_time\": \"3300\",\n    \"rand_time\": \"300\",\n    \"start_action\": \"trap\",\n    \"close_action\": \"restart\",\n    \"dpd_action\": \"restart\"\n  }\n}",
+                  "raw": "{}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -7253,28 +7101,29 @@
                   }
                 },
                 "url": {
-                  "raw": "{{opnsense_base_url}}/ipsec/connections/add_child",
+                  "raw": "{{opnsense_base_url}}/ipsec/connections/del_connection/{{uuid}}",
                   "host": [
                     "{{opnsense_base_url}}"
                   ],
                   "path": [
                     "ipsec",
                     "connections",
-                    "add_child"
+                    "del_connection",
+                    "{{uuid}}"
                   ]
                 },
-                "description": "Create IPsec child SA with tunnel mode and traffic selectors"
+                "description": "Execute del connection for ipsec connections"
               },
               "response": []
             },
             {
-              "name": "Add Child - Transport Mode",
+              "name": "Del Local",
               "request": {
                 "method": "POST",
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"child\": {\n    \"enabled\": \"1\",\n    \"mode\": \"transport\",\n    \"policies\": \"1\",\n    \"esp_proposals\": \"aes256gcm128-modp2048,aes128gcm128-modp2048\",\n    \"local_ts\": \"203.0.113.10/32\",\n    \"remote_ts\": \"198.51.100.10/32\",\n    \"life_time\": \"1800\",\n    \"rekey_time\": \"1500\",\n    \"start_action\": \"start\",\n    \"close_action\": \"none\"\n  }\n}",
+                  "raw": "{}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -7282,17 +7131,48 @@
                   }
                 },
                 "url": {
-                  "raw": "{{opnsense_base_url}}/ipsec/connections/add_child",
+                  "raw": "{{opnsense_base_url}}/ipsec/connections/del_local/{{uuid}}",
                   "host": [
                     "{{opnsense_base_url}}"
                   ],
                   "path": [
                     "ipsec",
                     "connections",
-                    "add_child"
+                    "del_local",
+                    "{{uuid}}"
                   ]
                 },
-                "description": "Example: Create transport mode child SA with GCM encryption for host-to-host"
+                "description": "Execute del local for ipsec connections"
+              },
+              "response": []
+            },
+            {
+              "name": "Del Remote",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/ipsec/connections/del_remote/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "ipsec",
+                    "connections",
+                    "del_remote",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Execute del remote for ipsec connections"
               },
               "response": []
             },
@@ -7312,7 +7192,28 @@
                     "get"
                   ]
                 },
-                "description": "Get all IPsec connections configuration including connections, locals, remotes, and children"
+                "description": "Get get for ipsec connections"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Child",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{opnsense_base_url}}/ipsec/connections/get_child/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "ipsec",
+                    "connections",
+                    "get_child",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Get get child for ipsec connections"
               },
               "response": []
             },
@@ -7333,7 +7234,218 @@
                     "{{uuid}}"
                   ]
                 },
-                "description": "Get specific IPsec connection configuration by UUID"
+                "description": "Get get connection for ipsec connections"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Local",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{opnsense_base_url}}/ipsec/connections/get_local/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "ipsec",
+                    "connections",
+                    "get_local",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Get get local for ipsec connections"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Remote",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{opnsense_base_url}}/ipsec/connections/get_remote/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "ipsec",
+                    "connections",
+                    "get_remote",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Get get remote for ipsec connections"
+              },
+              "response": []
+            },
+            {
+              "name": "Is Enabled",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{opnsense_base_url}}/ipsec/connections/is_enabled",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "ipsec",
+                    "connections",
+                    "is_enabled"
+                  ]
+                },
+                "description": "Get is enabled for ipsec connections"
+              },
+              "response": []
+            },
+            {
+              "name": "Set",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/ipsec/connections/set",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "ipsec",
+                    "connections",
+                    "set"
+                  ]
+                },
+                "description": "Execute set for ipsec connections"
+              },
+              "response": []
+            },
+            {
+              "name": "Set Child",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/ipsec/connections/set_child/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "ipsec",
+                    "connections",
+                    "set_child",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Execute set child for ipsec connections"
+              },
+              "response": []
+            },
+            {
+              "name": "Set Connection",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/ipsec/connections/set_connection/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "ipsec",
+                    "connections",
+                    "set_connection",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Execute set connection for ipsec connections"
+              },
+              "response": []
+            },
+            {
+              "name": "Set Local",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/ipsec/connections/set_local/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "ipsec",
+                    "connections",
+                    "set_local",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Execute set local for ipsec connections"
+              },
+              "response": []
+            },
+            {
+              "name": "Set Remote",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/ipsec/connections/set_remote/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "ipsec",
+                    "connections",
+                    "set_remote",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Execute set remote for ipsec connections"
               },
               "response": []
             },
@@ -7353,7 +7465,68 @@
                     "swanctl"
                   ]
                 },
-                "description": "Get swanctl configuration output for debugging and verification"
+                "description": "Get swanctl for ipsec connections"
+              },
+              "response": []
+            },
+            {
+              "name": "Toggle",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/ipsec/connections/toggle/{{enabled}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "ipsec",
+                    "connections",
+                    "toggle",
+                    "{{enabled}}"
+                  ]
+                },
+                "description": "Execute toggle for ipsec connections"
+              },
+              "response": []
+            },
+            {
+              "name": "Toggle Child",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/ipsec/connections/toggle_child/{{uuid}}/{{enabled}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "ipsec",
+                    "connections",
+                    "toggle_child",
+                    "{{uuid}}",
+                    "{{enabled}}"
+                  ]
+                },
+                "description": "Execute toggle child for ipsec connections"
               },
               "response": []
             },
@@ -7384,7 +7557,69 @@
                     "{{enabled}}"
                   ]
                 },
-                "description": "Enable or disable specific IPsec connection by UUID (enabled: 1 or 0)"
+                "description": "Execute toggle connection for ipsec connections"
+              },
+              "response": []
+            },
+            {
+              "name": "Toggle Local",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/ipsec/connections/toggle_local/{{uuid}}/{{enabled}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "ipsec",
+                    "connections",
+                    "toggle_local",
+                    "{{uuid}}",
+                    "{{enabled}}"
+                  ]
+                },
+                "description": "Execute toggle local for ipsec connections"
+              },
+              "response": []
+            },
+            {
+              "name": "Toggle Remote",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/ipsec/connections/toggle_remote/{{uuid}}/{{enabled}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "ipsec",
+                    "connections",
+                    "toggle_remote",
+                    "{{uuid}}",
+                    "{{enabled}}"
+                  ]
+                },
+                "description": "Execute toggle remote for ipsec connections"
               },
               "response": []
             }
@@ -8190,27 +8425,7 @@
           "name": "Service",
           "item": [
             {
-              "name": "Status",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{opnsense_base_url}}/ipsec/service/status",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "ipsec",
-                    "service",
-                    "status"
-                  ]
-                },
-                "description": "Get current IPsec service status and running state"
-              },
-              "response": []
-            },
-            {
-              "name": "Start",
+              "name": "Reconfigure",
               "request": {
                 "method": "POST",
                 "header": [],
@@ -8224,46 +8439,17 @@
                   }
                 },
                 "url": {
-                  "raw": "{{opnsense_base_url}}/ipsec/service/start",
+                  "raw": "{{opnsense_base_url}}/ipsec/service/reconfigure",
                   "host": [
                     "{{opnsense_base_url}}"
                   ],
                   "path": [
                     "ipsec",
                     "service",
-                    "start"
+                    "reconfigure"
                   ]
                 },
-                "description": "Start IPsec service and initialize VPN connections"
-              },
-              "response": []
-            },
-            {
-              "name": "Stop",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/ipsec/service/stop",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "ipsec",
-                    "service",
-                    "stop"
-                  ]
-                },
-                "description": "Stop IPsec service and terminate all VPN connections"
+                "description": "Execute reconfigure for ipsec service"
               },
               "response": []
             },
@@ -8292,12 +8478,12 @@
                     "restart"
                   ]
                 },
-                "description": "Restart IPsec service to apply configuration changes"
+                "description": "Execute restart for ipsec service"
               },
               "response": []
             },
             {
-              "name": "Reconfigure",
+              "name": "Start",
               "request": {
                 "method": "POST",
                 "header": [],
@@ -8311,17 +8497,66 @@
                   }
                 },
                 "url": {
-                  "raw": "{{opnsense_base_url}}/ipsec/service/reconfigure",
+                  "raw": "{{opnsense_base_url}}/ipsec/service/start",
                   "host": [
                     "{{opnsense_base_url}}"
                   ],
                   "path": [
                     "ipsec",
                     "service",
-                    "reconfigure"
+                    "start"
                   ]
                 },
-                "description": "Reconfigure IPsec service with updated settings and reload configurations"
+                "description": "Execute start for ipsec service"
+              },
+              "response": []
+            },
+            {
+              "name": "Status",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{opnsense_base_url}}/ipsec/service/status",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "ipsec",
+                    "service",
+                    "status"
+                  ]
+                },
+                "description": "Get status for ipsec service"
+              },
+              "response": []
+            },
+            {
+              "name": "Stop",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/ipsec/service/stop",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "ipsec",
+                    "service",
+                    "stop"
+                  ]
+                },
+                "description": "Execute stop for ipsec service"
               },
               "response": []
             }
@@ -12090,62 +12325,13 @@
           "name": "Settings",
           "item": [
             {
-              "name": "Get General Settings",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{opnsense_base_url}}/syslog/settings/get",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "syslog",
-                    "settings",
-                    "get"
-                  ]
-                },
-                "description": "Get general syslog configuration including local logging and preservation settings"
-              },
-              "response": []
-            },
-            {
-              "name": "Set General Settings",
+              "name": "Add Destination",
               "request": {
                 "method": "POST",
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"syslog\": {\n    \"general\": {\n      \"enabled\": \"1\",\n      \"loglocal\": \"1\",\n      \"maxpreserve\": \"31\",\n      \"maxfilesize\": \"100\"\n    }\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/syslog/settings/set",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "syslog",
-                    "settings",
-                    "set"
-                  ]
-                },
-                "description": "Configure general syslog settings with log preservation and file size limits"
-              },
-              "response": []
-            },
-            {
-              "name": "Add Destination - TLS Remote Server",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"destination\": {\n    \"enabled\": \"1\",\n    \"transport\": \"tls4\",\n    \"hostname\": \"syslog.company.com\",\n    \"port\": \"6514\",\n    \"certificate\": \"5f2e8b1a9c3d4e6f7a8b9c0d1e2f3a4b\",\n    \"rfc5424\": \"1\",\n    \"level\": \"info,warn,error,critical\",\n    \"facility\": \"auth,daemon,kern\",\n    \"program\": \"filterlog,openvpn,unbound\",\n    \"description\": \"Central logging server with TLS encryption\"\n  }\n}",
+                  "raw": "{}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -12163,121 +12349,12 @@
                     "add_destination"
                   ]
                 },
-                "description": "Create secure remote syslog destination with TLS encryption and RFC5424 format"
+                "description": "Execute add destination for syslog settings"
               },
               "response": []
             },
             {
-              "name": "Add Destination - UDP Remote Server",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"destination\": {\n    \"enabled\": \"1\",\n    \"transport\": \"udp4\",\n    \"hostname\": \"log-collector.internal.com\",\n    \"port\": \"514\",\n    \"rfc5424\": \"0\",\n    \"level\": \"debug,info,warn,error\",\n    \"facility\": \"local0,local1,local2\",\n    \"program\": \"nginx,php-fpm,mysql\",\n    \"description\": \"Internal log collector for application logs\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/syslog/settings/add_destination",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "syslog",
-                    "settings",
-                    "add_destination"
-                  ]
-                },
-                "description": "Example: Create UDP destination for internal application logging"
-              },
-              "response": []
-            },
-            {
-              "name": "Add Destination - IPv6 TCP",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"destination\": {\n    \"enabled\": \"1\",\n    \"transport\": \"tcp6\",\n    \"hostname\": \"2001:db8::100\",\n    \"port\": \"514\",\n    \"rfc5424\": \"1\",\n    \"level\": \"notice,warn,error,critical,alert,emergency\",\n    \"facility\": \"kern,daemon,auth,authpriv\",\n    \"program\": \"kernel,sshd,sudo\",\n    \"description\": \"IPv6 security log destination\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/syslog/settings/add_destination",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "syslog",
-                    "settings",
-                    "add_destination"
-                  ]
-                },
-                "description": "Example: Create IPv6 TCP destination for security-focused logging"
-              },
-              "response": []
-            },
-            {
-              "name": "Get Destination",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{opnsense_base_url}}/syslog/settings/get_destination/{{uuid}}",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "syslog",
-                    "settings",
-                    "get_destination",
-                    "{{uuid}}"
-                  ]
-                },
-                "description": "Get specific syslog destination configuration by UUID"
-              },
-              "response": []
-            },
-            {
-              "name": "Set Destination",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"destination\": {\n    \"enabled\": \"1\",\n    \"hostname\": \"updated-syslog.company.com\",\n    \"port\": \"1514\",\n    \"description\": \"Updated central logging server configuration\",\n    \"level\": \"info,warn,error,critical,alert\",\n    \"facility\": \"auth,daemon,kern,mail\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/syslog/settings/set_destination/{{uuid}}",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "syslog",
-                    "settings",
-                    "set_destination",
-                    "{{uuid}}"
-                  ]
-                },
-                "description": "Update existing syslog destination configuration"
-              },
-              "response": []
-            },
-            {
-              "name": "Delete Destination",
+              "name": "Del Destination",
               "request": {
                 "method": "POST",
                 "header": [],
@@ -12302,7 +12379,107 @@
                     "{{uuid}}"
                   ]
                 },
-                "description": "Delete syslog destination by UUID"
+                "description": "Execute del destination for syslog settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Get",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{opnsense_base_url}}/syslog/settings/get",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "syslog",
+                    "settings",
+                    "get"
+                  ]
+                },
+                "description": "Get get for syslog settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Destination",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{opnsense_base_url}}/syslog/settings/get_destination/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "syslog",
+                    "settings",
+                    "get_destination",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Get get destination for syslog settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Set",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/syslog/settings/set",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "syslog",
+                    "settings",
+                    "set"
+                  ]
+                },
+                "description": "Execute set for syslog settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Set Destination",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/syslog/settings/set_destination/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "syslog",
+                    "settings",
+                    "set_destination",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Execute set destination for syslog settings"
               },
               "response": []
             },
@@ -12333,7 +12510,7 @@
                     "{{enabled}}"
                   ]
                 },
-                "description": "Enable or disable syslog destination by UUID (enabled: 1 or 0)"
+                "description": "Execute toggle destination for syslog settings"
               },
               "response": []
             }
@@ -14566,33 +14743,13 @@
           "name": "Settings",
           "item": [
             {
-              "name": "Get Settings",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{opnsense_base_url}}/trafficshaper/settings/get",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "trafficshaper",
-                    "settings",
-                    "get"
-                  ]
-                },
-                "description": "Get all traffic shaper configuration including pipes, queues, and rules"
-              },
-              "response": []
-            },
-            {
-              "name": "Add Pipe - High Bandwidth",
+              "name": "Add Pipe",
               "request": {
                 "method": "POST",
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"pipe\": {\n    \"number\": \"1\",\n    \"enabled\": \"1\",\n    \"bandwidth\": \"100\",\n    \"bandwidthMetric\": \"Mbit\",\n    \"queue\": \"50\",\n    \"scheduler\": \"FQCODEL\",\n    \"mask\": \"src-ip\",\n    \"codel_enable\": \"1\",\n    \"codel_target\": \"5\",\n    \"codel_interval\": \"100\",\n    \"codel_ecn_enable\": \"1\",\n    \"description\": \"High-speed internet pipe with CoDel queueing\"\n  }\n}",
+                  "raw": "{}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -14610,47 +14767,18 @@
                     "add_pipe"
                   ]
                 },
-                "description": "Create high-bandwidth pipe with modern CoDel queue management"
+                "description": "Execute add pipe for trafficshaper settings"
               },
               "response": []
             },
             {
-              "name": "Add Pipe - Limited Bandwidth",
+              "name": "Add Queue",
               "request": {
                 "method": "POST",
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"pipe\": {\n    \"number\": \"2\",\n    \"enabled\": \"1\",\n    \"bandwidth\": \"10\",\n    \"bandwidthMetric\": \"Mbit\",\n    \"queue\": \"20\",\n    \"scheduler\": \"QFQ\",\n    \"mask\": \"dst-ip\",\n    \"pie_enable\": \"1\",\n    \"pie_target\": \"15\",\n    \"pie_tupdate\": \"30\",\n    \"pie_alpha\": \"125\",\n    \"pie_beta\": \"1250\",\n    \"description\": \"Limited bandwidth pipe with PIE queue management\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/trafficshaper/settings/add_pipe",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "trafficshaper",
-                    "settings",
-                    "add_pipe"
-                  ]
-                },
-                "description": "Example: Create limited bandwidth pipe with PIE queue management"
-              },
-              "response": []
-            },
-            {
-              "name": "Add Queue - High Priority",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"queue\": {\n    \"number\": \"100\",\n    \"enabled\": \"1\",\n    \"pipe\": \"1\",\n    \"weight\": \"90\",\n    \"scheduler\": \"QFQ\",\n    \"mask\": \"none\",\n    \"description\": \"High priority queue for critical traffic\"\n  }\n}",
+                  "raw": "{}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -14668,47 +14796,18 @@
                     "add_queue"
                   ]
                 },
-                "description": "Create high priority queue for critical traffic within pipe"
+                "description": "Execute add queue for trafficshaper settings"
               },
               "response": []
             },
             {
-              "name": "Add Queue - Standard Priority",
+              "name": "Add Rule",
               "request": {
                 "method": "POST",
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"queue\": {\n    \"number\": \"200\",\n    \"enabled\": \"1\",\n    \"pipe\": \"1\",\n    \"weight\": \"50\",\n    \"scheduler\": \"FIFO\",\n    \"description\": \"Standard priority queue for regular traffic\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/trafficshaper/settings/add_queue",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "trafficshaper",
-                    "settings",
-                    "add_queue"
-                  ]
-                },
-                "description": "Example: Create standard priority queue for regular traffic"
-              },
-              "response": []
-            },
-            {
-              "name": "Add Rule - VoIP Traffic",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"rule\": {\n    \"enabled\": \"1\",\n    \"interface\": \"wan\",\n    \"direction\": \"in\",\n    \"proto\": \"udp\",\n    \"source_net\": \"any\",\n    \"destination_net\": \"192.168.1.0/24\",\n    \"destination_port\": \"5060,10000-20000\",\n    \"dscp\": \"46\",\n    \"target\": \"1\",\n    \"targetqueue\": \"100\",\n    \"sequence\": \"1\",\n    \"description\": \"High priority rule for VoIP traffic (SIP + RTP)\"\n  }\n}",
+                  "raw": "{}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -14726,223 +14825,12 @@
                     "add_rule"
                   ]
                 },
-                "description": "Create rule to prioritize VoIP traffic with DSCP marking"
+                "description": "Execute add rule for trafficshaper settings"
               },
               "response": []
             },
             {
-              "name": "Add Rule - Web Traffic",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"rule\": {\n    \"enabled\": \"1\",\n    \"interface\": \"wan\",\n    \"direction\": \"out\",\n    \"proto\": \"tcp\",\n    \"source_net\": \"192.168.1.0/24\",\n    \"destination_net\": \"any\",\n    \"destination_port\": \"80,443\",\n    \"target\": \"1\",\n    \"targetqueue\": \"200\",\n    \"sequence\": \"10\",\n    \"description\": \"Standard priority rule for HTTP/HTTPS web traffic\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/trafficshaper/settings/add_rule",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "trafficshaper",
-                    "settings",
-                    "add_rule"
-                  ]
-                },
-                "description": "Example: Create rule for standard web traffic classification"
-              },
-              "response": []
-            },
-            {
-              "name": "Add Rule - Bulk Transfer",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"rule\": {\n    \"enabled\": \"1\",\n    \"interface\": \"lan\",\n    \"direction\": \"out\",\n    \"proto\": \"tcp\",\n    \"source_net\": \"192.168.1.0/24\",\n    \"destination_net\": \"any\",\n    \"destination_port\": \"21,22,25,110,143,993,995\",\n    \"target\": \"2\",\n    \"sequence\": \"20\",\n    \"description\": \"Low priority rule for bulk transfer protocols (FTP, SSH, Email)\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/trafficshaper/settings/add_rule",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "trafficshaper",
-                    "settings",
-                    "add_rule"
-                  ]
-                },
-                "description": "Example: Create rule for bulk transfer traffic with limited bandwidth"
-              },
-              "response": []
-            },
-            {
-              "name": "Get Pipe",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{opnsense_base_url}}/trafficshaper/settings/get_pipe/{{uuid}}",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "trafficshaper",
-                    "settings",
-                    "get_pipe",
-                    "{{uuid}}"
-                  ]
-                },
-                "description": "Get specific pipe configuration by UUID"
-              },
-              "response": []
-            },
-            {
-              "name": "Get Queue",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{opnsense_base_url}}/trafficshaper/settings/get_queue/{{uuid}}",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "trafficshaper",
-                    "settings",
-                    "get_queue",
-                    "{{uuid}}"
-                  ]
-                },
-                "description": "Get specific queue configuration by UUID"
-              },
-              "response": []
-            },
-            {
-              "name": "Get Rule",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{opnsense_base_url}}/trafficshaper/settings/get_rule/{{uuid}}",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "trafficshaper",
-                    "settings",
-                    "get_rule",
-                    "{{uuid}}"
-                  ]
-                },
-                "description": "Get specific rule configuration by UUID"
-              },
-              "response": []
-            },
-            {
-              "name": "Set Pipe",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"pipe\": {\n    \"enabled\": \"1\",\n    \"bandwidth\": \"150\",\n    \"bandwidthMetric\": \"Mbit\",\n    \"queue\": \"75\",\n    \"scheduler\": \"FQCODEL\",\n    \"codel_target\": \"8\",\n    \"codel_interval\": \"120\",\n    \"description\": \"Updated high-speed pipe with modified CoDel parameters\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/trafficshaper/settings/set_pipe/{{uuid}}",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "trafficshaper",
-                    "settings",
-                    "set_pipe",
-                    "{{uuid}}"
-                  ]
-                },
-                "description": "Update existing pipe configuration"
-              },
-              "response": []
-            },
-            {
-              "name": "Set Queue",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"queue\": {\n    \"enabled\": \"1\",\n    \"weight\": \"75\",\n    \"scheduler\": \"QFQ\",\n    \"description\": \"Updated priority queue with adjusted weight\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/trafficshaper/settings/set_queue/{{uuid}}",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "trafficshaper",
-                    "settings",
-                    "set_queue",
-                    "{{uuid}}"
-                  ]
-                },
-                "description": "Update existing queue configuration"
-              },
-              "response": []
-            },
-            {
-              "name": "Set Rule",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"rule\": {\n    \"enabled\": \"1\",\n    \"destination_port\": \"80,443,8080,8443\",\n    \"sequence\": \"15\",\n    \"description\": \"Updated web traffic rule including additional ports\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/trafficshaper/settings/set_rule/{{uuid}}",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "trafficshaper",
-                    "settings",
-                    "set_rule",
-                    "{{uuid}}"
-                  ]
-                },
-                "description": "Update existing rule configuration"
-              },
-              "response": []
-            },
-            {
-              "name": "Delete Pipe",
+              "name": "Del Pipe",
               "request": {
                 "method": "POST",
                 "header": [],
@@ -14967,12 +14855,12 @@
                     "{{uuid}}"
                   ]
                 },
-                "description": "Delete pipe configuration by UUID"
+                "description": "Execute del pipe for trafficshaper settings"
               },
               "response": []
             },
             {
-              "name": "Delete Queue",
+              "name": "Del Queue",
               "request": {
                 "method": "POST",
                 "header": [],
@@ -14997,12 +14885,12 @@
                     "{{uuid}}"
                   ]
                 },
-                "description": "Delete queue configuration by UUID"
+                "description": "Execute del queue for trafficshaper settings"
               },
               "response": []
             },
             {
-              "name": "Delete Rule",
+              "name": "Del Rule",
               "request": {
                 "method": "POST",
                 "header": [],
@@ -15027,7 +14915,209 @@
                     "{{uuid}}"
                   ]
                 },
-                "description": "Delete rule configuration by UUID"
+                "description": "Execute del rule for trafficshaper settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Get",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{opnsense_base_url}}/trafficshaper/settings/get",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "trafficshaper",
+                    "settings",
+                    "get"
+                  ]
+                },
+                "description": "Get get for trafficshaper settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Pipe",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{opnsense_base_url}}/trafficshaper/settings/get_pipe/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "trafficshaper",
+                    "settings",
+                    "get_pipe",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Get get pipe for trafficshaper settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Queue",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{opnsense_base_url}}/trafficshaper/settings/get_queue/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "trafficshaper",
+                    "settings",
+                    "get_queue",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Get get queue for trafficshaper settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Rule",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{opnsense_base_url}}/trafficshaper/settings/get_rule/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "trafficshaper",
+                    "settings",
+                    "get_rule",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Get get rule for trafficshaper settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Set",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/trafficshaper/settings/set",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "trafficshaper",
+                    "settings",
+                    "set"
+                  ]
+                },
+                "description": "Execute set for trafficshaper settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Set Pipe",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/trafficshaper/settings/set_pipe/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "trafficshaper",
+                    "settings",
+                    "set_pipe",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Execute set pipe for trafficshaper settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Set Queue",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/trafficshaper/settings/set_queue/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "trafficshaper",
+                    "settings",
+                    "set_queue",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Execute set queue for trafficshaper settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Set Rule",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/trafficshaper/settings/set_rule/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "trafficshaper",
+                    "settings",
+                    "set_rule",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Execute set rule for trafficshaper settings"
               },
               "response": []
             },
@@ -15058,7 +15148,7 @@
                     "{{enabled}}"
                   ]
                 },
-                "description": "Enable or disable pipe by UUID (enabled: 1 or 0)"
+                "description": "Execute toggle pipe for trafficshaper settings"
               },
               "response": []
             },
@@ -15089,7 +15179,7 @@
                     "{{enabled}}"
                   ]
                 },
-                "description": "Enable or disable queue by UUID (enabled: 1 or 0)"
+                "description": "Execute toggle queue for trafficshaper settings"
               },
               "response": []
             },
@@ -15120,36 +15210,7 @@
                     "{{enabled}}"
                   ]
                 },
-                "description": "Enable or disable rule by UUID (enabled: 1 or 0)"
-              },
-              "response": []
-            },
-            {
-              "name": "Set Settings",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"trafficshaper\": {\n    \"pipes\": {\n      \"pipe\": {\n        \"example-uuid-1\": {\n          \"number\": \"1\",\n          \"bandwidth\": \"100\",\n          \"bandwidthMetric\": \"Mbit\",\n          \"enabled\": \"1\"\n        }\n      }\n    },\n    \"queues\": {\n      \"queue\": {\n        \"example-uuid-2\": {\n          \"number\": \"100\",\n          \"pipe\": \"1\",\n          \"weight\": \"90\",\n          \"enabled\": \"1\"\n        }\n      }\n    },\n    \"rules\": {\n      \"rule\": {\n        \"example-uuid-3\": {\n          \"interface\": \"wan\",\n          \"proto\": \"tcp\",\n          \"target\": \"1\",\n          \"enabled\": \"1\"\n        }\n      }\n    }\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/trafficshaper/settings/set",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "trafficshaper",
-                    "settings",
-                    "set"
-                  ]
-                },
-                "description": "Set complete traffic shaper configuration with pipes, queues, and rules"
+                "description": "Execute toggle rule for trafficshaper settings"
               },
               "response": []
             }
@@ -19793,6 +19854,244 @@
           "name": "Settings",
           "item": [
             {
+              "name": "Add Alert",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/monit/settings/add_alert",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "monit",
+                    "settings",
+                    "add_alert"
+                  ]
+                },
+                "description": "Execute add alert for monit settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Add Service",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/monit/settings/add_service",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "monit",
+                    "settings",
+                    "add_service"
+                  ]
+                },
+                "description": "Execute add service for monit settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Add Test",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/monit/settings/add_test",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "monit",
+                    "settings",
+                    "add_test"
+                  ]
+                },
+                "description": "Execute add test for monit settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Del Alert",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/monit/settings/del_alert/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "monit",
+                    "settings",
+                    "del_alert",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Execute del alert for monit settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Del Service",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/monit/settings/del_service/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "monit",
+                    "settings",
+                    "del_service",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Execute del service for monit settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Del Test",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/monit/settings/del_test/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "monit",
+                    "settings",
+                    "del_test",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Execute del test for monit settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Dirty",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{opnsense_base_url}}/monit/settings/dirty",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "monit",
+                    "settings",
+                    "dirty"
+                  ]
+                },
+                "description": "Get dirty for monit settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Get",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{opnsense_base_url}}/monit/settings/get",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "monit",
+                    "settings",
+                    "get"
+                  ]
+                },
+                "description": "Get get for monit settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Alert",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{opnsense_base_url}}/monit/settings/get_alert/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "monit",
+                    "settings",
+                    "get_alert",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Get get alert for monit settings"
+              },
+              "response": []
+            },
+            {
               "name": "Get General",
               "request": {
                 "method": "GET",
@@ -19808,268 +20107,7 @@
                     "get_general"
                   ]
                 },
-                "description": "Get general Monit configuration including polling, mail, logging, and web interface settings"
-              },
-              "response": []
-            },
-            {
-              "name": "Set",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"monit\": {\n    \"general\": {\n      \"enabled\": \"1\",\n      \"interval\": \"120\",\n      \"startdelay\": \"30\",\n      \"mailserver\": \"smtp.company.com\",\n      \"port\": \"587\",\n      \"username\": \"monitoring@company.com\",\n      \"password\": \"smtp_password\",\n      \"ssl\": \"1\",\n      \"sslversion\": \"TLSv12\",\n      \"sslverify\": \"1\",\n      \"logfile\": \"/var/log/monit.log\",\n      \"statefile\": \"/var/db/monit.state\",\n      \"eventqueuepath\": \"/var/db/monit/events\",\n      \"eventqueueslots\": \"100\",\n      \"httpdEnabled\": \"1\",\n      \"httpdUsername\": \"admin\",\n      \"httpdPassword\": \"secure_password\",\n      \"httpdPort\": \"2812\",\n      \"httpdAllow\": \"localhost,192.168.1.0/24\"\n    }\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/monit/settings/set",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "monit",
-                    "settings",
-                    "set"
-                  ]
-                },
-                "description": "Configure global Monit settings with SMTP notifications and web interface"
-              },
-              "response": []
-            },
-            {
-              "name": "Add Service",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"service\": {\n    \"enabled\": \"1\",\n    \"name\": \"nginx_web_server\",\n    \"type\": \"process\",\n    \"pidfile\": \"/var/run/nginx.pid\",\n    \"start\": \"/usr/local/etc/rc.d/nginx start\",\n    \"stop\": \"/usr/local/etc/rc.d/nginx stop\",\n    \"description\": \"Nginx web server monitoring\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/monit/settings/add_service",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "monit",
-                    "settings",
-                    "add_service"
-                  ]
-                },
-                "description": "Create new service monitoring configuration for processes, files, or network services"
-              },
-              "response": []
-            },
-            {
-              "name": "Add Service - File Monitoring",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"service\": {\n    \"enabled\": \"1\",\n    \"name\": \"system_config\",\n    \"type\": \"file\",\n    \"path\": \"/etc/rc.conf\",\n    \"description\": \"Monitor system configuration file for changes\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/monit/settings/add_service",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "monit",
-                    "settings",
-                    "add_service"
-                  ]
-                },
-                "description": "Example: Create file monitoring service for configuration integrity"
-              },
-              "response": []
-            },
-            {
-              "name": "Add Service - Filesystem Monitoring",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"service\": {\n    \"enabled\": \"1\",\n    \"name\": \"root_filesystem\",\n    \"type\": \"filesystem\",\n    \"path\": \"/\",\n    \"description\": \"Monitor root filesystem disk usage and availability\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/monit/settings/add_service",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "monit",
-                    "settings",
-                    "add_service"
-                  ]
-                },
-                "description": "Example: Create filesystem monitoring for disk space alerts"
-              },
-              "response": []
-            },
-            {
-              "name": "Add Test",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"test\": {\n    \"enabled\": \"1\",\n    \"name\": \"cpu_usage_test\",\n    \"condition\": \"cpu usage > 80%\",\n    \"action\": \"alert\",\n    \"description\": \"Alert when CPU usage exceeds 80%\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/monit/settings/add_test",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "monit",
-                    "settings",
-                    "add_test"
-                  ]
-                },
-                "description": "Create monitoring test with conditions and actions for alerting"
-              },
-              "response": []
-            },
-            {
-              "name": "Add Test - Memory Usage",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"test\": {\n    \"enabled\": \"1\",\n    \"name\": \"memory_usage_test\",\n    \"condition\": \"memory usage > 90%\",\n    \"action\": \"restart\",\n    \"description\": \"Restart service when memory usage is critical\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/monit/settings/add_test",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "monit",
-                    "settings",
-                    "add_test"
-                  ]
-                },
-                "description": "Example: Create memory usage test with automatic restart action"
-              },
-              "response": []
-            },
-            {
-              "name": "Add Test - Network Connectivity",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"test\": {\n    \"enabled\": \"1\",\n    \"name\": \"network_connectivity_test\",\n    \"condition\": \"failed host 8.8.8.8 port 53\",\n    \"action\": \"alert\",\n    \"description\": \"Alert when DNS connectivity fails\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/monit/settings/add_test",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "monit",
-                    "settings",
-                    "add_test"
-                  ]
-                },
-                "description": "Example: Create network connectivity test for DNS availability"
-              },
-              "response": []
-            },
-            {
-              "name": "Add Alert",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"alert\": {\n    \"enabled\": \"1\",\n    \"recipient\": \"admin@company.com\",\n    \"events\": \"nonexist,timeout,resource,checksum,connection,permission,uid,gid,invalid,icmp,exec\",\n    \"format\": \"subject\",\n    \"reminder\": \"10\",\n    \"description\": \"Primary administrator alert for all critical events\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/monit/settings/add_alert",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "monit",
-                    "settings",
-                    "add_alert"
-                  ]
-                },
-                "description": "Create alert configuration with email notifications for monitoring events"
-              },
-              "response": []
-            },
-            {
-              "name": "Add Alert - Selective Events",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"alert\": {\n    \"enabled\": \"1\",\n    \"recipient\": \"ops-team@company.com\",\n    \"events\": \"resource,timeout,connection\",\n    \"format\": \"html\",\n    \"reminder\": \"30\",\n    \"description\": \"Operations team alert for performance and connectivity issues\"\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{opnsense_base_url}}/monit/settings/add_alert",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "monit",
-                    "settings",
-                    "add_alert"
-                  ]
-                },
-                "description": "Example: Create selective alert for operations team with HTML formatting"
+                "description": "Get get general for monit settings"
               },
               "response": []
             },
@@ -20090,7 +20128,178 @@
                     "{{uuid}}"
                   ]
                 },
-                "description": "Get specific service monitoring configuration by UUID"
+                "description": "Get get service for monit settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Test",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{opnsense_base_url}}/monit/settings/get_test/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "monit",
+                    "settings",
+                    "get_test",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Get get test for monit settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Set",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/monit/settings/set",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "monit",
+                    "settings",
+                    "set"
+                  ]
+                },
+                "description": "Execute set for monit settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Set Alert",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/monit/settings/set_alert/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "monit",
+                    "settings",
+                    "set_alert",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Execute set alert for monit settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Set Service",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/monit/settings/set_service/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "monit",
+                    "settings",
+                    "set_service",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Execute set service for monit settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Set Test",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/monit/settings/set_test/{{uuid}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "monit",
+                    "settings",
+                    "set_test",
+                    "{{uuid}}"
+                  ]
+                },
+                "description": "Execute set test for monit settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Toggle Alert",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{opnsense_base_url}}/monit/settings/toggle_alert/{{uuid}}/{{enabled}}",
+                  "host": [
+                    "{{opnsense_base_url}}"
+                  ],
+                  "path": [
+                    "monit",
+                    "settings",
+                    "toggle_alert",
+                    "{{uuid}}",
+                    "{{enabled}}"
+                  ]
+                },
+                "description": "Execute toggle alert for monit settings"
               },
               "response": []
             },
@@ -20121,27 +20330,7 @@
                     "{{enabled}}"
                   ]
                 },
-                "description": "Enable or disable specific service monitoring by UUID (enabled: 1 or 0)"
-              },
-              "response": []
-            },
-            {
-              "name": "Dirty",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{opnsense_base_url}}/monit/settings/dirty",
-                  "host": [
-                    "{{opnsense_base_url}}"
-                  ],
-                  "path": [
-                    "monit",
-                    "settings",
-                    "dirty"
-                  ]
-                },
-                "description": "Check if Monit configuration has unsaved changes requiring reconfiguration"
+                "description": "Execute toggle service for monit settings"
               },
               "response": []
             }
