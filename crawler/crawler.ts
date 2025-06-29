@@ -9,6 +9,21 @@ interface ApiEndpoint {
   command: string;
   parameters?: string;
   url: string;
+  modelParameters?: ModelParameter[];
+}
+
+interface ModelParameter {
+  id: string;
+  type: string;
+  required: boolean;
+  help?: string;
+  constraints?: {
+    min?: number;
+    max?: number;
+    pattern?: string;
+    validationMessage?: string;
+    options?: string[];
+  };
 }
 
 interface ModuleData {
@@ -16,10 +31,13 @@ interface ModuleData {
   type: 'core' | 'plugin';
   url: string;
   endpoints: ApiEndpoint[];
+  xmlModelUrl?: string;
+  xmlContent?: string;
+  modelStructure?: any;
 }
 
 class OPNsenseApiCrawler {
-  private startUrl = 'https://docs.opnsense.org/development/api.html';
+  private startUrl = 'https://docs.opnsense.org/development/api.html#plugins-api';
   private storageDir = './crawler/storage';
 
   constructor() {
@@ -87,17 +105,36 @@ class OPNsenseApiCrawler {
 
       try {
         const endpoints = await this.extractEndpoints(page, userData.moduleName, userData.moduleType, request.url);
+        const xmlModelUrl = await this.extractXmlModelUrl(page);
+        let xmlContent: string | undefined;
+        let modelStructure: any;
+
+        if (xmlModelUrl) {
+          xmlContent = await this.fetchXmlContent(xmlModelUrl);
+          if (xmlContent) {
+            modelStructure = this.parseXmlToJson(xmlContent);
+            // Match parameters to endpoints
+            const enhancedEndpoints = this.matchParametersToEndpoints(endpoints, modelStructure);
+            endpoints.splice(0, endpoints.length, ...enhancedEndpoints);
+          }
+        }
 
         const moduleData: ModuleData = {
           name: userData.moduleName,
           type: userData.moduleType,
           url: request.url,
           endpoints,
+          xmlModelUrl,
+          xmlContent,
+          modelStructure,
         };
 
         await this.storeModuleData(moduleData);
 
         console.log(`Extracted ${endpoints.length} endpoints from ${userData.moduleName}`);
+        if (xmlModelUrl) {
+          console.log(`Found XML model: ${xmlModelUrl}`);
+        }
       } catch (error) {
         console.error(`Error processing module ${userData.moduleName}:`, error);
       }
@@ -224,6 +261,7 @@ class OPNsenseApiCrawler {
     console.log('='.repeat(50));
 
     let totalEndpoints = 0;
+    let modulesWithXml = 0;
 
     const modulesByType: { core: ModuleData[]; plugin: ModuleData[] } = { core: [], plugin: [] };
     const fs = await import('fs');
@@ -246,6 +284,9 @@ class OPNsenseApiCrawler {
           if (moduleData && moduleData.type && moduleData.endpoints) {
             modulesByType[moduleData.type].push(moduleData);
             totalEndpoints += moduleData.endpoints.length;
+            if (moduleData.xmlModelUrl) {
+              modulesWithXml++;
+            }
           }
         } catch (error) {
           console.warn(`Failed to read module data for ${file}:`, error);
@@ -259,6 +300,7 @@ class OPNsenseApiCrawler {
     console.log(`Core Modules: ${modulesByType.core.length}`);
     console.log(`Plugin Modules: ${modulesByType.plugin.length}`);
     console.log(`Total Endpoints: ${totalEndpoints}`);
+    console.log(`Modules with XML Models: ${modulesWithXml}`);
 
     // Generate detailed markdown report
     await this.generateMarkdownReport(modulesByType);
@@ -275,7 +317,11 @@ class OPNsenseApiCrawler {
     for (const module of modulesByType.core.sort((a, b) => a.name.localeCompare(b.name))) {
       markdown += `### ${module.name}\n`;
       markdown += `**Base URL**: \`/api/${module.name.toLowerCase()}/\`\n`;
-      markdown += `**Documentation**: ${module.url}\n\n`;
+      markdown += `**Documentation**: ${module.url}\n`;
+      if (module.xmlModelUrl) {
+        markdown += `**Model XML**: ${module.xmlModelUrl}\n`;
+      }
+      markdown += '\n';
 
       if (module.endpoints.length > 0) {
         markdown += '| Method | Controller | Command | Parameters | Full URL |\n';
@@ -296,7 +342,11 @@ class OPNsenseApiCrawler {
     for (const module of modulesByType.plugin.sort((a, b) => a.name.localeCompare(b.name))) {
       markdown += `### ${module.name}\n`;
       markdown += `**Base URL**: \`/api/${module.name.toLowerCase()}/\`\n`;
-      markdown += `**Documentation**: ${module.url}\n\n`;
+      markdown += `**Documentation**: ${module.url}\n`;
+      if (module.xmlModelUrl) {
+        markdown += `**Model XML**: ${module.xmlModelUrl}\n`;
+      }
+      markdown += '\n';
 
       if (module.endpoints.length > 0) {
         markdown += '| Method | Controller | Command | Parameters | Full URL |\n';
@@ -315,6 +365,324 @@ class OPNsenseApiCrawler {
     await store.setValue('complete-api-documentation.md', markdown);
     console.log('\n📄 Complete documentation saved to complete-api-documentation.md');
     console.log(`📁 Storage location: ${this.storageDir}`);
+  }
+
+  private async extractXmlModelUrl(page: any): Promise<string | undefined> {
+    try {
+      const xmlSelectors = [
+        'td p em:has-text("model") ~ a[href*=".xml"]',
+        'td:has(em:text("model")) a[href*=".xml"]',
+        'td a[href*="/models/"][href$=".xml"]',
+        'a.reference.external[href*="github.com"][href*=".xml"]',
+      ];
+
+      for (const selector of xmlSelectors) {
+        try {
+          const xmlLink = await page.locator(selector).first();
+          if ((await xmlLink.count()) > 0) {
+            const href = await xmlLink.getAttribute('href');
+            if (href && href.includes('.xml')) {
+              console.log(`Found XML model URL using selector: ${selector}`);
+              return href;
+            }
+          }
+        } catch (error) {
+          continue;
+        }
+      }
+
+      const allLinks = await page.locator('a[href*=".xml"]').all();
+      for (const link of allLinks) {
+        try {
+          const href = await link.getAttribute('href');
+          const text = await link.textContent();
+          const parentText = await link.locator('..').textContent();
+
+          if (href && (parentText?.includes('model') || text?.includes('Model'))) {
+            console.log(`Found XML model URL via fallback search: ${href}`);
+            return href;
+          }
+        } catch (error) {
+          continue;
+        }
+      }
+    } catch (error) {
+      console.error('Error extracting XML model URL:', error);
+    }
+
+    return undefined;
+  }
+
+  private githubToRawUrl(githubUrl: string): string {
+    // Convert GitHub blob URLs to raw content URLs
+    // From: https://github.com/owner/repo/blob/branch/path
+    // To: https://raw.githubusercontent.com/owner/repo/refs/heads/branch/path
+
+    const blobMatch = githubUrl.match(/github\.com\/([^/]+)\/([^/]+)\/blob\/([^/]+)\/(.+)/);
+    if (blobMatch) {
+      const [, owner, repo, branch, path] = blobMatch;
+      // For tags, use refs/tags/ instead of refs/heads/
+      const refType = branch && branch.match(/^v?\d+\.\d+/) ? 'tags' : 'heads';
+      return `https://raw.githubusercontent.com/${owner}/${repo}/refs/${refType}/${branch}/${path}`;
+    }
+
+    return githubUrl;
+  }
+
+  private async fetchXmlContent(xmlUrl: string): Promise<string | undefined> {
+    try {
+      const rawUrl = this.githubToRawUrl(xmlUrl);
+      console.log(`Fetching XML from: ${rawUrl}`);
+
+      const response = await fetch(rawUrl);
+      if (response.ok) {
+        const content = await response.text();
+        console.log(`Successfully fetched XML content (${content.length} characters)`);
+        return content;
+      } else {
+        console.error(`Failed to fetch XML: ${response.status} ${response.statusText}`);
+      }
+    } catch (error) {
+      console.error('Error fetching XML content:', error);
+    }
+    return undefined;
+  }
+
+  private parseXmlToJson(xmlContent: string): any {
+    try {
+      const modelStructure: any = {
+        fields: {},
+        containers: {},
+        tabs: {},
+      };
+
+      // Parse fields
+      const fieldMatches = xmlContent.matchAll(/<field\s+([^>]+)>([^<]*(?:<(?!\/field>)[^<]*)*)<\/field>/gs);
+
+      for (const match of fieldMatches) {
+        const fieldAttributes = match[1];
+        const fieldContent = match[2];
+
+        if (!fieldAttributes) continue;
+
+        const idMatch = fieldAttributes.match(/id="([^"]+)"/);
+        if (!idMatch) continue;
+
+        const fieldId = idMatch[1];
+        const field: any = {
+          id: fieldId,
+          type: fieldAttributes.match(/type="([^"]+)"/)?.[1] || 'TextField',
+          help: fieldAttributes.match(/help="([^"]+)"/)?.[1],
+        };
+
+        // Parse field content
+        if (fieldContent) {
+          // Check for required
+          if (fieldContent.includes('<Required>Y</Required>')) {
+            field.required = true;
+          }
+
+          // Check for default value
+          const defaultMatch = fieldContent.match(/<default>([^<]+)<\/default>/);
+          if (defaultMatch) {
+            field.default = defaultMatch[1];
+          }
+
+          // Check for min/max values
+          const minMatch = fieldContent.match(/<MinimumValue>(\d+)<\/MinimumValue>/);
+          const maxMatch = fieldContent.match(/<MaximumValue>(\d+)<\/MaximumValue>/);
+          if (minMatch || maxMatch) {
+            field.constraints = field.constraints || {};
+            if (minMatch && minMatch[1]) field.constraints.min = parseInt(minMatch[1], 10);
+            if (maxMatch && maxMatch[1]) field.constraints.max = parseInt(maxMatch[1], 10);
+          }
+
+          // Check for validation
+          const validationMatch = fieldContent.match(/<ValidationMessage>([^<]+)<\/ValidationMessage>/);
+          if (validationMatch) {
+            field.constraints = field.constraints || {};
+            field.constraints.validationMessage = validationMatch[1];
+          }
+
+          // Check for mask/pattern
+          const maskMatch = fieldContent.match(/<mask>([^<]+)<\/mask>/);
+          if (maskMatch) {
+            field.constraints = field.constraints || {};
+            field.constraints.pattern = maskMatch[1];
+          }
+
+          // Check for options (OptionField)
+          const optionMatches = fieldContent.matchAll(/<option value="([^"]+)">([^<]+)<\/option>/g);
+          const options: string[] = [];
+          for (const optMatch of optionMatches) {
+            if (optMatch[1]) {
+              options.push(optMatch[1]);
+            }
+          }
+          if (options.length > 0) {
+            field.constraints = field.constraints || {};
+            field.constraints.options = options;
+          }
+        }
+
+        if (fieldId) {
+          modelStructure.fields[fieldId] = field;
+        }
+      }
+
+      // Parse containers (items)
+      const containerMatches = xmlContent.matchAll(
+        /<(\w+)\s+type="ArrayField"[^>]*>([^<]*(?:<(?!\/\1>)[^<]*)*)<\/\1>/gs
+      );
+
+      for (const match of containerMatches) {
+        const containerName = match[1];
+        const containerContent = match[2];
+
+        if (!containerName) continue;
+
+        modelStructure.containers[containerName] = {
+          type: 'ArrayField',
+          fields: {},
+        };
+
+        // Parse fields within container
+        if (containerContent) {
+          const containerFieldMatches = containerContent.matchAll(
+            /<field\s+([^>]+)>([^<]*(?:<(?!\/field>)[^<]*)*)<\/field>/gs
+          );
+          for (const fieldMatch of containerFieldMatches) {
+            const fieldAttributes = fieldMatch[1];
+            const fieldContent = fieldMatch[2];
+
+            if (!fieldAttributes) continue;
+
+            const idMatch = fieldAttributes.match(/id="([^"]+)"/);
+
+            if (idMatch) {
+              const fieldId = idMatch[1];
+              if (fieldId && containerName) {
+                modelStructure.containers[containerName].fields[fieldId] = {
+                  id: fieldId,
+                  type: fieldAttributes.match(/type="([^"]+)"/)?.[1] || 'TextField',
+                  help: fieldAttributes.match(/help="([^"]+)"/)?.[1],
+                  required: fieldContent?.includes('<Required>Y</Required>') || false,
+                };
+              }
+            }
+          }
+        }
+      }
+
+      return modelStructure;
+    } catch (error) {
+      console.error('Error parsing XML to JSON:', error);
+      return null;
+    }
+  }
+
+  private matchParametersToEndpoints(endpoints: ApiEndpoint[], modelStructure: any): ApiEndpoint[] {
+    if (!modelStructure || !modelStructure.fields) {
+      return endpoints;
+    }
+
+    return endpoints.map(endpoint => {
+      const enhancedEndpoint = { ...endpoint };
+
+      // Try to match based on command name
+      const commandLower = endpoint.command.toLowerCase();
+      const controllerLower = endpoint.controller.toLowerCase();
+
+      // Determine which fields might be relevant for this endpoint
+      const relevantFields: ModelParameter[] = [];
+
+      // For GET endpoints (search, get), usually all fields are potential filters
+      if (endpoint.method === 'GET') {
+        if (commandLower.includes('search') || commandLower === 'get') {
+          // Add common search parameters
+          relevantFields.push({
+            id: 'current',
+            type: 'Integer',
+            required: false,
+            help: 'Current page number',
+            constraints: { min: 1 },
+          });
+          relevantFields.push({
+            id: 'rowCount',
+            type: 'Integer',
+            required: false,
+            help: 'Number of rows per page',
+            constraints: { min: 1, max: 1000 },
+          });
+          relevantFields.push({
+            id: 'searchPhrase',
+            type: 'TextField',
+            required: false,
+            help: 'Search phrase to filter results',
+          });
+        }
+      }
+
+      // For POST endpoints (add, set, update), include model fields
+      if (endpoint.method === 'POST') {
+        if (commandLower.includes('add') || commandLower.includes('set') || commandLower.includes('update')) {
+          // Check if this operates on a container
+          const containerName = Object.keys(modelStructure.containers || {}).find(
+            name => controllerLower.includes(name.toLowerCase()) || commandLower.includes(name.toLowerCase())
+          );
+
+          if (containerName && modelStructure.containers[containerName]) {
+            // Add container fields
+            Object.values(modelStructure.containers[containerName].fields).forEach((field: any) => {
+              relevantFields.push({
+                id: `${containerName}.${field.id}`,
+                type: field.type,
+                required: field.required || false,
+                help: field.help,
+                constraints: field.constraints,
+              });
+            });
+          } else {
+            // Add general model fields
+            Object.values(modelStructure.fields).forEach((field: any) => {
+              relevantFields.push({
+                id: field.id,
+                type: field.type,
+                required: field.required || false,
+                help: field.help,
+                constraints: field.constraints,
+              });
+            });
+          }
+        }
+      }
+
+      // For toggle endpoints
+      if (commandLower.includes('toggle')) {
+        relevantFields.push({
+          id: 'enabled',
+          type: 'BooleanField',
+          required: false,
+          help: 'Enable or disable the item',
+        });
+      }
+
+      // For del/delete endpoints
+      if (commandLower.includes('del')) {
+        relevantFields.push({
+          id: 'uuid',
+          type: 'TextField',
+          required: true,
+          help: 'UUID of the item to delete',
+        });
+      }
+
+      if (relevantFields.length > 0) {
+        enhancedEndpoint.modelParameters = relevantFields;
+      }
+
+      return enhancedEndpoint;
+    });
   }
 }
 
