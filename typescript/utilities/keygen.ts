@@ -3,13 +3,24 @@
 import { randomBytes } from 'crypto';
 import { fileURLToPath } from 'url';
 
-import type {
-  Curve25519Point,
-  RandomSource,
-  WireguardKeypair,
-  WireguardKeys,
-  WireguardPresharedKey,
-} from '../../src/types/keygen';
+import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+// Crypto types for Wireguard implementation
+type Curve25519Point = Float64Array & { readonly length: 16 };
+type RandomSource = 'crypto';
+
+interface WireguardKeypair {
+  publicKey: string;
+  privateKey: string;
+}
+
+interface WireguardPresharedKey {
+  presharedKey: string;
+}
+
+interface WireguardKeys {
+  keypair: WireguardKeypair;
+  presharedKey: string;
+}
 
 const FIELD_SIZE = 16;
 const KEY_SIZE = 32;
@@ -413,3 +424,112 @@ if (isMainModule) {
 
 export { WireguardCrypto };
 export type { RandomSource, WireguardKeypair, WireguardKeys, WireguardPresharedKey };
+
+// Type definitions for Keygen module
+
+export interface KeygenKeypairRequest {
+  [key: string]: any; // TODO: Define specific fields
+}
+
+export interface KeygenKeypairResponse {
+  result?: string;
+  status?: string;
+  message?: string;
+  publicKey?: string;
+  privateKey?: string;
+  [key: string]: any; // TODO: Define specific response fields
+}
+
+export interface KeygenPresharedRequest {
+  [key: string]: any; // TODO: Define specific fields
+}
+
+export interface KeygenPresharedResponse {
+  result?: string;
+  status?: string;
+  message?: string;
+  presharedKey?: string;
+  [key: string]: any; // TODO: Define specific response fields
+}
+
+export interface KeygenKeysRequest {
+  [key: string]: any; // TODO: Define specific fields
+}
+
+export interface KeygenKeysResponse {
+  result?: string;
+  status?: string;
+  message?: string;
+  keypair?: {
+    publicKey: string;
+    privateKey: string;
+  };
+  presharedKey?: string;
+  [key: string]: any; // TODO: Define specific response fields
+}
+
+export interface KeygenValidateRequest {
+  key: string;
+}
+
+export interface KeygenValidateResponse {
+  result?: string;
+  status?: string;
+  message?: string;
+  valid?: boolean;
+  key?: string;
+  [key: string]: any; // TODO: Define specific response fields
+}
+
+// Container types
+export interface KeygenWireguardKeypair {
+  publicKey: string;
+  privateKey: string;
+}
+
+export interface KeygenWireguardPresharedKey {
+  presharedKey: string;
+}
+
+export interface KeygenWireguardKeys {
+  keypair: KeygenWireguardKeypair;
+  presharedKey: string;
+}
+
+export type KeygenRandomSource = 'crypto';
+
+export class KeygenApi {
+  private client: AxiosInstance;
+  private basePath: string;
+
+  constructor(client: AxiosInstance) {
+    this.client = client;
+    this.basePath = '/api/keygen';
+  }
+
+  // Keygen methods
+  async keypair(
+    data?: KeygenKeypairRequest,
+    config?: AxiosRequestConfig
+  ): Promise<AxiosResponse<KeygenKeypairResponse>> {
+    return this.client.post(`${this.basePath}/keypair`, data, config);
+  }
+
+  async preshared(
+    data?: KeygenPresharedRequest,
+    config?: AxiosRequestConfig
+  ): Promise<AxiosResponse<KeygenPresharedResponse>> {
+    return this.client.post(`${this.basePath}/preshared`, data, config);
+  }
+
+  async keys(data?: KeygenKeysRequest, config?: AxiosRequestConfig): Promise<AxiosResponse<KeygenKeysResponse>> {
+    return this.client.post(`${this.basePath}/keys`, data, config);
+  }
+
+  async validate(
+    data: KeygenValidateRequest,
+    config?: AxiosRequestConfig
+  ): Promise<AxiosResponse<KeygenValidateResponse>> {
+    return this.client.post(`${this.basePath}/validate`, data, config);
+  }
+}
