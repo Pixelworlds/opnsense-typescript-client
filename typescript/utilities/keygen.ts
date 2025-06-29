@@ -9,7 +9,7 @@ import type {
   WireguardKeypair,
   WireguardKeys,
   WireguardPresharedKey,
-} from '../types/keygen';
+} from '../../src/types/keygen';
 
 const FIELD_SIZE = 16;
 const KEY_SIZE = 32;
