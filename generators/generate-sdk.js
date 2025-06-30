@@ -36,7 +36,7 @@ class OPNsenseSDKGenerator {
 
     const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
     console.log(
-      `📋 Loaded build configuration with ${Object.keys(config.modules.core).length} core and ${
+      `Loaded build configuration with ${Object.keys(config.modules.core).length} core and ${
         Object.keys(config.modules.plugins).length
       } plugin modules`
     );
@@ -73,7 +73,7 @@ class OPNsenseSDKGenerator {
       }
     }
 
-    console.log(`📦 Including ${included.core.length} core modules and ${included.plugins.length} plugin modules`);
+    console.log(`Including ${included.core.length} core modules and ${included.plugins.length} plugin modules`);
     return included;
   }
 
@@ -102,7 +102,7 @@ class OPNsenseSDKGenerator {
     fs.mkdirSync(path.join(this.srcDir, 'core'), { recursive: true });
     fs.mkdirSync(path.join(this.srcDir, 'plugins'), { recursive: true });
 
-    console.log('🧹 Cleaned and prepared src directory');
+    console.log('Cleaned and prepared src directory');
   }
 
   /**
@@ -174,7 +174,7 @@ class OPNsenseSDKGenerator {
         this.transformModule(sourceFile, targetFile, moduleName, 'core');
         copiedCount++;
       } else {
-        console.warn(`⚠️  Core module ${moduleName} not found at ${sourceFile}`);
+        console.warn(`Warning: Core module ${moduleName} not found at ${sourceFile}`);
       }
     }
 
@@ -187,11 +187,11 @@ class OPNsenseSDKGenerator {
         this.transformModule(sourceFile, targetFile, moduleName, 'plugins');
         copiedCount++;
       } else {
-        console.warn(`⚠️  Plugin module ${moduleName} not found at ${sourceFile}`);
+        console.warn(`Warning: Plugin module ${moduleName} not found at ${sourceFile}`);
       }
     }
 
-    console.log(`📄 Copied and transformed ${copiedCount} modules`);
+    console.log(`Copied and transformed ${copiedCount} modules`);
     return included;
   }
 
@@ -204,9 +204,9 @@ class OPNsenseSDKGenerator {
 
     if (fs.existsSync(sourceFile)) {
       fs.copyFileSync(sourceFile, targetFile);
-      console.log('🔐 Copied keygen utility');
+      console.log('Copied keygen utility');
     } else {
-      console.warn('⚠️  Keygen utility not found');
+      console.warn('Warning: Keygen utility not found');
     }
   }
 
@@ -254,7 +254,7 @@ export interface ApiResult {
 `;
 
     fs.writeFileSync(path.join(this.srcDir, 'types.ts'), typesContent);
-    console.log('📝 Generated shared types');
+    console.log('Generated shared types');
   }
 
   /**
@@ -327,7 +327,7 @@ export class OPNsenseHttpClient implements HttpClient {
 `;
 
     fs.writeFileSync(path.join(this.srcDir, 'http-client.ts'), httpClientContent);
-    console.log('🌐 Generated HTTP client');
+    console.log('Generated HTTP client');
   }
 
   /**
@@ -342,7 +342,7 @@ export class OPNsenseHttpClient implements HttpClient {
       .join('\n');
 
     fs.writeFileSync(path.join(this.srcDir, 'core', 'index.ts'), exports);
-    console.log('📄 Generated core/index.ts');
+    console.log('Generated core/index.ts');
   }
 
   /**
@@ -357,7 +357,7 @@ export class OPNsenseHttpClient implements HttpClient {
       .join('\n');
 
     fs.writeFileSync(path.join(this.srcDir, 'plugins', 'index.ts'), exports);
-    console.log('📄 Generated plugins/index.ts');
+    console.log('Generated plugins/index.ts');
   }
 
   /**
@@ -481,7 +481,7 @@ export default OPNsenseClient;
 `;
 
     fs.writeFileSync(path.join(this.srcDir, 'index.ts'), indexContent);
-    console.log('🎯 Generated main index.ts and OPNsenseClient class');
+    console.log('Generated main index.ts and OPNsenseClient class');
   }
 
   /**
@@ -512,7 +512,7 @@ export default OPNsenseClient;
       };
 
       fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
-      console.log('📦 Updated package.json exports');
+      console.log('Updated package.json exports');
     }
   }
 
@@ -520,7 +520,7 @@ export default OPNsenseClient;
    * Main generation process
    */
   async generate() {
-    console.log('🚀 Starting OPNsense SDK generation...\n');
+    console.log('Starting OPNsense SDK generation...\n');
 
     try {
       // Step 1: Prepare environment
@@ -544,13 +544,13 @@ export default OPNsenseClient;
       // Step 6: Update package configuration
       this.updatePackageJson();
 
-      console.log('\\n✅ SDK generation completed successfully!');
+      console.log('\\nSDK generation completed successfully!');
       console.log(
-        `📊 Generated SDK with ${includedModules.core.length} core modules and ${includedModules.plugins.length} plugin modules`
+        `Generated SDK with ${includedModules.core.length} core modules and ${includedModules.plugins.length} plugin modules`
       );
-      console.log('🏗️  Run "npm run build" to compile the SDK');
+      console.log('Run "npm run build" to compile the SDK');
     } catch (error) {
-      console.error('❌ SDK generation failed:', error.message);
+      console.error('SDK generation failed:', error.message);
       process.exit(1);
     }
   }

@@ -615,8 +615,7 @@ export interface InterfacesVxlanSettingsSetItemResponse {
 }
 
 // Container types
-export interface InterfacesGif {
-}
+export interface InterfacesGif {}
 
 export class InterfacesApi {
   constructor(private http: HttpClient) {
@@ -624,11 +623,18 @@ export class InterfacesApi {
   }
 
   // GifSettings methods
-  async gifSettingsAddItem(data?: InterfacesGifSettingsAddItemRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesGifSettingsAddItemResponse>> {
+  async gifSettingsAddItem(
+    data?: InterfacesGifSettingsAddItemRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesGifSettingsAddItemResponse>> {
     return this.http.post(`/api/interfaces/gif_settings/add_item`, data, config);
   }
 
-  async gifSettingsDelItem(uuid: string, data?: InterfacesGifSettingsDelItemRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesGifSettingsDelItemResponse>> {
+  async gifSettingsDelItem(
+    uuid: string,
+    data?: InterfacesGifSettingsDelItemRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesGifSettingsDelItemResponse>> {
     return this.http.post(`/api/interfaces/gif_settings/del_item/${uuid}`, data, config);
   }
 
@@ -636,33 +642,54 @@ export class InterfacesApi {
     return this.http.get(`/api/interfaces/gif_settings/get`, config);
   }
 
-  async gifSettingsGetIfOptions(config?: RequestConfig): Promise<ApiResponse<InterfacesGifSettingsGetIfOptionsResponse>> {
+  async gifSettingsGetIfOptions(
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesGifSettingsGetIfOptionsResponse>> {
     return this.http.get(`/api/interfaces/gif_settings/get_if_options`, config);
   }
 
-  async gifSettingsGetItem(uuid?: string, config?: RequestConfig): Promise<ApiResponse<InterfacesGifSettingsGetItemResponse>> {
+  async gifSettingsGetItem(
+    uuid?: string,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesGifSettingsGetItemResponse>> {
     return this.http.get(`/api/interfaces/gif_settings/get_item/${uuid}`, config);
   }
 
-  async gifSettingsReconfigure(data?: InterfacesGifSettingsReconfigureRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesGifSettingsReconfigureResponse>> {
+  async gifSettingsReconfigure(
+    data?: InterfacesGifSettingsReconfigureRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesGifSettingsReconfigureResponse>> {
     return this.http.post(`/api/interfaces/gif_settings/reconfigure`, data, config);
   }
 
-  async gifSettingsSet(data?: InterfacesGifSettingsSetRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesGifSettingsSetResponse>> {
+  async gifSettingsSet(
+    data?: InterfacesGifSettingsSetRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesGifSettingsSetResponse>> {
     return this.http.post(`/api/interfaces/gif_settings/set`, data, config);
   }
 
-  async gifSettingsSetItem(uuid: string, data?: InterfacesGifSettingsSetItemRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesGifSettingsSetItemResponse>> {
+  async gifSettingsSetItem(
+    uuid: string,
+    data?: InterfacesGifSettingsSetItemRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesGifSettingsSetItemResponse>> {
     return this.http.post(`/api/interfaces/gif_settings/set_item/${uuid}`, data, config);
   }
 
-
   // GreSettings methods
-  async greSettingsAddItem(data?: InterfacesGreSettingsAddItemRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesGreSettingsAddItemResponse>> {
+  async greSettingsAddItem(
+    data?: InterfacesGreSettingsAddItemRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesGreSettingsAddItemResponse>> {
     return this.http.post(`/api/interfaces/gre_settings/add_item`, data, config);
   }
 
-  async greSettingsDelItem(uuid: string, data?: InterfacesGreSettingsDelItemRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesGreSettingsDelItemResponse>> {
+  async greSettingsDelItem(
+    uuid: string,
+    data?: InterfacesGreSettingsDelItemRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesGreSettingsDelItemResponse>> {
     return this.http.post(`/api/interfaces/gre_settings/del_item/${uuid}`, data, config);
   }
 
@@ -670,33 +697,54 @@ export class InterfacesApi {
     return this.http.get(`/api/interfaces/gre_settings/get`, config);
   }
 
-  async greSettingsGetIfOptions(config?: RequestConfig): Promise<ApiResponse<InterfacesGreSettingsGetIfOptionsResponse>> {
+  async greSettingsGetIfOptions(
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesGreSettingsGetIfOptionsResponse>> {
     return this.http.get(`/api/interfaces/gre_settings/get_if_options`, config);
   }
 
-  async greSettingsGetItem(uuid?: string, config?: RequestConfig): Promise<ApiResponse<InterfacesGreSettingsGetItemResponse>> {
+  async greSettingsGetItem(
+    uuid?: string,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesGreSettingsGetItemResponse>> {
     return this.http.get(`/api/interfaces/gre_settings/get_item/${uuid}`, config);
   }
 
-  async greSettingsReconfigure(data?: InterfacesGreSettingsReconfigureRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesGreSettingsReconfigureResponse>> {
+  async greSettingsReconfigure(
+    data?: InterfacesGreSettingsReconfigureRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesGreSettingsReconfigureResponse>> {
     return this.http.post(`/api/interfaces/gre_settings/reconfigure`, data, config);
   }
 
-  async greSettingsSet(data?: InterfacesGreSettingsSetRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesGreSettingsSetResponse>> {
+  async greSettingsSet(
+    data?: InterfacesGreSettingsSetRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesGreSettingsSetResponse>> {
     return this.http.post(`/api/interfaces/gre_settings/set`, data, config);
   }
 
-  async greSettingsSetItem(uuid: string, data?: InterfacesGreSettingsSetItemRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesGreSettingsSetItemResponse>> {
+  async greSettingsSetItem(
+    uuid: string,
+    data?: InterfacesGreSettingsSetItemRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesGreSettingsSetItemResponse>> {
     return this.http.post(`/api/interfaces/gre_settings/set_item/${uuid}`, data, config);
   }
 
-
   // LaggSettings methods
-  async laggSettingsAddItem(data?: InterfacesLaggSettingsAddItemRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesLaggSettingsAddItemResponse>> {
+  async laggSettingsAddItem(
+    data?: InterfacesLaggSettingsAddItemRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesLaggSettingsAddItemResponse>> {
     return this.http.post(`/api/interfaces/lagg_settings/add_item`, data, config);
   }
 
-  async laggSettingsDelItem(uuid: string, data?: InterfacesLaggSettingsDelItemRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesLaggSettingsDelItemResponse>> {
+  async laggSettingsDelItem(
+    uuid: string,
+    data?: InterfacesLaggSettingsDelItemRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesLaggSettingsDelItemResponse>> {
     return this.http.post(`/api/interfaces/lagg_settings/del_item/${uuid}`, data, config);
   }
 
@@ -704,107 +752,176 @@ export class InterfacesApi {
     return this.http.get(`/api/interfaces/lagg_settings/get`, config);
   }
 
-  async laggSettingsGetItem(uuid?: string, config?: RequestConfig): Promise<ApiResponse<InterfacesLaggSettingsGetItemResponse>> {
+  async laggSettingsGetItem(
+    uuid?: string,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesLaggSettingsGetItemResponse>> {
     return this.http.get(`/api/interfaces/lagg_settings/get_item/${uuid}`, config);
   }
 
-  async laggSettingsReconfigure(data?: InterfacesLaggSettingsReconfigureRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesLaggSettingsReconfigureResponse>> {
+  async laggSettingsReconfigure(
+    data?: InterfacesLaggSettingsReconfigureRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesLaggSettingsReconfigureResponse>> {
     return this.http.post(`/api/interfaces/lagg_settings/reconfigure`, data, config);
   }
 
-  async laggSettingsSet(data?: InterfacesLaggSettingsSetRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesLaggSettingsSetResponse>> {
+  async laggSettingsSet(
+    data?: InterfacesLaggSettingsSetRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesLaggSettingsSetResponse>> {
     return this.http.post(`/api/interfaces/lagg_settings/set`, data, config);
   }
 
-  async laggSettingsSetItem(uuid: string, data?: InterfacesLaggSettingsSetItemRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesLaggSettingsSetItemResponse>> {
+  async laggSettingsSetItem(
+    uuid: string,
+    data?: InterfacesLaggSettingsSetItemRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesLaggSettingsSetItemResponse>> {
     return this.http.post(`/api/interfaces/lagg_settings/set_item/${uuid}`, data, config);
   }
 
-
   // LoopbackSettings methods
-  async loopbackSettingsAddItem(data?: InterfacesLoopbackSettingsAddItemRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesLoopbackSettingsAddItemResponse>> {
+  async loopbackSettingsAddItem(
+    data?: InterfacesLoopbackSettingsAddItemRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesLoopbackSettingsAddItemResponse>> {
     return this.http.post(`/api/interfaces/loopback_settings/add_item`, data, config);
   }
 
-  async loopbackSettingsDelItem(uuid: string, data?: InterfacesLoopbackSettingsDelItemRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesLoopbackSettingsDelItemResponse>> {
+  async loopbackSettingsDelItem(
+    uuid: string,
+    data?: InterfacesLoopbackSettingsDelItemRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesLoopbackSettingsDelItemResponse>> {
     return this.http.post(`/api/interfaces/loopback_settings/del_item/${uuid}`, data, config);
   }
 
-  async loopbackSettingsGet(config?: RequestConfig): Promise<ApiResponse<InterfacesLoopbackSettingsGetResponse>> {
+  async loopbackSettingsGet(
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesLoopbackSettingsGetResponse>> {
     return this.http.get(`/api/interfaces/loopback_settings/get`, config);
   }
 
-  async loopbackSettingsGetItem(uuid?: string, config?: RequestConfig): Promise<ApiResponse<InterfacesLoopbackSettingsGetItemResponse>> {
+  async loopbackSettingsGetItem(
+    uuid?: string,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesLoopbackSettingsGetItemResponse>> {
     return this.http.get(`/api/interfaces/loopback_settings/get_item/${uuid}`, config);
   }
 
-  async loopbackSettingsReconfigure(data?: InterfacesLoopbackSettingsReconfigureRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesLoopbackSettingsReconfigureResponse>> {
+  async loopbackSettingsReconfigure(
+    data?: InterfacesLoopbackSettingsReconfigureRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesLoopbackSettingsReconfigureResponse>> {
     return this.http.post(`/api/interfaces/loopback_settings/reconfigure`, data, config);
   }
 
-  async loopbackSettingsSet(data?: InterfacesLoopbackSettingsSetRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesLoopbackSettingsSetResponse>> {
+  async loopbackSettingsSet(
+    data?: InterfacesLoopbackSettingsSetRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesLoopbackSettingsSetResponse>> {
     return this.http.post(`/api/interfaces/loopback_settings/set`, data, config);
   }
 
-  async loopbackSettingsSetItem(uuid: string, data?: InterfacesLoopbackSettingsSetItemRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesLoopbackSettingsSetItemResponse>> {
+  async loopbackSettingsSetItem(
+    uuid: string,
+    data?: InterfacesLoopbackSettingsSetItemRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesLoopbackSettingsSetItemResponse>> {
     return this.http.post(`/api/interfaces/loopback_settings/set_item/${uuid}`, data, config);
   }
 
-
   // NeighborSettings methods
-  async neighborSettingsAddItem(data?: InterfacesNeighborSettingsAddItemRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesNeighborSettingsAddItemResponse>> {
+  async neighborSettingsAddItem(
+    data?: InterfacesNeighborSettingsAddItemRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesNeighborSettingsAddItemResponse>> {
     return this.http.post(`/api/interfaces/neighbor_settings/add_item`, data, config);
   }
 
-  async neighborSettingsDelItem(uuid: string, data?: InterfacesNeighborSettingsDelItemRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesNeighborSettingsDelItemResponse>> {
+  async neighborSettingsDelItem(
+    uuid: string,
+    data?: InterfacesNeighborSettingsDelItemRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesNeighborSettingsDelItemResponse>> {
     return this.http.post(`/api/interfaces/neighbor_settings/del_item/${uuid}`, data, config);
   }
 
-  async neighborSettingsGet(config?: RequestConfig): Promise<ApiResponse<InterfacesNeighborSettingsGetResponse>> {
+  async neighborSettingsGet(
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesNeighborSettingsGetResponse>> {
     return this.http.get(`/api/interfaces/neighbor_settings/get`, config);
   }
 
-  async neighborSettingsGetItem(uuid?: string, config?: RequestConfig): Promise<ApiResponse<InterfacesNeighborSettingsGetItemResponse>> {
+  async neighborSettingsGetItem(
+    uuid?: string,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesNeighborSettingsGetItemResponse>> {
     return this.http.get(`/api/interfaces/neighbor_settings/get_item/${uuid}`, config);
   }
 
-  async neighborSettingsReconfigure(data?: InterfacesNeighborSettingsReconfigureRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesNeighborSettingsReconfigureResponse>> {
+  async neighborSettingsReconfigure(
+    data?: InterfacesNeighborSettingsReconfigureRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesNeighborSettingsReconfigureResponse>> {
     return this.http.post(`/api/interfaces/neighbor_settings/reconfigure`, data, config);
   }
 
-  async neighborSettingsSet(data?: InterfacesNeighborSettingsSetRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesNeighborSettingsSetResponse>> {
+  async neighborSettingsSet(
+    data?: InterfacesNeighborSettingsSetRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesNeighborSettingsSetResponse>> {
     return this.http.post(`/api/interfaces/neighbor_settings/set`, data, config);
   }
 
-  async neighborSettingsSetItem(uuid: string, data?: InterfacesNeighborSettingsSetItemRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesNeighborSettingsSetItemResponse>> {
+  async neighborSettingsSetItem(
+    uuid: string,
+    data?: InterfacesNeighborSettingsSetItemRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesNeighborSettingsSetItemResponse>> {
     return this.http.post(`/api/interfaces/neighbor_settings/set_item/${uuid}`, data, config);
   }
-
 
   // Overview methods
   async overviewExport(config?: RequestConfig): Promise<ApiResponse<InterfacesOverviewExportResponse>> {
     return this.http.get(`/api/interfaces/overview/export`, config);
   }
 
-  async overviewGetInterface(interfaceName?: string, config?: RequestConfig): Promise<ApiResponse<InterfacesOverviewGetInterfaceResponse>> {
+  async overviewGetInterface(
+    interfaceName?: string,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesOverviewGetInterfaceResponse>> {
     return this.http.get(`/api/interfaces/overview/get_interface/${interfaceName}`, config);
   }
 
-  async overviewInterfacesInfo(details?: string, config?: RequestConfig): Promise<ApiResponse<InterfacesOverviewInterfacesInfoResponse>> {
+  async overviewInterfacesInfo(
+    details?: string,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesOverviewInterfacesInfoResponse>> {
     return this.http.get(`/api/interfaces/overview/interfaces_info/${details}`, config);
   }
 
-  async overviewReloadInterface(identifier?: string, config?: RequestConfig): Promise<ApiResponse<InterfacesOverviewReloadInterfaceResponse>> {
+  async overviewReloadInterface(
+    identifier?: string,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesOverviewReloadInterfaceResponse>> {
     return this.http.get(`/api/interfaces/overview/reload_interface/${identifier}`, config);
   }
 
-
   // VipSettings methods
-  async vipSettingsAddItem(data?: InterfacesVipSettingsAddItemRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesVipSettingsAddItemResponse>> {
+  async vipSettingsAddItem(
+    data?: InterfacesVipSettingsAddItemRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesVipSettingsAddItemResponse>> {
     return this.http.post(`/api/interfaces/vip_settings/add_item`, data, config);
   }
 
-  async vipSettingsDelItem(uuid: string, data?: InterfacesVipSettingsDelItemRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesVipSettingsDelItemResponse>> {
+  async vipSettingsDelItem(
+    uuid: string,
+    data?: InterfacesVipSettingsDelItemRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesVipSettingsDelItemResponse>> {
     return this.http.post(`/api/interfaces/vip_settings/del_item/${uuid}`, data, config);
   }
 
@@ -812,33 +929,54 @@ export class InterfacesApi {
     return this.http.get(`/api/interfaces/vip_settings/get`, config);
   }
 
-  async vipSettingsGetItem(uuid?: string, config?: RequestConfig): Promise<ApiResponse<InterfacesVipSettingsGetItemResponse>> {
+  async vipSettingsGetItem(
+    uuid?: string,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesVipSettingsGetItemResponse>> {
     return this.http.get(`/api/interfaces/vip_settings/get_item/${uuid}`, config);
   }
 
-  async vipSettingsGetUnusedVhid(config?: RequestConfig): Promise<ApiResponse<InterfacesVipSettingsGetUnusedVhidResponse>> {
+  async vipSettingsGetUnusedVhid(
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesVipSettingsGetUnusedVhidResponse>> {
     return this.http.get(`/api/interfaces/vip_settings/get_unused_vhid`, config);
   }
 
-  async vipSettingsReconfigure(data?: InterfacesVipSettingsReconfigureRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesVipSettingsReconfigureResponse>> {
+  async vipSettingsReconfigure(
+    data?: InterfacesVipSettingsReconfigureRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesVipSettingsReconfigureResponse>> {
     return this.http.post(`/api/interfaces/vip_settings/reconfigure`, data, config);
   }
 
-  async vipSettingsSet(data?: InterfacesVipSettingsSetRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesVipSettingsSetResponse>> {
+  async vipSettingsSet(
+    data?: InterfacesVipSettingsSetRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesVipSettingsSetResponse>> {
     return this.http.post(`/api/interfaces/vip_settings/set`, data, config);
   }
 
-  async vipSettingsSetItem(uuid: string, data?: InterfacesVipSettingsSetItemRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesVipSettingsSetItemResponse>> {
+  async vipSettingsSetItem(
+    uuid: string,
+    data?: InterfacesVipSettingsSetItemRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesVipSettingsSetItemResponse>> {
     return this.http.post(`/api/interfaces/vip_settings/set_item/${uuid}`, data, config);
   }
 
-
   // VlanSettings methods
-  async vlanSettingsAddItem(data?: InterfacesVlanSettingsAddItemRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesVlanSettingsAddItemResponse>> {
+  async vlanSettingsAddItem(
+    data?: InterfacesVlanSettingsAddItemRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesVlanSettingsAddItemResponse>> {
     return this.http.post(`/api/interfaces/vlan_settings/add_item`, data, config);
   }
 
-  async vlanSettingsDelItem(uuid: string, data?: InterfacesVlanSettingsDelItemRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesVlanSettingsDelItemResponse>> {
+  async vlanSettingsDelItem(
+    uuid: string,
+    data?: InterfacesVlanSettingsDelItemRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesVlanSettingsDelItemResponse>> {
     return this.http.post(`/api/interfaces/vlan_settings/del_item/${uuid}`, data, config);
   }
 
@@ -846,29 +984,48 @@ export class InterfacesApi {
     return this.http.get(`/api/interfaces/vlan_settings/get`, config);
   }
 
-  async vlanSettingsGetItem(uuid?: string, config?: RequestConfig): Promise<ApiResponse<InterfacesVlanSettingsGetItemResponse>> {
+  async vlanSettingsGetItem(
+    uuid?: string,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesVlanSettingsGetItemResponse>> {
     return this.http.get(`/api/interfaces/vlan_settings/get_item/${uuid}`, config);
   }
 
-  async vlanSettingsReconfigure(data?: InterfacesVlanSettingsReconfigureRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesVlanSettingsReconfigureResponse>> {
+  async vlanSettingsReconfigure(
+    data?: InterfacesVlanSettingsReconfigureRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesVlanSettingsReconfigureResponse>> {
     return this.http.post(`/api/interfaces/vlan_settings/reconfigure`, data, config);
   }
 
-  async vlanSettingsSet(data?: InterfacesVlanSettingsSetRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesVlanSettingsSetResponse>> {
+  async vlanSettingsSet(
+    data?: InterfacesVlanSettingsSetRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesVlanSettingsSetResponse>> {
     return this.http.post(`/api/interfaces/vlan_settings/set`, data, config);
   }
 
-  async vlanSettingsSetItem(uuid: string, data?: InterfacesVlanSettingsSetItemRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesVlanSettingsSetItemResponse>> {
+  async vlanSettingsSetItem(
+    uuid: string,
+    data?: InterfacesVlanSettingsSetItemRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesVlanSettingsSetItemResponse>> {
     return this.http.post(`/api/interfaces/vlan_settings/set_item/${uuid}`, data, config);
   }
 
-
   // VxlanSettings methods
-  async vxlanSettingsAddItem(data?: InterfacesVxlanSettingsAddItemRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesVxlanSettingsAddItemResponse>> {
+  async vxlanSettingsAddItem(
+    data?: InterfacesVxlanSettingsAddItemRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesVxlanSettingsAddItemResponse>> {
     return this.http.post(`/api/interfaces/vxlan_settings/add_item`, data, config);
   }
 
-  async vxlanSettingsDelItem(uuid: string, data?: InterfacesVxlanSettingsDelItemRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesVxlanSettingsDelItemResponse>> {
+  async vxlanSettingsDelItem(
+    uuid: string,
+    data?: InterfacesVxlanSettingsDelItemRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesVxlanSettingsDelItemResponse>> {
     return this.http.post(`/api/interfaces/vxlan_settings/del_item/${uuid}`, data, config);
   }
 
@@ -876,20 +1033,32 @@ export class InterfacesApi {
     return this.http.get(`/api/interfaces/vxlan_settings/get`, config);
   }
 
-  async vxlanSettingsGetItem(uuid?: string, config?: RequestConfig): Promise<ApiResponse<InterfacesVxlanSettingsGetItemResponse>> {
+  async vxlanSettingsGetItem(
+    uuid?: string,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesVxlanSettingsGetItemResponse>> {
     return this.http.get(`/api/interfaces/vxlan_settings/get_item/${uuid}`, config);
   }
 
-  async vxlanSettingsReconfigure(data?: InterfacesVxlanSettingsReconfigureRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesVxlanSettingsReconfigureResponse>> {
+  async vxlanSettingsReconfigure(
+    data?: InterfacesVxlanSettingsReconfigureRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesVxlanSettingsReconfigureResponse>> {
     return this.http.post(`/api/interfaces/vxlan_settings/reconfigure`, data, config);
   }
 
-  async vxlanSettingsSet(data?: InterfacesVxlanSettingsSetRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesVxlanSettingsSetResponse>> {
+  async vxlanSettingsSet(
+    data?: InterfacesVxlanSettingsSetRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesVxlanSettingsSetResponse>> {
     return this.http.post(`/api/interfaces/vxlan_settings/set`, data, config);
   }
 
-  async vxlanSettingsSetItem(uuid: string, data?: InterfacesVxlanSettingsSetItemRequest, config?: RequestConfig): Promise<ApiResponse<InterfacesVxlanSettingsSetItemResponse>> {
+  async vxlanSettingsSetItem(
+    uuid: string,
+    data?: InterfacesVxlanSettingsSetItemRequest,
+    config?: RequestConfig
+  ): Promise<ApiResponse<InterfacesVxlanSettingsSetItemResponse>> {
     return this.http.post(`/api/interfaces/vxlan_settings/set_item/${uuid}`, data, config);
   }
-
 }

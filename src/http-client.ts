@@ -1,15 +1,15 @@
 import axios from 'axios';
-import * as https from 'https';
-
 import type { AxiosInstance, AxiosResponse } from 'axios';
-import type { ApiResponse, HttpClient, OPNsenseConfig, RequestConfig } from './types';
+import * as https from 'https';
+import type { HttpClient, RequestConfig, ApiResponse, OPNsenseConfig } from './types';
 
 export class OPNsenseHttpClient implements HttpClient {
   private client: AxiosInstance;
 
   constructor(config: OPNsenseConfig) {
+    // Remove trailing slash from baseUrl - individual modules already include /api prefix
     const baseUrl = config.baseUrl.replace(/\/$/, '');
-
+    
     this.client = axios.create({
       baseURL: baseUrl,
       timeout: config.timeout || 30000,
@@ -22,7 +22,7 @@ export class OPNsenseHttpClient implements HttpClient {
       }),
       headers: {
         'Content-Type': 'application/json',
-        Accept: 'application/json',
+        'Accept': 'application/json',
       },
     });
   }
