@@ -12,19 +12,19 @@
   "homepage": "https://github.com/Pixelworlds/opnsense-typescript-client#readme",
   "author": "Richard Stovall",
   "type": "module",
-  "main": "./dist/index.js",
-  "module": "./dist/index.esm.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "packageManager": "yarn@4.9.2",
   "exports": {
     ".": {
-      "require": "./dist/index.js",
-      "import": "./dist/index.esm.js",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
     "./keygen": {
-      "require": "./dist/keygen.js",
-      "import": "./dist/keygen.esm.js",
+      "require": "./dist/keygen.cjs",
+      "import": "./dist/keygen.js",
       "types": "./dist/keygen.d.ts"
     }
   },
