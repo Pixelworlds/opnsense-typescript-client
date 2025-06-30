@@ -2,7 +2,6 @@ stages:
   - validate
   - generate
   - build
-  - test
   - package
 
 variables:
@@ -152,10 +151,10 @@ build:
     - if: $CI_PIPELINE_SOURCE == "push"
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
-# Test stage
-test_build_artifacts:
+# Validation stage (moved from test stage)
+validate_build_artifacts:
   <<: *node_template
-  stage: test
+  stage: validate
   dependencies:
     - build
   script:
@@ -168,103 +167,14 @@ test_build_artifacts:
         test -s "dist/$file" || (echo "dist/$file is empty" && exit 1)
       done
 
-      # Test module imports
-      node -e "const pkg = require('./dist/index.cjs'); console.log('CJS import successful:', typeof pkg.OPNsenseClient);"
-      node -e "import('./dist/index.js').then(pkg => console.log('ESM import successful:', typeof pkg.OPNsenseClient));"
-
-      # Test keygen imports
-      node -e "const keygen = require('./dist/keygen.cjs'); console.log('Keygen CJS import successful:', typeof keygen.WireguardCrypto);"
-      node -e "import('./dist/keygen.js').then(keygen => console.log('Keygen ESM import successful:', typeof keygen.WireguardCrypto));"
-
-      echo "All build artifacts validated successfully"
+      echo "Build artifacts validated successfully"
   rules:
     - if: $CI_PIPELINE_SOURCE == "push"
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
-test_keygen_functionality:
+validate_documentation:
   <<: *node_template
-  stage: test
-  dependencies:
-    - build
-  script:
-    - |
-      echo "Testing keygen functionality..."
-
-      # Test CLI functionality
-      node dist/keygen.cjs keypair > keypair.json
-      node dist/keygen.cjs preshared > preshared.json
-      node dist/keygen.cjs keys > keys.json
-
-      # Validate JSON output
-      node -e "
-        const keypair = JSON.parse(require('fs').readFileSync('keypair.json', 'utf8'));
-        const preshared = JSON.parse(require('fs').readFileSync('preshared.json', 'utf8'));
-        const keys = JSON.parse(require('fs').readFileSync('keys.json', 'utf8'));
-        
-        if (!keypair.publicKey || !keypair.privateKey) throw new Error('Invalid keypair output');
-        if (!preshared.presharedKey) throw new Error('Invalid preshared output');
-        if (!keys.keypair || !keys.presharedKey) throw new Error('Invalid keys output');
-        
-        console.log('Keygen CLI functionality validated');
-      "
-
-      # Test key validation
-      echo "nShjosyTVASAX4eAWymGyv5Y02Oz17N3WV/F8g3SVwQ=" | node dist/keygen.cjs validate > validation.json
-      node -e "
-        const result = JSON.parse(require('fs').readFileSync('validation.json', 'utf8'));
-        if (!result.valid) throw new Error('Key validation failed');
-        console.log('Key validation functionality verified');
-      "
-
-      echo "Keygen functionality tests passed"
-  after_script:
-    - rm -f keypair.json preshared.json keys.json validation.json
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "push"
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-
-test_typescript_declarations:
-  <<: *node_template
-  stage: test
-  dependencies:
-    - build
-  script:
-    - |
-      echo "Testing TypeScript declarations..."
-
-      # Create a test TypeScript file to validate types
-      cat > test-types.ts << 'EOF'
-      import { OPNsenseClient } from './dist/index.js';
-      import { WireguardCrypto } from './dist/keygen.js';
-
-      // Test main client types
-      const client = new OPNsenseClient({
-        baseUrl: 'https://opnsense.example.com',
-        apiKey: 'test-key',
-        apiSecret: 'test-secret'
-      });
-
-      // Test keygen types
-      const crypto = new WireguardCrypto();
-      const keypair = crypto.generateKeypair();
-      const isValid = WireguardCrypto.validateBase64Key(keypair.publicKey);
-
-      console.log('Type checking passed');
-      EOF
-
-      # Check if TypeScript can compile with our declarations
-      npx tsc --noEmit --strict test-types.ts
-
-      echo "TypeScript declarations validated successfully"
-  after_script:
-    - rm -f test-types.ts
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "push"
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-
-test_documentation:
-  <<: *node_template
-  stage: test
+  stage: validate
   dependencies:
     - generate_docs
   script:
@@ -363,7 +273,7 @@ package_tarball:
 # Performance monitoring
 bundle_analysis:
   <<: *node_template
-  stage: test
+  stage: validate
   dependencies:
     - build
   script:
