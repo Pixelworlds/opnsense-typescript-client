@@ -1,6 +1,6 @@
 # OPNsense TypeScript API Client
 
-*Generated on 2025-06-30T02:47:37.861Z*
+*Generated on 2025-06-30T02:56:54.579Z*
 
 ## Overview
 
@@ -191,8 +191,8 @@ These modules are automatically generated. To regenerate them:
 cd crawler && yarn start
 
 # Generate TypeScript modules
-node generators/generate-core-modules.js
-node generators/generate-plugin-modules.js
+yarn generate:typescript:core
+yarn generate:typescript:plugin
 ```
 
 ## Contributing

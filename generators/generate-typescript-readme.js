@@ -239,8 +239,8 @@ async function main() {
   markdown += '# Crawl the latest API documentation\n';
   markdown += 'cd crawler && yarn start\n\n';
   markdown += '# Generate TypeScript modules\n';
-  markdown += 'node generators/generate-core-modules.js\n';
-  markdown += 'node generators/generate-plugin-modules.js\n';
+  markdown += 'yarn generate:typescript:core\n';
+  markdown += 'yarn generate:typescript:plugin\n';
   markdown += '```\n\n';
 
   // Add contributing section
