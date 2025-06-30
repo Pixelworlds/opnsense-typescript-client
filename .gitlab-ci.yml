@@ -1,5 +1,6 @@
 stages:
   - validate
+  - generate
   - build
   - test
   - package
@@ -55,21 +56,93 @@ security_scan:
     - if: $CI_PIPELINE_SOURCE == "push"
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
+# Generation stage - Generate SDK and documentation
+generate_sdk:
+  <<: *node_template
+  stage: generate
+  script:
+    - echo "Generating complete SDK..."
+    - yarn generate:sdk
+    - echo "Verifying generated SDK structure..."
+    - test -d src/core || (echo "Missing src/core directory" && exit 1)
+    - test -d src/plugins || (echo "Missing src/plugins directory" && exit 1)
+    - test -f src/index.ts || (echo "Missing src/index.ts" && exit 1)
+    - test -f src/http-client.ts || (echo "Missing src/http-client.ts" && exit 1)
+    - test -f src/keygen.ts || (echo "Missing src/keygen.ts" && exit 1)
+    - test -f src/types.ts || (echo "Missing src/types.ts" && exit 1)
+    - test -f src/build-config.json || (echo "Missing src/build-config.json" && exit 1)
+    - echo "SDK generation completed successfully"
+  artifacts:
+    paths:
+      - src/
+    expire_in: 1 week
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+generate_docs:
+  <<: *node_template
+  stage: generate
+  script:
+    - echo "Generating documentation..."
+    - yarn generate:docs:core
+    - yarn generate:docs:plugin
+    - yarn generate:docs:typescript
+    - echo "Verifying generated documentation..."
+    - test -f docs/CORE.md || (echo "Missing docs/CORE.md" && exit 1)
+    - test -f docs/PLUGINS.md || (echo "Missing docs/PLUGINS.md" && exit 1)
+    - test -f typescript/README.md || (echo "Missing typescript/README.md" && exit 1)
+    - echo "Documentation generation completed successfully"
+  artifacts:
+    paths:
+      - docs/
+      - typescript/README.md
+    expire_in: 1 week
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+generate_postman:
+  <<: *node_template
+  stage: generate
+  script:
+    - echo "Generating Postman collections..."
+    - yarn generate:postman:core
+    - yarn generate:postman:plugin
+    - echo "Verifying generated Postman collections..."
+    - test -f postman/OPNsense_Core_Modules_API_Collection.postman_collection.json || (echo "Missing core Postman collection" && exit 1)
+    - test -f postman/OPNsense_Plugin_Modules_API_Collection.postman_collection.json || (echo "Missing plugin Postman collection" && exit 1)
+    - echo "Postman collection generation completed successfully"
+  artifacts:
+    paths:
+      - postman/
+    expire_in: 1 week
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
 # Build stage
 build:
   <<: *node_template
   stage: build
+  dependencies:
+    - generate_sdk
   script:
+    - echo "Building SDK..."
     - yarn build
     - ls -la dist/
+    - echo "Verifying build outputs..."
+    - test -f dist/index.js || (echo "Missing dist/index.js" && exit 1)
+    - test -f dist/index.cjs || (echo "Missing dist/index.cjs" && exit 1)
+    - test -f dist/index.d.ts || (echo "Missing dist/index.d.ts" && exit 1)
+    - test -f dist/keygen.js || (echo "Missing dist/keygen.js" && exit 1)
+    - test -f dist/keygen.cjs || (echo "Missing dist/keygen.cjs" && exit 1)
+    - test -f dist/keygen.d.ts || (echo "Missing dist/keygen.d.ts" && exit 1)
     - echo "Build completed successfully"
   artifacts:
     paths:
       - dist/
     expire_in: 1 week
-    reports:
-      # Add size information
-      junit: dist/build-report.xml
   after_script:
     - |
       echo "Build artifacts:"
@@ -89,21 +162,63 @@ test_build_artifacts:
     - |
       echo "Validating build artifacts..."
 
-      # Check required files exist
-      test -f dist/index.js || (echo "Missing dist/index.js" && exit 1)
-      test -f dist/index.cjs || (echo "Missing dist/index.cjs" && exit 1)
-      test -f dist/index.d.ts || (echo "Missing dist/index.d.ts" && exit 1)
+      # Check required files exist and are not empty
+      for file in index.js index.cjs index.d.ts keygen.js keygen.cjs keygen.d.ts; do
+        test -f "dist/$file" || (echo "Missing dist/$file" && exit 1)
+        test -s "dist/$file" || (echo "dist/$file is empty" && exit 1)
+      done
 
-      # Check files are not empty
-      test -s dist/index.js || (echo "dist/index.js is empty" && exit 1)
-      test -s dist/index.cjs || (echo "dist/index.cjs is empty" && exit 1)
-      test -s dist/index.d.ts || (echo "dist/index.d.ts is empty" && exit 1)
+      # Test module imports
+      node -e "const pkg = require('./dist/index.cjs'); console.log('CJS import successful:', typeof pkg.OPNsenseClient);"
+      node -e "import('./dist/index.js').then(pkg => console.log('ESM import successful:', typeof pkg.OPNsenseClient));"
 
-      # Try to load the built modules
-      node -e "const pkg = require('./dist/index.cjs'); console.log('CJS import successful');"
-      node -e "import('./dist/index.js').then(() => console.log('ESM import successful'));"
+      # Test keygen imports
+      node -e "const keygen = require('./dist/keygen.cjs'); console.log('Keygen CJS import successful:', typeof keygen.WireguardCrypto);"
+      node -e "import('./dist/keygen.js').then(keygen => console.log('Keygen ESM import successful:', typeof keygen.WireguardCrypto));"
 
       echo "All build artifacts validated successfully"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+test_keygen_functionality:
+  <<: *node_template
+  stage: test
+  dependencies:
+    - build
+  script:
+    - |
+      echo "Testing keygen functionality..."
+
+      # Test CLI functionality
+      node dist/keygen.cjs keypair > keypair.json
+      node dist/keygen.cjs preshared > preshared.json
+      node dist/keygen.cjs keys > keys.json
+
+      # Validate JSON output
+      node -e "
+        const keypair = JSON.parse(require('fs').readFileSync('keypair.json', 'utf8'));
+        const preshared = JSON.parse(require('fs').readFileSync('preshared.json', 'utf8'));
+        const keys = JSON.parse(require('fs').readFileSync('keys.json', 'utf8'));
+        
+        if (!keypair.publicKey || !keypair.privateKey) throw new Error('Invalid keypair output');
+        if (!preshared.presharedKey) throw new Error('Invalid preshared output');
+        if (!keys.keypair || !keys.presharedKey) throw new Error('Invalid keys output');
+        
+        console.log('Keygen CLI functionality validated');
+      "
+
+      # Test key validation
+      echo "nShjosyTVASAX4eAWymGyv5Y02Oz17N3WV/F8g3SVwQ=" | node dist/keygen.cjs validate > validation.json
+      node -e "
+        const result = JSON.parse(require('fs').readFileSync('validation.json', 'utf8'));
+        if (!result.valid) throw new Error('Key validation failed');
+        console.log('Key validation functionality verified');
+      "
+
+      echo "Keygen functionality tests passed"
+  after_script:
+    - rm -f keypair.json preshared.json keys.json validation.json
   rules:
     - if: $CI_PIPELINE_SOURCE == "push"
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
@@ -120,13 +235,19 @@ test_typescript_declarations:
       # Create a test TypeScript file to validate types
       cat > test-types.ts << 'EOF'
       import { OPNsenseClient } from './dist/index.js';
+      import { WireguardCrypto } from './dist/keygen.js';
 
-      // This should compile without errors if types are correct
+      // Test main client types
       const client = new OPNsenseClient({
         baseUrl: 'https://opnsense.example.com',
         apiKey: 'test-key',
         apiSecret: 'test-secret'
       });
+
+      // Test keygen types
+      const crypto = new WireguardCrypto();
+      const keypair = crypto.generateKeypair();
+      const isValid = WireguardCrypto.validateBase64Key(keypair.publicKey);
 
       console.log('Type checking passed');
       EOF
@@ -137,6 +258,36 @@ test_typescript_declarations:
       echo "TypeScript declarations validated successfully"
   after_script:
     - rm -f test-types.ts
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+test_documentation:
+  <<: *node_template
+  stage: test
+  dependencies:
+    - generate_docs
+  script:
+    - |
+      echo "Validating generated documentation..."
+
+      # Check documentation files exist and have content
+      test -s docs/CORE.md || (echo "docs/CORE.md is empty or missing" && exit 1)
+      test -s docs/PLUGINS.md || (echo "docs/PLUGINS.md is empty or missing" && exit 1)
+      test -s typescript/README.md || (echo "typescript/README.md is empty or missing" && exit 1)
+
+      # Verify documentation contains expected sections
+      grep -q "OPNsense Core Modules API Documentation" docs/CORE.md || (echo "Missing title in CORE.md" && exit 1)
+      grep -q "OPNsense Plugin Modules API Documentation" docs/PLUGINS.md || (echo "Missing title in PLUGINS.md" && exit 1)
+      grep -q "Intermediate Stage Modules" typescript/README.md || (echo "Missing title in typescript README" && exit 1)
+
+      # Check that no "Generated on" timestamps exist
+      if grep -r "Generated on" docs/ typescript/README.md; then
+        echo "Found unwanted 'Generated on' timestamps in documentation"
+        exit 1
+      fi
+
+      echo "Documentation validation passed"
   rules:
     - if: $CI_PIPELINE_SOURCE == "push"
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
@@ -195,6 +346,8 @@ package_tarball:
   stage: package
   dependencies:
     - build
+    - generate_docs
+    - generate_postman
   script:
     - yarn pack
     - ls -la *.tgz
@@ -217,28 +370,49 @@ bundle_analysis:
     - |
       echo "Analyzing bundle size..."
 
-      # Calculate sizes
+      # Calculate sizes for all build outputs
       ESM_SIZE=$(stat -f%z dist/index.js 2>/dev/null || stat -c%s dist/index.js)
       CJS_SIZE=$(stat -f%z dist/index.cjs 2>/dev/null || stat -c%s dist/index.cjs)
       DTS_SIZE=$(stat -f%z dist/index.d.ts 2>/dev/null || stat -c%s dist/index.d.ts)
+      KEYGEN_ESM_SIZE=$(stat -f%z dist/keygen.js 2>/dev/null || stat -c%s dist/keygen.js)
+      KEYGEN_CJS_SIZE=$(stat -f%z dist/keygen.cjs 2>/dev/null || stat -c%s dist/keygen.cjs)
+      KEYGEN_DTS_SIZE=$(stat -f%z dist/keygen.d.ts 2>/dev/null || stat -c%s dist/keygen.d.ts)
 
       echo "Bundle sizes:"
-      echo "  ESM (index.js): ${ESM_SIZE} bytes"
-      echo "  CJS (index.cjs): ${CJS_SIZE} bytes"
-      echo "  Types (index.d.ts): ${DTS_SIZE} bytes"
+      echo "  Main SDK:"
+      echo "    ESM (index.js): ${ESM_SIZE} bytes"
+      echo "    CJS (index.cjs): ${CJS_SIZE} bytes"
+      echo "    Types (index.d.ts): ${DTS_SIZE} bytes"
+      echo "  Keygen Utility:"
+      echo "    ESM (keygen.js): ${KEYGEN_ESM_SIZE} bytes"
+      echo "    CJS (keygen.cjs): ${KEYGEN_CJS_SIZE} bytes"
+      echo "    Types (keygen.d.ts): ${KEYGEN_DTS_SIZE} bytes"
 
-      # Warn if bundles are too large (>1MB)
-      if [ $ESM_SIZE -gt 1048576 ] || [ $CJS_SIZE -gt 1048576 ]; then
-        echo "⚠️  Warning: Bundle size exceeds 1MB"
+      TOTAL_SIZE=$((ESM_SIZE + CJS_SIZE + DTS_SIZE + KEYGEN_ESM_SIZE + KEYGEN_CJS_SIZE + KEYGEN_DTS_SIZE))
+      echo "  Total: ${TOTAL_SIZE} bytes"
+
+      # Warn if main bundles are too large (>2MB for SDK, >500KB for keygen)
+      if [ $ESM_SIZE -gt 2097152 ] || [ $CJS_SIZE -gt 2097152 ]; then
+        echo "⚠️  Warning: Main SDK bundle size exceeds 2MB"
+      fi
+      if [ $KEYGEN_ESM_SIZE -gt 512000 ] || [ $KEYGEN_CJS_SIZE -gt 512000 ]; then
+        echo "⚠️  Warning: Keygen utility bundle size exceeds 500KB"
       fi
 
       # Create size report
       cat > bundle-size-report.json << EOF
       {
-        "esm_size": $ESM_SIZE,
-        "cjs_size": $CJS_SIZE,
-        "types_size": $DTS_SIZE,
-        "total_size": $((ESM_SIZE + CJS_SIZE + DTS_SIZE)),
+        "main_sdk": {
+          "esm_size": $ESM_SIZE,
+          "cjs_size": $CJS_SIZE,
+          "types_size": $DTS_SIZE
+        },
+        "keygen_utility": {
+          "esm_size": $KEYGEN_ESM_SIZE,
+          "cjs_size": $KEYGEN_CJS_SIZE,
+          "types_size": $KEYGEN_DTS_SIZE
+        },
+        "total_size": $TOTAL_SIZE,
         "commit": "$CI_COMMIT_SHA",
         "ref": "$CI_COMMIT_REF_NAME"
       }
