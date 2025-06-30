@@ -190,7 +190,7 @@ validate_documentation:
       # Verify documentation contains expected sections
       grep -q "OPNsense Core Modules API Documentation" docs/CORE.md || (echo "Missing title in CORE.md" && exit 1)
       grep -q "OPNsense Plugin Modules API Documentation" docs/PLUGINS.md || (echo "Missing title in PLUGINS.md" && exit 1)
-      grep -q "Intermediate Stage Modules" typescript/README.md || (echo "Missing title in typescript README" && exit 1)
+      grep -q "OPNsense TypeScript API Client - Intermediate Stage Modules" typescript/README.md || (echo "Missing title in typescript README" && exit 1)
 
       # Check that no "Generated on" timestamps exist
       if grep -r "Generated on" docs/ typescript/README.md; then
