@@ -426,9 +426,7 @@ const __filename = fileURLToPath(import.meta.url);
 const isMainModule = process.argv[1] === __filename;
 
 if (isMainModule) {
-  (async () => {
-    await main();
-  })().catch(error => {
+  main().catch(error => {
     console.error('Error:', error);
     process.exit(1);
   });
