@@ -1,6 +1,6 @@
 {
   "description": "Build configuration for OPNsense TypeScript SDK",
-  "generated": "2025-06-30T04:29:25.219Z",
+  "generated": "2025-06-30T05:00:18.392Z",
   "note": "Required modules (core, auth, firewall, interfaces, keygen) are always included and not configurable",
   "modules": {
     "core": {

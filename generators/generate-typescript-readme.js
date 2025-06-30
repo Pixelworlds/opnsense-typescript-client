@@ -92,7 +92,7 @@ async function main() {
   fs.writeFileSync(buildConfigPath, JSON.stringify(buildConfig, null, 2), 'utf-8');
 
   // Generate markdown content
-  let markdown = '# OPNsense TypeScript API Client\n\n';
+  let markdown = '# OPNsense TypeScript API Client - Intermediate Stage Modules\n\n';
 
   // Add generation timestamp
 
