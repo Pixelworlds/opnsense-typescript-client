@@ -12,6 +12,7 @@ const typescriptDir = path.join(__dirname, '../typescript');
 const coreDir = path.join(typescriptDir, 'core');
 const pluginsDir = path.join(typescriptDir, 'plugins');
 const utilitiesDir = path.join(typescriptDir, 'utilities');
+const srcDir = path.join(__dirname, '../src');
 
 // Get list of modules in a directory
 function getModules(dir) {
@@ -23,6 +24,54 @@ function getModules(dir) {
     .sort();
 }
 
+// Generate build config
+function generateBuildConfig(coreModules, pluginModules, utilityModules) {
+  // Define required modules that cannot be disabled
+  const requiredCoreModules = ['core', 'auth', 'firewall', 'interfaces'];
+  const requiredUtilityModules = ['keygen'];
+
+  const buildConfig = {
+    description: 'Build configuration for OPNsense TypeScript SDK',
+    generated: new Date().toISOString(),
+    note: 'Required modules (core, auth, firewall, interfaces, keygen) are always included and not configurable',
+    modules: {
+      core: {},
+      plugins: {},
+      utilities: {},
+    },
+  };
+
+  // Add core modules (excluding required ones)
+  for (const module of coreModules) {
+    if (!requiredCoreModules.includes(module)) {
+      buildConfig.modules.core[module] = {
+        include: true,
+        description: `Core ${module} module`,
+      };
+    }
+  }
+
+  // Add all plugin modules (none are required)
+  for (const module of pluginModules) {
+    buildConfig.modules.plugins[module] = {
+      include: true,
+      description: `Plugin ${module} module`,
+    };
+  }
+
+  // Add utility modules (excluding required ones)
+  for (const module of utilityModules) {
+    if (!requiredUtilityModules.includes(module)) {
+      buildConfig.modules.utilities[module] = {
+        include: true,
+        description: `Utility ${module} module`,
+      };
+    }
+  }
+
+  return buildConfig;
+}
+
 // Main function
 async function main() {
   // Get all modules
@@ -30,11 +79,22 @@ async function main() {
   const pluginModules = getModules(pluginsDir);
   const utilityModules = getModules(utilitiesDir);
 
+  // Generate build config
+  const buildConfig = generateBuildConfig(coreModules, pluginModules, utilityModules);
+
+  // Ensure src directory exists
+  if (!fs.existsSync(srcDir)) {
+    fs.mkdirSync(srcDir, { recursive: true });
+  }
+
+  // Write build config file
+  const buildConfigPath = path.join(srcDir, 'build-config.json');
+  fs.writeFileSync(buildConfigPath, JSON.stringify(buildConfig, null, 2), 'utf-8');
+
   // Generate markdown content
   let markdown = '# OPNsense TypeScript API Client\n\n';
 
   // Add generation timestamp
-  markdown += `*Generated on ${new Date().toISOString()}*\n\n`;
 
   // Add overview
   markdown += '## Overview\n\n';
@@ -184,8 +244,37 @@ async function main() {
     markdown += `| ${module} | API key generation utility | \`import { ${className} } from './utilities/${module}'\` |\n`;
   }
 
+  // Add build configuration section
+  markdown += '\n## Build Configuration\n\n';
+  markdown +=
+    'The SDK uses a build configuration file (`src/build-config.json`) to control which modules are included when building. ';
+  markdown += 'Each optional module has an `include` flag that can be set to `true` or `false`.\n\n';
+  markdown += '**Required modules** (always included):\n';
+  markdown += '- `core` - Essential core functionality\n';
+  markdown += '- `auth` - Authentication and authorization\n';
+  markdown += '- `firewall` - Basic firewall operations\n';
+  markdown += '- `interfaces` - Network interface management\n';
+  markdown += '- `keygen` - API key generation utility\n\n';
+  markdown += '**Optional modules** can be configured:\n\n';
+  markdown += '```json\n';
+  markdown += '{\n';
+  markdown += '  "modules": {\n';
+  markdown += '    "core": {\n';
+  markdown += '      "diagnostics": { "include": true },\n';
+  markdown += '      "firmware": { "include": false }\n';
+  markdown += '    },\n';
+  markdown += '    "plugins": {\n';
+  markdown += '      "nginx": { "include": true },\n';
+  markdown += '      "haproxy": { "include": false }\n';
+  markdown += '    }\n';
+  markdown += '  }\n';
+  markdown += '}\n';
+  markdown += '```\n\n';
+  markdown +=
+    'This allows you to create custom builds with only the modules you need while ensuring essential functionality is always available.\n\n';
+
   // Add common patterns section
-  markdown += '\n## Common Patterns\n\n';
+  markdown += '## Common Patterns\n\n';
   markdown += '### Error Handling\n\n';
   markdown += '```typescript\n';
   markdown += 'try {\n';
@@ -263,6 +352,8 @@ async function main() {
 
   console.log(`\nTypeScript README generated successfully!`);
   console.log(`Output: ${outputPath}`);
+  console.log(`\nBuild configuration generated successfully!`);
+  console.log(`Output: ${buildConfigPath}`);
   console.log(`\nDocumented:`);
   console.log(`- ${coreModules.length} core modules`);
   console.log(`- ${pluginModules.length} plugin modules`);
