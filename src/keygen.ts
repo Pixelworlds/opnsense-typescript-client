@@ -384,11 +384,18 @@ const main = async (): Promise<void> => {
         if (process.stdin.isTTY && args[1]) {
           input = args[1];
         } else {
+          // Read from stdin without top-level await
           const chunks: Buffer[] = [];
-          for await (const chunk of process.stdin) {
+          process.stdin.on('data', (chunk: Buffer) => {
             chunks.push(chunk);
-          }
-          input = Buffer.concat(chunks).toString().trim();
+          });
+
+          await new Promise<void>(resolve => {
+            process.stdin.on('end', () => {
+              input = Buffer.concat(chunks).toString().trim();
+              resolve();
+            });
+          });
         }
 
         if (!input) {
