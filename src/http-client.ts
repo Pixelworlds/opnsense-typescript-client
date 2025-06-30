@@ -21,7 +21,6 @@ export class OPNsenseHttpClient implements HttpClient {
         rejectUnauthorized: config.verifySsl !== false,
       }),
       headers: {
-        'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
     });
@@ -33,12 +32,26 @@ export class OPNsenseHttpClient implements HttpClient {
   }
 
   async post<T = any>(url: string, data?: any, config?: RequestConfig): Promise<ApiResponse<T>> {
-    const response: AxiosResponse<T> = await this.client.post(url, data, config);
+    const requestConfig = data ? {
+      ...config,
+      headers: {
+        'Content-Type': 'application/json',
+        ...config?.headers,
+      },
+    } : config;
+    const response: AxiosResponse<T> = await this.client.post(url, data, requestConfig);
     return this.transformResponse(response);
   }
 
   async put<T = any>(url: string, data?: any, config?: RequestConfig): Promise<ApiResponse<T>> {
-    const response: AxiosResponse<T> = await this.client.put(url, data, config);
+    const requestConfig = data ? {
+      ...config,
+      headers: {
+        'Content-Type': 'application/json',
+        ...config?.headers,
+      },
+    } : config;
+    const response: AxiosResponse<T> = await this.client.put(url, data, requestConfig);
     return this.transformResponse(response);
   }
 
@@ -48,7 +61,14 @@ export class OPNsenseHttpClient implements HttpClient {
   }
 
   async patch<T = any>(url: string, data?: any, config?: RequestConfig): Promise<ApiResponse<T>> {
-    const response: AxiosResponse<T> = await this.client.patch(url, data, config);
+    const requestConfig = data ? {
+      ...config,
+      headers: {
+        'Content-Type': 'application/json',
+        ...config?.headers,
+      },
+    } : config;
+    const response: AxiosResponse<T> = await this.client.patch(url, data, requestConfig);
     return this.transformResponse(response);
   }
 
