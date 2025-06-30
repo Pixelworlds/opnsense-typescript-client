@@ -7,9 +7,9 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Path to the storage directory
-const storageDir = path.join(__dirname, 'crawler/storage/key_value_stores/opnsense-api-modules');
-const outputDir = path.join(__dirname, 'typescript/plugins');
+// Path to the storage directory (updated for new location)
+const storageDir = path.join(__dirname, '../crawler/storage/key_value_stores/opnsense-api-modules');
+const outputDir = path.join(__dirname, '../typescript/core');
 
 // Ensure output directory exists
 if (!fs.existsSync(outputDir)) {
@@ -256,8 +256,8 @@ async function main() {
   // Read all JSON files from storage
   const files = fs.readdirSync(storageDir).filter(file => file.endsWith('.json'));
 
-  // Load and filter plugin modules
-  const pluginModules = [];
+  // Load and filter core modules
+  const coreModules = [];
 
   for (const file of files) {
     try {
@@ -265,19 +265,19 @@ async function main() {
       const content = fs.readFileSync(filePath, 'utf-8');
       const moduleData = JSON.parse(content);
 
-      // Only include plugin modules
-      if (moduleData && moduleData.type === 'plugin') {
-        pluginModules.push(moduleData);
+      // Only include core modules
+      if (moduleData && moduleData.type === 'core') {
+        coreModules.push(moduleData);
       }
     } catch (error) {
       console.warn(`Failed to read ${file}:`, error.message);
     }
   }
 
-  console.log(`Found ${pluginModules.length} plugin modules`);
+  console.log(`Found ${coreModules.length} core modules`);
 
   // Generate TypeScript files for each module
-  for (const module of pluginModules) {
+  for (const module of coreModules) {
     const moduleName = module.name.toLowerCase();
 
     // Generate class file with embedded types
@@ -285,10 +285,10 @@ async function main() {
     const classFile = path.join(outputDir, `${moduleName}.ts`);
     fs.writeFileSync(classFile, classContent, 'utf-8');
 
-    console.log(`✅ Generated ${moduleName} module: ${classFile}`);
+    console.log(`Generated ${moduleName} module: ${classFile}`);
   }
 
-  console.log(`\n🎉 Successfully generated ${pluginModules.length} plugin modules in ${outputDir}`);
+  console.log(`\nSuccessfully generated ${coreModules.length} core modules in ${outputDir}`);
 }
 
 // Run the script

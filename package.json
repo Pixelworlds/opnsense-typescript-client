@@ -37,7 +37,15 @@
     "type-check": "tsc --noEmit",
     "test": "echo 'No tests specified yet' && exit 0",
     "test:coverage": "echo 'No coverage tests specified yet' && exit 0",
-    "crawl:docs": "npx tsx crawler/crawler.ts"
+    "crawl:docs": "npx tsx crawler/crawler.ts",
+    "generate:docs:crawl": "node generators/generate-crawler-docs.js",
+    "generate:docs:core": "node generators/generate-core-docs.js",
+    "generate:docs:plugin": "node generators/generate-plugin-docs.js",
+    "generate:docs:typescript": "node generators/generate-typescript-readme.js",
+    "generate:postman:core": "node generators/generate-core-postman-collection.js",
+    "generate:postman:plugin": "node generators/generate-plugin-postman-collection.js",
+    "generate:typescript:core": "node generators/generate-core-modules.js",
+    "generate:typescript:plugin": "node generators/generate-plugin-modules.js"
   },
   "devDependencies": {
     "@eslint/js": "^8.57.0",
