@@ -1,0 +1,681 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+env:
+  NODE_VERSION: "20"
+
+jobs:
+  # Validation stage
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "yarn"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable --check-cache
+
+      - name: Run linter
+        run: yarn lint
+
+  type-check:
+    name: Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "yarn"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable --check-cache
+
+      - name: Run type check
+        run: yarn type-check
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "yarn"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable --check-cache
+
+      - name: Run security audit
+        run: yarn npm audit --all --recursive --environment production
+
+  # Generation stage
+  generate-sdk:
+    name: Generate SDK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "yarn"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable --check-cache
+
+      - name: Generate complete SDK
+        run: |
+          echo "Generating complete SDK..."
+          yarn generate:sdk
+          echo "Verifying generated SDK structure..."
+          test -d src/core || (echo "Missing src/core directory" && exit 1)
+          test -d src/plugins || (echo "Missing src/plugins directory" && exit 1)
+          test -f src/index.ts || (echo "Missing src/index.ts" && exit 1)
+          test -f src/http-client.ts || (echo "Missing src/http-client.ts" && exit 1)
+          test -f src/keygen.ts || (echo "Missing src/keygen.ts" && exit 1)
+          test -f src/types.ts || (echo "Missing src/types.ts" && exit 1)
+          test -f src/build-config.json || (echo "Missing src/build-config.json" && exit 1)
+          echo "SDK generation completed successfully"
+
+      - name: Upload SDK artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-sdk
+          path: src/
+          retention-days: 7
+
+  generate-docs:
+    name: Generate Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "yarn"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable --check-cache
+
+      - name: Generate documentation
+        run: |
+          echo "Generating documentation..."
+          yarn generate:docs:core
+          yarn generate:docs:plugin
+          yarn generate:docs:typescript
+          echo "Verifying generated documentation..."
+          test -f docs/CORE.md || (echo "Missing docs/CORE.md" && exit 1)
+          test -f docs/PLUGINS.md || (echo "Missing docs/PLUGINS.md" && exit 1)
+          test -f typescript/README.md || (echo "Missing typescript/README.md" && exit 1)
+          echo "Documentation generation completed successfully"
+
+      - name: Upload documentation artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-docs
+          path: |
+            docs/
+            typescript/README.md
+          retention-days: 7
+
+  generate-postman:
+    name: Generate Postman Collections
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "yarn"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable --check-cache
+
+      - name: Generate Postman collections
+        run: |
+          echo "Generating Postman collections..."
+          yarn generate:postman:core
+          yarn generate:postman:plugin
+          echo "Verifying generated Postman collections..."
+          test -f postman/OPNsense_Core_Modules_API_Collection.postman_collection.json || (echo "Missing core Postman collection" && exit 1)
+          test -f postman/OPNsense_Plugin_Modules_API_Collection.postman_collection.json || (echo "Missing plugin Postman collection" && exit 1)
+          echo "Postman collection generation completed successfully"
+
+      - name: Upload Postman artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-postman
+          path: postman/
+          retention-days: 7
+
+  # Build stage
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: generate-sdk
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "yarn"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable --check-cache
+
+      - name: Download SDK artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-sdk
+          path: src/
+
+      - name: Build SDK
+        run: |
+          echo "Building SDK..."
+          yarn build
+          ls -la dist/
+          echo "Verifying build outputs..."
+          test -f dist/index.js || (echo "Missing dist/index.js" && exit 1)
+          test -f dist/index.cjs || (echo "Missing dist/index.cjs" && exit 1)
+          test -f dist/index.d.ts || (echo "Missing dist/index.d.ts" && exit 1)
+          test -f dist/keygen.js || (echo "Missing dist/keygen.js" && exit 1)
+          test -f dist/keygen.cjs || (echo "Missing dist/keygen.cjs" && exit 1)
+          test -f dist/keygen.d.ts || (echo "Missing dist/keygen.d.ts" && exit 1)
+          echo "Build completed successfully"
+
+      - name: Show build artifacts
+        run: |
+          echo "Build artifacts:"
+          find dist -type f -exec ls -lh {} \;
+          echo "Total dist size: $(du -sh dist | cut -f1)"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist/
+          retention-days: 7
+
+  # Test stage
+  test-build-artifacts:
+    name: Test Build Artifacts
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "yarn"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable --check-cache
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist/
+
+      - name: Validate build artifacts
+        run: |
+          echo "Validating build artifacts..."
+
+          # Check required files exist and are not empty
+          for file in index.js index.cjs index.d.ts keygen.js keygen.cjs keygen.d.ts; do
+            test -f "dist/$file" || (echo "Missing dist/$file" && exit 1)
+            test -s "dist/$file" || (echo "dist/$file is empty" && exit 1)
+          done
+
+          # Test module imports
+          node -e "const pkg = require('./dist/index.cjs'); console.log('CJS import successful:', typeof pkg.OPNsenseClient);"
+          node -e "import('./dist/index.js').then(pkg => console.log('ESM import successful:', typeof pkg.OPNsenseClient));"
+
+          # Test keygen imports
+          node -e "const keygen = require('./dist/keygen.cjs'); console.log('Keygen CJS import successful:', typeof keygen.WireguardCrypto);"
+          node -e "import('./dist/keygen.js').then(keygen => console.log('Keygen ESM import successful:', typeof keygen.WireguardCrypto));"
+
+          echo "All build artifacts validated successfully"
+
+  test-keygen-functionality:
+    name: Test Keygen Functionality
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "yarn"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable --check-cache
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist/
+
+      - name: Test keygen functionality
+        run: |
+          echo "Testing keygen functionality..."
+
+          # Test CLI functionality
+          node dist/keygen.cjs keypair > keypair.json
+          node dist/keygen.cjs preshared > preshared.json
+          node dist/keygen.cjs keys > keys.json
+
+          # Validate JSON output
+          node -e "
+            const keypair = JSON.parse(require('fs').readFileSync('keypair.json', 'utf8'));
+            const preshared = JSON.parse(require('fs').readFileSync('preshared.json', 'utf8'));
+            const keys = JSON.parse(require('fs').readFileSync('keys.json', 'utf8'));
+            
+            if (!keypair.publicKey || !keypair.privateKey) throw new Error('Invalid keypair output');
+            if (!preshared.presharedKey) throw new Error('Invalid preshared output');
+            if (!keys.keypair || !keys.presharedKey) throw new Error('Invalid keys output');
+            
+            console.log('Keygen CLI functionality validated');
+          "
+
+          # Test key validation
+          echo "nShjosyTVASAX4eAWymGyv5Y02Oz17N3WV/F8g3SVwQ=" | node dist/keygen.cjs validate > validation.json
+          node -e "
+            const result = JSON.parse(require('fs').readFileSync('validation.json', 'utf8'));
+            if (!result.valid) throw new Error('Key validation failed');
+            console.log('Key validation functionality verified');
+          "
+
+          echo "Keygen functionality tests passed"
+
+      - name: Cleanup test files
+        if: always()
+        run: rm -f keypair.json preshared.json keys.json validation.json
+
+  test-typescript-declarations:
+    name: Test TypeScript Declarations
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "yarn"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable --check-cache
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist/
+
+      - name: Test TypeScript declarations
+        run: |
+          echo "Testing TypeScript declarations..."
+
+          # Create a test TypeScript file to validate types
+          cat > test-types.ts << 'EOF'
+          import { OPNsenseClient } from './dist/index.js';
+          import { WireguardCrypto } from './dist/keygen.js';
+
+          // Test main client types
+          const client = new OPNsenseClient({
+            baseUrl: 'https://opnsense.example.com',
+            apiKey: 'test-key',
+            apiSecret: 'test-secret'
+          });
+
+          // Test keygen types
+          const crypto = new WireguardCrypto();
+          const keypair = crypto.generateKeypair();
+          const isValid = WireguardCrypto.validateBase64Key(keypair.publicKey);
+
+          console.log('Type checking passed');
+          EOF
+
+          # Check if TypeScript can compile with our declarations
+          npx tsc --noEmit --strict test-types.ts
+
+          echo "TypeScript declarations validated successfully"
+
+      - name: Cleanup test files
+        if: always()
+        run: rm -f test-types.ts
+
+  test-documentation:
+    name: Test Documentation
+    runs-on: ubuntu-latest
+    needs: generate-docs
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "yarn"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable --check-cache
+
+      - name: Download documentation artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-docs
+
+      - name: Validate documentation
+        run: |
+          echo "Validating generated documentation..."
+
+          # Check documentation files exist and have content
+          test -s docs/CORE.md || (echo "docs/CORE.md is empty or missing" && exit 1)
+          test -s docs/PLUGINS.md || (echo "docs/PLUGINS.md is empty or missing" && exit 1)
+          test -s typescript/README.md || (echo "typescript/README.md is empty or missing" && exit 1)
+
+          # Verify documentation contains expected sections
+          grep -q "OPNsense Core Modules API Documentation" docs/CORE.md || (echo "Missing title in CORE.md" && exit 1)
+          grep -q "OPNsense Plugin Modules API Documentation" docs/PLUGINS.md || (echo "Missing title in PLUGINS.md" && exit 1)
+          grep -q "Intermediate Stage Modules" typescript/README.md || (echo "Missing title in typescript README" && exit 1)
+
+          # Check that no "Generated on" timestamps exist
+          if grep -r "Generated on" docs/ typescript/README.md; then
+            echo "Found unwanted 'Generated on' timestamps in documentation"
+            exit 1
+          fi
+
+          echo "Documentation validation passed"
+
+  # Bundle analysis
+  bundle-analysis:
+    name: Bundle Analysis
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "yarn"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable --check-cache
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist/
+
+      - name: Analyze bundle size
+        run: |
+          echo "Analyzing bundle size..."
+
+          # Calculate sizes for all build outputs
+          ESM_SIZE=$(stat -c%s dist/index.js)
+          CJS_SIZE=$(stat -c%s dist/index.cjs)
+          DTS_SIZE=$(stat -c%s dist/index.d.ts)
+          KEYGEN_ESM_SIZE=$(stat -c%s dist/keygen.js)
+          KEYGEN_CJS_SIZE=$(stat -c%s dist/keygen.cjs)
+          KEYGEN_DTS_SIZE=$(stat -c%s dist/keygen.d.ts)
+
+          echo "Bundle sizes:"
+          echo "  Main SDK:"
+          echo "    ESM (index.js): ${ESM_SIZE} bytes"
+          echo "    CJS (index.cjs): ${CJS_SIZE} bytes"
+          echo "    Types (index.d.ts): ${DTS_SIZE} bytes"
+          echo "  Keygen Utility:"
+          echo "    ESM (keygen.js): ${KEYGEN_ESM_SIZE} bytes"
+          echo "    CJS (keygen.cjs): ${KEYGEN_CJS_SIZE} bytes"
+          echo "    Types (keygen.d.ts): ${KEYGEN_DTS_SIZE} bytes"
+
+          TOTAL_SIZE=$((ESM_SIZE + CJS_SIZE + DTS_SIZE + KEYGEN_ESM_SIZE + KEYGEN_CJS_SIZE + KEYGEN_DTS_SIZE))
+          echo "  Total: ${TOTAL_SIZE} bytes"
+
+          # Warn if main bundles are too large (>2MB for SDK, >500KB for keygen)
+          if [ $ESM_SIZE -gt 2097152 ] || [ $CJS_SIZE -gt 2097152 ]; then
+            echo "⚠️  Warning: Main SDK bundle size exceeds 2MB"
+          fi
+          if [ $KEYGEN_ESM_SIZE -gt 512000 ] || [ $KEYGEN_CJS_SIZE -gt 512000 ]; then
+            echo "⚠️  Warning: Keygen utility bundle size exceeds 500KB"
+          fi
+
+          # Create size report
+          cat > bundle-size-report.json << EOF
+          {
+            "main_sdk": {
+              "esm_size": $ESM_SIZE,
+              "cjs_size": $CJS_SIZE,
+              "types_size": $DTS_SIZE
+            },
+            "keygen_utility": {
+              "esm_size": $KEYGEN_ESM_SIZE,
+              "cjs_size": $KEYGEN_CJS_SIZE,
+              "types_size": $KEYGEN_DTS_SIZE
+            },
+            "total_size": $TOTAL_SIZE,
+            "commit": "$GITHUB_SHA",
+            "ref": "$GITHUB_REF_NAME"
+          }
+          EOF
+
+          echo "Bundle analysis completed"
+
+      - name: Upload bundle size report
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-size-report
+          path: bundle-size-report.json
+          retention-days: 30
+
+  # Package validation stage
+  validate-package:
+    name: Validate Package
+    runs-on: ubuntu-latest
+    needs: [build, generate-docs, generate-postman]
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "yarn"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable --check-cache
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist/
+
+      - name: Download documentation artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-docs
+
+      - name: Download Postman artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-postman
+          path: postman/
+
+      - name: Validate package structure
+        run: |
+          echo "Validating package structure..."
+
+          # Validate package.json exports
+          node -e "
+            const pkg = require('./package.json');
+            const fs = require('fs');
+            
+            // Check main entry points exist
+            if (!fs.existsSync(pkg.main)) {
+              throw new Error('Main entry point does not exist: ' + pkg.main);
+            }
+            if (!fs.existsSync(pkg.module)) {
+              throw new Error('Module entry point does not exist: ' + pkg.module);
+            }
+            if (!fs.existsSync(pkg.types)) {
+              throw new Error('Types entry point does not exist: ' + pkg.types);
+            }
+            
+            // Check exports
+            Object.entries(pkg.exports || {}).forEach(([key, value]) => {
+              if (typeof value === 'object') {
+                Object.entries(value).forEach(([format, path]) => {
+                  if (!fs.existsSync(path)) {
+                    throw new Error('Export path does not exist: ' + path + ' for ' + key + '.' + format);
+                  }
+                });
+              }
+            });
+            
+            console.log('Package structure validation passed');
+          "
+
+          # Test package installation simulation
+          yarn pack --dry-run
+
+          echo "Package validation completed successfully"
+
+  package-tarball:
+    name: Package Tarball
+    runs-on: ubuntu-latest
+    needs: [build, generate-docs, generate-postman]
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "yarn"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable --check-cache
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist/
+
+      - name: Download documentation artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-docs
+
+      - name: Download Postman artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-postman
+          path: postman/
+
+      - name: Create package tarball
+        run: |
+          yarn pack
+          ls -la *.tgz
+
+      - name: Upload package tarball
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-tarball
+          path: "*.tgz"
+          retention-days: 7
