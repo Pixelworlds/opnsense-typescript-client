@@ -348,7 +348,42 @@ const printUsage = (): void => {
   console.log('  echo "KwSMLdpVKmjtJ/EsL3aAm3d7VA3mzpB5yHlnXnVwBWw=" | bun src/utils/keygen.ts validate');
 };
 
-const main = async (): Promise<void> => {
+const handleValidateCommand = (args: string[]): void => {
+  if (process.stdin.isTTY && args[1]) {
+    // Direct argument provided
+    const input = args[1];
+    const isValid = WireguardCrypto.validateBase64Key(input);
+    console.log(JSON.stringify({ valid: isValid, key: input }, null, 2));
+  } else {
+    // Read from stdin
+    const chunks: Buffer[] = [];
+
+    process.stdin.on('data', (chunk: Buffer) => {
+      chunks.push(chunk);
+    });
+
+    process.stdin.on('end', () => {
+      const input = Buffer.concat(chunks).toString().trim();
+
+      if (!input) {
+        console.error('Error: No key provided for validation');
+        console.error('Usage: echo "key" | node dist/keygen.cjs validate');
+        console.error('   or: node dist/keygen.cjs validate "key"');
+        process.exit(1);
+      }
+
+      const isValid = WireguardCrypto.validateBase64Key(input);
+      console.log(JSON.stringify({ valid: isValid, key: input }, null, 2));
+    });
+
+    process.stdin.on('error', error => {
+      console.error(`Error reading stdin: ${error.message}`);
+      process.exit(1);
+    });
+  }
+};
+
+const main = (): void => {
   const crypto = new WireguardCrypto();
   const args = process.argv.slice(2);
   const command = args[0];
@@ -379,34 +414,7 @@ const main = async (): Promise<void> => {
       }
 
       case 'validate': {
-        let input = '';
-
-        if (process.stdin.isTTY && args[1]) {
-          input = args[1];
-        } else {
-          // Read from stdin without top-level await
-          const chunks: Buffer[] = [];
-          process.stdin.on('data', (chunk: Buffer) => {
-            chunks.push(chunk);
-          });
-
-          await new Promise<void>(resolve => {
-            process.stdin.on('end', () => {
-              input = Buffer.concat(chunks).toString().trim();
-              resolve();
-            });
-          });
-        }
-
-        if (!input) {
-          console.error('Error: No key provided for validation');
-          console.error('Usage: echo "key" | bun src/utils/keygen.ts validate');
-          console.error('   or: bun src/utils/keygen.ts validate "key"');
-          process.exit(1);
-        }
-
-        const isValid = WireguardCrypto.validateBase64Key(input);
-        console.log(JSON.stringify({ valid: isValid, key: input }, null, 2));
+        handleValidateCommand(args);
         break;
       }
 
@@ -426,10 +434,12 @@ const __filename = fileURLToPath(import.meta.url);
 const isMainModule = process.argv[1] === __filename;
 
 if (isMainModule) {
-  main().catch(error => {
+  try {
+    main();
+  } catch (error) {
     console.error('Error:', error);
     process.exit(1);
-  });
+  }
 }
 
 export { WireguardCrypto };
