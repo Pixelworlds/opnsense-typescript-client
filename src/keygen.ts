@@ -349,38 +349,25 @@ const printUsage = (): void => {
 };
 
 const handleValidateCommand = (args: string[]): void => {
-  if (process.stdin.isTTY && args[1]) {
+  if (args[1]) {
     // Direct argument provided
     const input = args[1];
     const isValid = WireguardCrypto.validateBase64Key(input);
     console.log(JSON.stringify({ valid: isValid, key: input }, null, 2));
-  } else {
-    // Read from stdin
-    const chunks: Buffer[] = [];
-
-    process.stdin.on('data', (chunk: Buffer) => {
-      chunks.push(chunk);
-    });
-
-    process.stdin.on('end', () => {
-      const input = Buffer.concat(chunks).toString().trim();
-
-      if (!input) {
-        console.error('Error: No key provided for validation');
-        console.error('Usage: echo "key" | node dist/keygen.cjs validate');
-        console.error('   or: node dist/keygen.cjs validate "key"');
-        process.exit(1);
-      }
-
-      const isValid = WireguardCrypto.validateBase64Key(input);
-      console.log(JSON.stringify({ valid: isValid, key: input }, null, 2));
-    });
-
-    process.stdin.on('error', error => {
-      console.error(`Error reading stdin: ${error.message}`);
-      process.exit(1);
-    });
+    return;
   }
+
+  // For stdin input, we need to handle it synchronously
+  if (!process.stdin.isTTY) {
+    console.error('Error: stdin input not supported in this build environment');
+    console.error('Usage: node dist/keygen.cjs validate "key"');
+    console.error('Please provide the key as a command line argument');
+    process.exit(1);
+  }
+
+  console.error('Error: No key provided for validation');
+  console.error('Usage: node dist/keygen.cjs validate "key"');
+  process.exit(1);
 };
 
 const main = (): void => {
