@@ -3,7 +3,7 @@
     "name": "OPNsense Core Modules API",
     "description": "Complete API collection for OPNsense Core Modules\n\nStatistics:\n- Core Modules: 24\n- Total Endpoints: 752",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_postman_id": "452d0f42-2f1e-45e3-a542-a1bd11685b15",
+    "_postman_id": "749c945c-6d14-4d78-9021-0a8142a402f5",
     "version": "1.0.0"
   },
   "auth": {

@@ -1,6 +1,6 @@
 # OPNsense Plugin Modules API Documentation
 
-*Generated on 2025-06-30T02:31:56.913Z*
+*Generated on 2025-06-30T02:53:56.167Z*
 
 ## Overview
 

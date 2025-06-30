@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Path to the output directory
-const outputDir = path.join(__dirname, '../docs');
+const outputDir = path.join(__dirname, '../crawler');
 
 // Ensure output directory exists
 if (!fs.existsSync(outputDir)) {
@@ -216,7 +216,7 @@ async function main() {
   markdown += '- **yarn generate:docs:plugin**: Generates Plugin module documentation\n\n';
 
   // Write to file
-  const outputPath = path.join(outputDir, 'CRAWLER.md');
+  const outputPath = path.join(outputDir, 'README.md');
   fs.writeFileSync(outputPath, markdown, 'utf-8');
 
   console.log(`\nCrawler documentation generated successfully!`);

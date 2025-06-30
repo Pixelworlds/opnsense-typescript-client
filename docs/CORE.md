@@ -1,6 +1,6 @@
 # OPNsense Core Modules API Documentation
 
-*Generated on 2025-06-30T02:51:40.655Z*
+*Generated on 2025-06-30T02:53:49.513Z*
 
 ## Overview
 

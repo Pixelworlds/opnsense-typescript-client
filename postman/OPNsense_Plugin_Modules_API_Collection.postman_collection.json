@@ -3,7 +3,7 @@
     "name": "OPNsense Plugin Modules API",
     "description": "Complete API collection for OPNsense Plugin Modules\n\nStatistics:\n- Plugin Modules: 64\n- Total Endpoints: 1271",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_postman_id": "fd89c6c8-a0c3-4a39-b65c-e58420cb4d98",
+    "_postman_id": "e5ab863a-48bf-4757-83ae-0771058f9b7e",
     "version": "1.0.0"
   },
   "auth": {
