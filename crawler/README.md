@@ -1,7 +1,5 @@
 # OPNsense API Crawler Documentation
 
-*Generated on 2025-06-30T02:56:04.144Z*
-
 ## Overview
 
 The OPNsense API Crawler is an automated tool that discovers and documents the OPNsense API by scraping the official documentation pages. It extracts endpoint information, parameters, and data models from both Core and Plugin modules.
@@ -13,6 +11,7 @@ The crawler operates based on several key assumptions about the OPNsense documen
 ### 1. URL Structure
 
 The crawler assumes the following URL patterns:
+
 - **Index pages**: Documentation is organized under two main index pages:
   - Core: `https://docs.opnsense.org/development/api/core/index.html`
   - Plugins: `https://docs.opnsense.org/development/api/plugins/index.html`
@@ -24,6 +23,7 @@ The crawler assumes the following URL patterns:
 ### 2. CSS Selectors
 
 The crawler relies on specific HTML structure and CSS selectors:
+
 - **Module links**: Extracted from `<a>` tags within the index pages
 - **API tables**: Located using `table` elements containing endpoint information
 - **Table structure**: Expects columns for Method, Module, Controller, Command, and Parameters
@@ -33,6 +33,7 @@ The crawler relies on specific HTML structure and CSS selectors:
 ### 3. GitHub URL Translation
 
 The crawler automatically converts GitHub web URLs to raw content URLs:
+
 - **Pattern**: `https://github.com/{owner}/{repo}/blob/{branch}/{path}`
 - **Converts to**: `https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{path}`
 - **Purpose**: Enables direct fetching of XML model files for parsing
@@ -41,6 +42,7 @@ The crawler automatically converts GitHub web URLs to raw content URLs:
 ### 4. XML Model Structure
 
 The crawler expects XML models to follow OPNsense conventions:
+
 - **Root element**: `<model>` containing the entire model definition
 - **Items section**: `<items>` containing field definitions
 - **Field types**: Standard OPNsense field types (TextField, IntegerField, BooleanField, etc.)
@@ -50,6 +52,7 @@ The crawler expects XML models to follow OPNsense conventions:
 ### 5. Parameter Matching
 
 The crawler makes assumptions about parameter formats:
+
 - **Parameter syntax**: Expects parameters in format `$param1,$param2` or `$uuid`
 - **UUID parameters**: Assumes `$uuid` refers to resource identifiers
 - **Path parameters**: Converts `$param` to `{param}` for URL construction
@@ -58,6 +61,7 @@ The crawler makes assumptions about parameter formats:
 ### 6. Documentation Consistency
 
 The crawler assumes:
+
 - **Table format**: All API documentation uses consistent table structures
 - **Method types**: Only GET and POST methods are documented
 - **Module naming**: Module names in URLs match controller paths
@@ -77,6 +81,7 @@ The crawler operates in four main phases:
 ### 1. Module Discovery
 
 The crawler starts by fetching two main index pages:
+
 - **Core modules**: `https://docs.opnsense.org/development/api/core/index.html`
 - **Plugin modules**: `https://docs.opnsense.org/development/api/plugins/index.html`
 
@@ -85,6 +90,7 @@ From these pages, it extracts links to individual module documentation pages.
 ### 2. Endpoint Extraction
 
 For each module page, the crawler:
+
 - Parses the HTML to find API endpoint tables
 - Extracts controller names, commands, HTTP methods, and parameters
 - Builds complete API URLs for each endpoint
@@ -93,6 +99,7 @@ For each module page, the crawler:
 ### 3. XML Model Discovery
 
 The crawler searches for XML model definitions by:
+
 - Looking for links to GitHub containing `.xml` files
 - Converting GitHub URLs to raw.githubusercontent.com URLs
 - Parsing XML files to extract field definitions, types, and constraints
@@ -104,6 +111,7 @@ All collected data is stored as JSON files in:
 `crawler/storage/key_value_stores/opnsense-api-modules/`
 
 Each module gets its own JSON file containing:
+
 - Module metadata (name, type, URL)
 - Complete list of endpoints
 - Model structure with fields and constraints
@@ -133,6 +141,7 @@ yarn start
 ```
 
 The crawler will:
+
 1. Start crawling from the index pages
 2. Process each module sequentially
 3. Save results to the storage directory
@@ -177,6 +186,7 @@ Each module JSON file contains:
 ## Typical Statistics
 
 A full crawl typically discovers:
+
 - **Total modules**: 88 (24 Core + 64 Plugins)
 - **Total endpoints**: 2,023+
 - **Core endpoints**: 752
@@ -210,4 +220,3 @@ The crawled data is used by several generator scripts:
 - **yarn generate:postman:plugin**: Creates Postman collection for testing plugin modules
 - **yarn generate:docs:core**: Generates Core module documentation
 - **yarn generate:docs:plugin**: Generates Plugin module documentation
-

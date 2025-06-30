@@ -21,7 +21,6 @@ async function main() {
   let markdown = '# OPNsense API Crawler Documentation\n\n';
 
   // Add generation timestamp
-  markdown += `*Generated on ${new Date().toISOString()}*\n\n`;
 
   // Add overview
   markdown += '## Overview\n\n';

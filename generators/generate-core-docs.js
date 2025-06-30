@@ -99,7 +99,6 @@ async function main() {
   let markdown = '# OPNsense Core Modules API Documentation\n\n';
 
   // Add generation timestamp
-  markdown += `*Generated on ${new Date().toISOString()}*\n\n`;
 
   // Add overview
   markdown += '## Overview\n\n';

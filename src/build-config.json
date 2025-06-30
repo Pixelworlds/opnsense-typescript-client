@@ -1,702 +1,348 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "OPNsense TypeScript Client Build Configuration",
-  "description": "Configuration for selective module inclusion in the final build",
-  "version": "1.0.0",
-  "buildProfiles": {
-    "minimal": {
-      "description": "Minimal build with essential core modules only",
-      "modules": {
-        "core": ["auth", "system", "service", "diagnostics"],
-        "plugins": [],
-        "utilities": []
-      }
-    },
-    "standard": {
-      "description": "Standard build with common core modules and popular plugins",
-      "modules": {
-        "core": [
-          "auth",
-          "system",
-          "service",
-          "diagnostics",
-          "firewall",
-          "interfaces",
-          "dhcpv4",
-          "unbound",
-          "firmware",
-          "cron",
-          "monit"
-        ],
-        "plugins": ["acmeclient", "bind", "haproxy", "nginx", "collectd", "netdata"],
-        "utilities": ["keygen"]
-      }
-    },
-    "full": {
-      "description": "Complete build with all available modules",
-      "modules": {
-        "core": "*",
-        "plugins": "*",
-        "utilities": "*"
-      }
-    },
-    "security": {
-      "description": "Security-focused build with firewall, VPN, and security plugins",
-      "modules": {
-        "core": [
-          "auth",
-          "system",
-          "service",
-          "diagnostics",
-          "firewall",
-          "interfaces",
-          "ids",
-          "openvpn",
-          "ipsec",
-          "wireguard",
-          "trust"
-        ],
-        "plugins": [
-          "acmeclient",
-          "clamav",
-          "crowdsec",
-          "freeradius",
-          "rspamd",
-          "stunnel",
-          "tor",
-          "wazuhagent",
-          "tailscale",
-          "zerotier"
-        ],
-        "utilities": ["keygen"]
-      }
-    },
-    "network": {
-      "description": "Network-focused build with routing, DNS, and network services",
-      "modules": {
-        "core": [
-          "auth",
-          "system",
-          "service",
-          "diagnostics",
-          "interfaces",
-          "routes",
-          "routing",
-          "dhcpv4",
-          "dhcpv6",
-          "dhcrelay",
-          "dnsmasq",
-          "unbound",
-          "kea"
-        ],
-        "plugins": ["bind", "dnscryptproxy", "dyndns", "lldpd", "quagga", "relayd", "ndproxy"],
-        "utilities": []
-      }
-    },
-    "monitoring": {
-      "description": "Monitoring and metrics focused build",
-      "modules": {
-        "core": ["auth", "system", "service", "diagnostics", "monit", "syslog"],
-        "plugins": [
-          "collectd",
-          "netdata",
-          "netsnmp",
-          "nodeexporter",
-          "ntopng",
-          "telegraf",
-          "vnstat",
-          "zabbixagent",
-          "zabbixproxy",
-          "smart",
-          "apcupsd",
-          "nut"
-        ],
-        "utilities": []
-      }
-    }
-  },
-  "moduleDefinitions": {
+  "description": "Build configuration for OPNsense TypeScript SDK",
+  "generated": "2025-06-30T04:29:25.219Z",
+  "note": "Required modules (core, auth, firewall, interfaces, keygen) are always included and not configurable",
+  "modules": {
     "core": {
-      "auth": {
-        "description": "User, group, and privilege management",
-        "dependencies": [],
-        "required": true,
-        "category": "authentication"
-      },
       "captiveportal": {
-        "description": "Guest network management",
-        "dependencies": ["auth", "interfaces"],
-        "required": false,
-        "category": "network"
-      },
-      "core": {
-        "description": "Basic system operations",
-        "dependencies": [],
-        "required": true,
-        "category": "system"
+        "include": true,
+        "description": "Core captiveportal module"
       },
       "cron": {
-        "description": "Scheduled task management",
-        "dependencies": ["auth"],
-        "required": false,
-        "category": "system"
+        "include": true,
+        "description": "Core cron module"
       },
       "dhcpv4": {
-        "description": "IPv4 DHCP service management",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "network"
+        "include": true,
+        "description": "Core dhcpv4 module"
       },
       "dhcpv6": {
-        "description": "IPv6 DHCP service management",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "network"
+        "include": true,
+        "description": "Core dhcpv6 module"
       },
       "dhcrelay": {
-        "description": "DHCP relay service management",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "network"
+        "include": true,
+        "description": "Core dhcrelay module"
       },
       "diagnostics": {
-        "description": "System monitoring, logs, traffic analysis",
-        "dependencies": ["auth"],
-        "required": false,
-        "category": "monitoring"
+        "include": true,
+        "description": "Core diagnostics module"
       },
       "dnsmasq": {
-        "description": "DNS and DHCP service management",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "network"
-      },
-      "firewall": {
-        "description": "Rules, aliases, NAT configuration",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "security"
+        "include": true,
+        "description": "Core dnsmasq module"
       },
       "firmware": {
-        "description": "Firmware updates and package management",
-        "dependencies": ["auth"],
-        "required": false,
-        "category": "system"
+        "include": true,
+        "description": "Core firmware module"
       },
       "ids": {
-        "description": "Intrusion Detection System management",
-        "dependencies": ["firewall", "interfaces"],
-        "required": false,
-        "category": "security"
-      },
-      "interfaces": {
-        "description": "Network interface management",
-        "dependencies": [],
-        "required": false,
-        "category": "network"
+        "include": true,
+        "description": "Core ids module"
       },
       "ipsec": {
-        "description": "IPsec VPN configuration",
-        "dependencies": ["interfaces", "trust"],
-        "required": false,
-        "category": "vpn"
+        "include": true,
+        "description": "Core ipsec module"
       },
       "kea": {
-        "description": "ISC Kea DHCP server management",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "network"
+        "include": true,
+        "description": "Core kea module"
       },
       "monit": {
-        "description": "Service monitoring and management",
-        "dependencies": ["auth"],
-        "required": false,
-        "category": "monitoring"
+        "include": true,
+        "description": "Core monit module"
       },
       "openvpn": {
-        "description": "OpenVPN server and client management",
-        "dependencies": ["interfaces", "trust"],
-        "required": false,
-        "category": "vpn"
+        "include": true,
+        "description": "Core openvpn module"
       },
       "routes": {
-        "description": "Static route management",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "network"
+        "include": true,
+        "description": "Core routes module"
       },
       "routing": {
-        "description": "Dynamic routing protocols management",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "network"
-      },
-      "service": {
-        "description": "System service control",
-        "dependencies": ["auth"],
-        "required": false,
-        "category": "system"
+        "include": true,
+        "description": "Core routing module"
       },
       "syslog": {
-        "description": "System logging management",
-        "dependencies": ["auth"],
-        "required": false,
-        "category": "monitoring"
-      },
-      "system": {
-        "description": "System information, reboot, halt",
-        "dependencies": ["auth"],
-        "required": false,
-        "category": "system"
+        "include": true,
+        "description": "Core syslog module"
       },
       "trafficshaper": {
-        "description": "Bandwidth management and QoS",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "network"
+        "include": true,
+        "description": "Core trafficshaper module"
       },
       "trust": {
-        "description": "Certificate and CA management",
-        "dependencies": ["auth"],
-        "required": false,
-        "category": "security"
+        "include": true,
+        "description": "Core trust module"
       },
       "unbound": {
-        "description": "DNS resolver management",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "network"
+        "include": true,
+        "description": "Core unbound module"
       },
       "wireguard": {
-        "description": "WireGuard VPN management",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "vpn"
+        "include": true,
+        "description": "Core wireguard module"
       }
     },
     "plugins": {
       "acmeclient": {
-        "description": "ACME/Let's Encrypt certificate management",
-        "dependencies": ["trust"],
-        "required": false,
-        "category": "security"
+        "include": true,
+        "description": "Plugin acmeclient module"
       },
       "apcupsd": {
-        "description": "APC UPS monitoring and control",
-        "dependencies": [],
-        "required": false,
-        "category": "hardware"
+        "include": true,
+        "description": "Plugin apcupsd module"
       },
       "bind": {
-        "description": "BIND DNS server with zone management",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "network"
+        "include": true,
+        "description": "Plugin bind module"
       },
       "caddy": {
-        "description": "Modern web server with automatic HTTPS",
-        "dependencies": ["trust"],
-        "required": false,
-        "category": "web"
+        "include": true,
+        "description": "Plugin caddy module"
       },
       "chrony": {
-        "description": "NTP time synchronization",
-        "dependencies": [],
-        "required": false,
-        "category": "system"
+        "include": true,
+        "description": "Plugin chrony module"
       },
       "cicap": {
-        "description": "ICAP server functionality",
-        "dependencies": [],
-        "required": false,
-        "category": "security"
+        "include": true,
+        "description": "Plugin cicap module"
       },
       "clamav": {
-        "description": "Antivirus scanning and quarantine",
-        "dependencies": [],
-        "required": false,
-        "category": "security"
+        "include": true,
+        "description": "Plugin clamav module"
       },
       "collectd": {
-        "description": "System statistics collection",
-        "dependencies": [],
-        "required": false,
-        "category": "monitoring"
+        "include": true,
+        "description": "Plugin collectd module"
       },
       "crowdsec": {
-        "description": "Security engine and threat detection",
-        "dependencies": ["firewall"],
-        "required": false,
-        "category": "security"
+        "include": true,
+        "description": "Plugin crowdsec module"
       },
       "dechw": {
-        "description": "Hardware debugging information",
-        "dependencies": [],
-        "required": false,
-        "category": "hardware"
+        "include": true,
+        "description": "Plugin dechw module"
       },
       "diagnostics": {
-        "description": "Enhanced system diagnostics",
-        "dependencies": [],
-        "required": false,
-        "category": "monitoring"
+        "include": true,
+        "description": "Plugin diagnostics module"
       },
       "dmidecode": {
-        "description": "Hardware information via DMI",
-        "dependencies": [],
-        "required": false,
-        "category": "hardware"
+        "include": true,
+        "description": "Plugin dmidecode module"
       },
       "dnscryptproxy": {
-        "description": "DNS encryption proxy",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "network"
+        "include": true,
+        "description": "Plugin dnscryptproxy module"
       },
       "dyndns": {
-        "description": "Dynamic DNS updates and accounts",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "network"
+        "include": true,
+        "description": "Plugin dyndns module"
       },
       "freeradius": {
-        "description": "RADIUS authentication server",
-        "dependencies": ["trust"],
-        "required": false,
-        "category": "security"
+        "include": true,
+        "description": "Plugin freeradius module"
       },
       "ftpproxy": {
-        "description": "FTP proxy functionality",
-        "dependencies": [],
-        "required": false,
-        "category": "proxy"
+        "include": true,
+        "description": "Plugin ftpproxy module"
       },
       "gridexample": {
-        "description": "Grid example plugin for development",
-        "dependencies": [],
-        "required": false,
-        "category": "development"
+        "include": true,
+        "description": "Plugin gridexample module"
       },
       "haproxy": {
-        "description": "Load balancer with statistics",
-        "dependencies": ["trust"],
-        "required": false,
-        "category": "web"
+        "include": true,
+        "description": "Plugin haproxy module"
       },
       "helloworld": {
-        "description": "Hello world example plugin",
-        "dependencies": [],
-        "required": false,
-        "category": "development"
+        "include": true,
+        "description": "Plugin helloworld module"
       },
       "hwprobe": {
-        "description": "Hardware probing and detection",
-        "dependencies": [],
-        "required": false,
-        "category": "hardware"
+        "include": true,
+        "description": "Plugin hwprobe module"
       },
       "iperf": {
-        "description": "Network performance testing",
-        "dependencies": [],
-        "required": false,
-        "category": "network"
+        "include": true,
+        "description": "Plugin iperf module"
       },
       "lldpd": {
-        "description": "Link Layer Discovery Protocol",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "network"
+        "include": true,
+        "description": "Plugin lldpd module"
       },
       "maltrail": {
-        "description": "Malicious traffic detection and trails",
-        "dependencies": ["firewall"],
-        "required": false,
-        "category": "security"
+        "include": true,
+        "description": "Plugin maltrail module"
       },
       "mdnsrepeater": {
-        "description": "mDNS repeating service",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "network"
+        "include": true,
+        "description": "Plugin mdnsrepeater module"
       },
       "muninnode": {
-        "description": "Munin monitoring node",
-        "dependencies": [],
-        "required": false,
-        "category": "monitoring"
+        "include": true,
+        "description": "Plugin muninnode module"
       },
       "ndproxy": {
-        "description": "IPv6 neighbor discovery proxy",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "network"
+        "include": true,
+        "description": "Plugin ndproxy module"
       },
       "netdata": {
-        "description": "Real-time performance monitoring",
-        "dependencies": [],
-        "required": false,
-        "category": "monitoring"
+        "include": true,
+        "description": "Plugin netdata module"
       },
       "netsnmp": {
-        "description": "SNMP agent with user management",
-        "dependencies": [],
-        "required": false,
-        "category": "monitoring"
+        "include": true,
+        "description": "Plugin netsnmp module"
       },
       "nginx": {
-        "description": "Web server and reverse proxy",
-        "dependencies": ["trust"],
-        "required": false,
-        "category": "web"
+        "include": true,
+        "description": "Plugin nginx module"
       },
       "nodeexporter": {
-        "description": "Prometheus metrics exporter",
-        "dependencies": [],
-        "required": false,
-        "category": "monitoring"
+        "include": true,
+        "description": "Plugin nodeexporter module"
       },
       "nrpe": {
-        "description": "Nagios remote plugin executor",
-        "dependencies": [],
-        "required": false,
-        "category": "monitoring"
+        "include": true,
+        "description": "Plugin nrpe module"
       },
       "ntopng": {
-        "description": "Network traffic analysis",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "monitoring"
+        "include": true,
+        "description": "Plugin ntopng module"
       },
       "nut": {
-        "description": "Network UPS Tools management",
-        "dependencies": [],
-        "required": false,
-        "category": "hardware"
+        "include": true,
+        "description": "Plugin nut module"
       },
       "openconnect": {
-        "description": "OpenConnect VPN client",
-        "dependencies": ["interfaces", "trust"],
-        "required": false,
-        "category": "vpn"
+        "include": true,
+        "description": "Plugin openconnect module"
       },
       "postfix": {
-        "description": "Mail server with queue management",
-        "dependencies": ["trust"],
-        "required": false,
-        "category": "communication"
+        "include": true,
+        "description": "Plugin postfix module"
       },
       "proxy": {
-        "description": "Web proxy (Squid) with cache management",
-        "dependencies": ["trust"],
-        "required": false,
-        "category": "proxy"
+        "include": true,
+        "description": "Plugin proxy module"
       },
       "proxysso": {
-        "description": "Proxy SSO authentication",
-        "dependencies": ["proxy", "auth"],
-        "required": false,
-        "category": "proxy"
+        "include": true,
+        "description": "Plugin proxysso module"
       },
       "puppetagent": {
-        "description": "Puppet configuration management",
-        "dependencies": [],
-        "required": false,
-        "category": "system"
+        "include": true,
+        "description": "Plugin puppetagent module"
       },
       "qemuguestagent": {
-        "description": "QEMU guest agent",
-        "dependencies": [],
-        "required": false,
-        "category": "system"
+        "include": true,
+        "description": "Plugin qemuguestagent module"
       },
       "quagga": {
-        "description": "Dynamic routing protocols (BGP, OSPF, RIP)",
-        "dependencies": ["interfaces", "routing"],
-        "required": false,
-        "category": "network"
+        "include": true,
+        "description": "Plugin quagga module"
       },
       "radsecproxy": {
-        "description": "RADIUS over TLS proxy",
-        "dependencies": ["trust"],
-        "required": false,
-        "category": "security"
+        "include": true,
+        "description": "Plugin radsecproxy module"
       },
       "redis": {
-        "description": "In-memory data structure store",
-        "dependencies": [],
-        "required": false,
-        "category": "database"
+        "include": true,
+        "description": "Plugin redis module"
       },
       "relayd": {
-        "description": "Load balancing and high availability",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "web"
+        "include": true,
+        "description": "Plugin relayd module"
       },
       "rspamd": {
-        "description": "Advanced spam filtering and learning",
-        "dependencies": [],
-        "required": false,
-        "category": "security"
+        "include": true,
+        "description": "Plugin rspamd module"
       },
       "shadowsocks": {
-        "description": "Secure proxy server",
-        "dependencies": [],
-        "required": false,
-        "category": "proxy"
+        "include": true,
+        "description": "Plugin shadowsocks module"
       },
       "siproxd": {
-        "description": "SIP proxy for VoIP",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "communication"
+        "include": true,
+        "description": "Plugin siproxd module"
       },
       "smart": {
-        "description": "Disk health monitoring and testing",
-        "dependencies": [],
-        "required": false,
-        "category": "hardware"
+        "include": true,
+        "description": "Plugin smart module"
       },
       "softether": {
-        "description": "SoftEther VPN server with hubs",
-        "dependencies": ["interfaces", "trust"],
-        "required": false,
-        "category": "vpn"
+        "include": true,
+        "description": "Plugin softether module"
       },
       "sslh": {
-        "description": "SSL/SSH multiplexer",
-        "dependencies": ["trust"],
-        "required": false,
-        "category": "security"
+        "include": true,
+        "description": "Plugin sslh module"
       },
       "stunnel": {
-        "description": "SSL tunneling and certificate management",
-        "dependencies": ["trust"],
-        "required": false,
-        "category": "security"
+        "include": true,
+        "description": "Plugin stunnel module"
       },
       "tailscale": {
-        "description": "Mesh VPN networking",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "vpn"
+        "include": true,
+        "description": "Plugin tailscale module"
       },
       "tayga": {
-        "description": "NAT64 translation service",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "network"
+        "include": true,
+        "description": "Plugin tayga module"
       },
       "telegraf": {
-        "description": "Metrics collection with input/output plugins",
-        "dependencies": [],
-        "required": false,
-        "category": "monitoring"
+        "include": true,
+        "description": "Plugin telegraf module"
       },
       "tftp": {
-        "description": "TFTP server with file management",
-        "dependencies": [],
-        "required": false,
-        "category": "network"
+        "include": true,
+        "description": "Plugin tftp module"
       },
       "tinc": {
-        "description": "Mesh VPN with key management",
-        "dependencies": ["interfaces", "trust"],
-        "required": false,
-        "category": "vpn"
+        "include": true,
+        "description": "Plugin tinc module"
       },
       "tor": {
-        "description": "Anonymous networking and circuits",
-        "dependencies": [],
-        "required": false,
-        "category": "security"
+        "include": true,
+        "description": "Plugin tor module"
       },
       "turnserver": {
-        "description": "NAT traversal for WebRTC",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "communication"
+        "include": true,
+        "description": "Plugin turnserver module"
       },
       "udpbroadcastrelay": {
-        "description": "UDP broadcast relay",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "network"
+        "include": true,
+        "description": "Plugin udpbroadcastrelay module"
       },
       "vnstat": {
-        "description": "Network statistics and database management",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "monitoring"
+        "include": true,
+        "description": "Plugin vnstat module"
       },
       "wazuhagent": {
-        "description": "Security monitoring and SIEM agent",
-        "dependencies": [],
-        "required": false,
-        "category": "security"
+        "include": true,
+        "description": "Plugin wazuhagent module"
       },
       "wol": {
-        "description": "Wake on LAN management",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "network"
+        "include": true,
+        "description": "Plugin wol module"
       },
       "zabbixagent": {
-        "description": "Zabbix monitoring agent",
-        "dependencies": [],
-        "required": false,
-        "category": "monitoring"
+        "include": true,
+        "description": "Plugin zabbixagent module"
       },
       "zabbixproxy": {
-        "description": "Zabbix monitoring proxy with queue management",
-        "dependencies": [],
-        "required": false,
-        "category": "monitoring"
+        "include": true,
+        "description": "Plugin zabbixproxy module"
       },
       "zerotier": {
-        "description": "Virtual network management",
-        "dependencies": ["interfaces"],
-        "required": false,
-        "category": "vpn"
+        "include": true,
+        "description": "Plugin zerotier module"
       }
     },
-    "utilities": {
-      "keygen": {
-        "description": "Wireguard key generation utility",
-        "dependencies": [],
-        "required": false,
-        "category": "utility"
-      }
-    }
-  },
-  "buildOptions": {
-    "target": "es2020",
-    "format": ["esm", "cjs"],
-    "minify": true,
-    "sourcemap": true,
-    "treeshaking": true,
-    "bundleAnalyzer": false,
-    "outputDir": "dist",
-    "entryPoints": {
-      "main": "src/index.ts",
-      "core": "src/modules/core/index.ts",
-      "plugins": "src/modules/plugins/index.ts",
-      "utilities": "src/utils/index.ts"
-    }
-  },
-  "validation": {
-    "checkDependencies": true,
-    "allowMissingOptionalDeps": true,
-    "enforceCategories": false,
-    "validateModuleExists": true
-  },
-  "metadata": {
-    "generatedBy": "OPNsense TypeScript Client Build System",
-    "generatedAt": "2024-01-01T00:00:00.000Z",
-    "configVersion": "1.0.0",
-    "supportedProfiles": ["minimal", "standard", "full", "security", "network", "monitoring"],
-    "totalCoreModules": 24,
-    "totalPluginModules": 64,
-    "totalUtilities": 1
+    "utilities": {}
   }
 }
