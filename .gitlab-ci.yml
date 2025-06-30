@@ -2,6 +2,7 @@ stages:
   - validate
   - generate
   - build
+  - test
   - package
 
 variables:
@@ -151,10 +152,10 @@ build:
     - if: $CI_PIPELINE_SOURCE == "push"
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
-# Validation stage (moved from test stage)
+# Test stage (validation after build)
 validate_build_artifacts:
   <<: *node_template
-  stage: validate
+  stage: test
   dependencies:
     - build
   script:
@@ -174,7 +175,7 @@ validate_build_artifacts:
 
 validate_documentation:
   <<: *node_template
-  stage: validate
+  stage: test
   dependencies:
     - generate_docs
   script:
@@ -273,7 +274,7 @@ package_tarball:
 # Performance monitoring
 bundle_analysis:
   <<: *node_template
-  stage: validate
+  stage: test
   dependencies:
     - build
   script:
