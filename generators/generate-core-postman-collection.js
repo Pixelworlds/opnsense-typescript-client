@@ -1,181 +1,177 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Configuration
+const CRAWLER_DATA_DIR = path.join(process.cwd(), 'crawler/storage/key_value_stores/opnsense-api-modules');
+const OUTPUT_FILE = path.join(process.cwd(), 'postman/OPNsense_Core_Modules_API_Collection.postman_collection.json');
 
-// Path to the storage directory (updated for new location)
-const storageDir = path.join(__dirname, '../crawler/storage/key_value_stores/opnsense-api-modules');
+// Read all core module JSON files
+function loadCoreModules() {
+  const files = fs.readdirSync(CRAWLER_DATA_DIR);
+  const coreModules = [];
 
-// Helper function to convert snake_case to Title Case
-function toTitleCase(str) {
-  return str
-    .split('_')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+  files.forEach(file => {
+    if (file.startsWith('core-') && file.endsWith('.json')) {
+      const data = JSON.parse(fs.readFileSync(path.join(CRAWLER_DATA_DIR, file), 'utf8'));
+      coreModules.push(data);
+    }
+  });
+
+  return coreModules;
 }
 
-// Helper function to parse parameters and convert to Postman path variables
-function parseUrlParameters(url) {
-  // Replace {param} with :param for Postman path variables
-  const pathVariableRegex = /\{([a-zA-Z_]+)\}/g;
-  const convertedUrl = url.replace(pathVariableRegex, ':$1');
+// Convert path parameters from {param} to :param format for Postman
+function convertPathParameters(url) {
+  let convertedUrl = url;
+  const pathParams = [];
 
-  // Extract path variables
-  const pathVariables = [];
+  // Find all {param} patterns and replace with :param
+  const paramRegex = /\{([^}]+)\}/g;
   let match;
-  while ((match = pathVariableRegex.exec(url)) !== null) {
-    pathVariables.push({
-      key: match[1],
-      value: '',
-      description: `Path parameter: ${match[1]}`,
+
+  while ((match = paramRegex.exec(url)) !== null) {
+    const paramName = match[1];
+    convertedUrl = convertedUrl.replace(`{${paramName}}`, `:${paramName}`);
+    pathParams.push({
+      key: paramName,
+      value: `{{${paramName}}}`,
+      description: `Path parameter: ${paramName}`,
     });
   }
 
-  return { convertedUrl, pathVariables };
+  return { convertedUrl, pathParams };
 }
 
-// Helper function to build Postman URL object
-function buildPostmanUrl(endpoint, baseUrl = '{{opnsense_base_url}}') {
-  const { convertedUrl, pathVariables } = parseUrlParameters(endpoint.url);
+// Build a Postman request object with proper URL structure
+function buildPostmanRequest(endpoint) {
+  const { convertedUrl, pathParams } = convertPathParameters(endpoint.url);
 
-  // Remove /api prefix if present
-  const cleanUrl = convertedUrl.startsWith('/api/') ? convertedUrl.substring(4) : convertedUrl;
-
-  // Build path array
-  const pathParts = cleanUrl.split('/').filter(part => part);
-
-  // Build URL object
-  const urlObject = {
-    raw: `${baseUrl}${cleanUrl}`,
-    host: [baseUrl],
-    path: pathParts,
+  // Build the request object
+  const request = {
+    method: endpoint.method,
+    header: [],
+    description: `${endpoint.method} ${endpoint.url}`,
   };
 
-  // Add variables if any path variables exist
-  if (pathVariables.length > 0) {
-    urlObject.variable = pathVariables;
+  // Add Content-Type header for POST requests
+  if (endpoint.method === 'POST') {
+    request.header.push({
+      key: 'Content-Type',
+      value: 'application/json',
+      type: 'text',
+    });
   }
 
-  return urlObject;
-}
-
-// Helper function to create a Postman request
-function createPostmanRequest(endpoint, module, controller) {
-  const request = {
-    name: endpoint.command || 'Unknown Command',
-    request: {
-      method: endpoint.method,
-      header: [],
-      url: buildPostmanUrl(endpoint),
-      description: endpoint.description || `${endpoint.method} ${endpoint.url}`,
-    },
+  // Build URL object with the structure Postman expects
+  // When using a base URL variable, we use this format
+  request.url = {
+    raw: `{{opnsense_base_url}}${convertedUrl}`,
+    host: ['{{opnsense_base_url}}'],
+    path: convertedUrl.substring(1).split('/'), // Remove leading slash and split
+    query: [],
+    variable: [],
   };
 
+  // Add path variables if any
+  if (pathParams.length > 0) {
+    request.url.variable = pathParams;
+  }
+
   // Add body for POST requests
-  if (endpoint.method === 'POST') {
-    request.request.body = {
+  if (endpoint.method === 'POST' && endpoint.parameters && Object.keys(endpoint.parameters).length > 0) {
+    const bodyExample = {};
+    Object.entries(endpoint.parameters).forEach(([key, param]) => {
+      if (param.type === 'array') {
+        bodyExample[key] = [];
+      } else if (param.type === 'object') {
+        bodyExample[key] = {};
+      } else if (param.type === 'boolean') {
+        bodyExample[key] = false;
+      } else if (param.type === 'number' || param.type === 'integer') {
+        bodyExample[key] = 0;
+      } else {
+        bodyExample[key] = '';
+      }
+    });
+
+    request.body = {
       mode: 'raw',
-      raw: JSON.stringify(
-        {
-          // Add placeholder fields from model if available
-          '// TODO': 'Add request body fields',
-        },
-        null,
-        2
-      ),
+      raw: JSON.stringify(bodyExample, null, 2),
       options: {
         raw: {
           language: 'json',
         },
       },
     };
-
-    request.request.header.push({
-      key: 'Content-Type',
-      value: 'application/json',
-    });
   }
 
   return request;
 }
 
-// Helper function to create a folder for a controller
-function createControllerFolder(controller, endpoints, module) {
-  return {
-    name: toTitleCase(controller),
-    item: endpoints.map(endpoint => createPostmanRequest(endpoint, module, controller)),
+// Build a Postman item (folder or request)
+function buildPostmanItem(module) {
+  const item = {
+    name: module.name,
+    description: module.description || `API endpoints for ${module.name}`,
+    item: [],
   };
-}
 
-// Helper function to create a folder for a module
-function createModuleFolder(module) {
   // Group endpoints by controller
-  const controllerGroups = {};
+  const controllers = {};
 
-  for (const endpoint of module.endpoints) {
-    if (!controllerGroups[endpoint.controller]) {
-      controllerGroups[endpoint.controller] = [];
+  module.endpoints.forEach(endpoint => {
+    const parts = endpoint.url.split('/');
+    // Extract controller name (usually the 4th part: /api/module/controller/action)
+    const controller = parts[3] || 'default';
+
+    if (!controllers[controller]) {
+      controllers[controller] = {
+        name: controller,
+        item: [],
+      };
     }
-    controllerGroups[endpoint.controller].push(endpoint);
-  }
 
-  // Create controller folders
-  const items = [];
-  for (const [controller, endpoints] of Object.entries(controllerGroups)) {
-    items.push(createControllerFolder(controller, endpoints, module));
-  }
+    const request = buildPostmanRequest(endpoint);
+    controllers[controller].item.push({
+      name: endpoint.url.split('/').pop() || endpoint.url,
+      request: request,
+      response: [],
+    });
+  });
 
-  return {
-    name: toTitleCase(module.name),
-    description: `API endpoints for ${module.name} module`,
-    item: items,
-  };
+  // Add controller folders to module
+  Object.values(controllers).forEach(controller => {
+    item.item.push(controller);
+  });
+
+  return item;
 }
 
-// Main function to generate Postman collection
-async function generatePostmanCollection() {
-  // Read all JSON files from storage
-  const files = fs.readdirSync(storageDir).filter(file => file.endsWith('.json'));
-
-  // Load and filter core modules
-  const coreModules = [];
-
-  for (const file of files) {
-    try {
-      const filePath = path.join(storageDir, file);
-      const content = fs.readFileSync(filePath, 'utf-8');
-      const moduleData = JSON.parse(content);
-
-      // Only include core modules
-      if (moduleData && moduleData.type === 'core') {
-        coreModules.push(moduleData);
-      }
-    } catch (error) {
-      console.warn(`Failed to read ${file}:`, error.message);
-    }
-  }
-
-  console.log(`Found ${coreModules.length} core modules`);
-
-  // Sort modules alphabetically
-  coreModules.sort((a, b) => a.name.localeCompare(b.name));
-
-  // Create module folders
-  const moduleFolders = coreModules.map(module => createModuleFolder(module));
-
-  // Create Postman collection
-  const collection = {
+// Build the complete Postman collection
+function buildPostmanCollection(modules) {
+  return {
     info: {
-      name: 'OPNsense Core Modules API',
-      description: 'Complete API collection for OPNsense Core Modules',
+      name: 'OPNsense Core Modules API Collection',
+      description: `Auto-generated Postman collection for OPNsense Core API modules.
+
+IMPORTANT: Before using this collection, you MUST configure the following variables in your Postman environment or globals:
+
+- opnsense_base_url: Your OPNsense URL (e.g., https://192.168.1.1 or https://opnsense.local)
+- opnsense_api_key: Your API key from OPNsense
+- opnsense_api_secret: Your API secret from OPNsense
+
+To create/edit an environment:
+1. Click the environment dropdown (top right in Postman)
+2. Select "Manage Environments"
+3. Click "Add" to create a new environment
+4. Add the three variables mentioned above with your actual values
+5. Select your environment from the dropdown before running requests`,
       schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
-      _postman_id: generateUuid(),
-      version: '1.0.0',
+      _postman_id: 'opnsense-core-api-collection',
     },
+    item: [],
     auth: {
       type: 'basic',
       basic: [
@@ -186,70 +182,53 @@ async function generatePostmanCollection() {
         },
         {
           key: 'password',
-          value: '{{opnsense_secret_key}}',
+          value: '{{opnsense_api_secret}}',
           type: 'string',
         },
       ],
     },
-    item: moduleFolders,
-    variable: [
+    event: [
       {
-        key: 'opnsense_base_url',
-        value: 'https://your-opnsense-host/api',
-        type: 'string',
-        description: 'Base URL for OPNsense API (e.g., https://192.168.1.1/api)',
-      },
-      {
-        key: 'opnsense_api_key',
-        value: 'your-api-key',
-        type: 'string',
-        description: 'OPNsense API key',
-      },
-      {
-        key: 'opnsense_secret_key',
-        value: 'your-secret-key',
-        type: 'string',
-        description: 'OPNsense API secret',
+        listen: 'prerequest',
+        script: {
+          type: 'text/javascript',
+          exec: [
+            '// This script runs before every request in the collection',
+            '// You can add any pre-request logic here if needed',
+          ],
+        },
       },
     ],
   };
-
-  // Add statistics to description
-  const totalEndpoints = coreModules.reduce((sum, module) => sum + module.endpoints.length, 0);
-  collection.info.description += `\n\nStatistics:\n- Core Modules: ${coreModules.length}\n- Total Endpoints: ${totalEndpoints}`;
-
-  // Write collection to file (updated path)
-  const outputPath = path.join(__dirname, '../postman/OPNsense_Core_Modules_API_Collection.postman_collection.json');
-
-  // Ensure postman directory exists
-  const postmanDir = path.join(__dirname, '../postman');
-  if (!fs.existsSync(postmanDir)) {
-    fs.mkdirSync(postmanDir, { recursive: true });
-  }
-
-  fs.writeFileSync(outputPath, JSON.stringify(collection, null, 2), 'utf-8');
-
-  console.log(`\nPostman collection generated successfully!`);
-  console.log(`Output: ${outputPath}`);
-  console.log(`Statistics:`);
-  console.log(`   - Core Modules: ${coreModules.length}`);
-  console.log(`   - Total Endpoints: ${totalEndpoints}`);
-
-  // Print module summary
-  console.log(`\nCore Modules Included:`);
-  for (const module of coreModules) {
-    console.log(`   - ${module.name}: ${module.endpoints.length} endpoints`);
-  }
 }
 
-// Helper function to generate UUID for Postman
-function generateUuid() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-    const r = (Math.random() * 16) | 0;
-    const v = c === 'x' ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
+// Main function
+function main() {
+  console.log('Loading core modules...');
+  const modules = loadCoreModules();
+  console.log(`Found ${modules.length} core modules`);
+
+  console.log('Building Postman collection...');
+  const collection = buildPostmanCollection(modules);
+
+  // Add each module as a folder in the collection
+  modules.forEach(module => {
+    const item = buildPostmanItem(module);
+    collection.item.push(item);
   });
+
+  // Ensure output directory exists
+  const outputDir = path.dirname(OUTPUT_FILE);
+  if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir, { recursive: true });
+  }
+
+  // Write the collection to file
+  console.log(`Writing collection to ${OUTPUT_FILE}...`);
+  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(collection, null, 2));
+
+  console.log('✅ Core Postman collection generated successfully!');
 }
 
-// Run the script
-generatePostmanCollection().catch(console.error);
+// Run the generator
+main();
